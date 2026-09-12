@@ -33,6 +33,8 @@ def main() -> None:
     must("hopH" in HTML, "bouncy coins")
     must("64 * sc" in HTML, "bigger scoop")
     must("densify" in HTML, "more NPCs")
+    must("showBuddyTip" in HTML and "TIPS" in HTML, "buddy tips")
+    must("IM.city" in HTML, "capital city")
     must("Ride over gold coins" in HTML, "coin tip")
     must((ROOT / "assets/sprites/reed.png").is_file(), "reed.png")
     must((ROOT / "assets/sprites/wagon.png").is_file(), "wagon.png")

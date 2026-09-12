@@ -124,6 +124,20 @@
     #btn-skip.hidden { display: none; }
     #btn-skip:active { transform: translateY(1px); }
     #app.tut #banner { right: 88px; }
+    #elon-tip {
+      position: absolute; left: 8px; right: 8px; bottom: 8px; z-index: 8;
+      display: flex; gap: 8px; align-items: center;
+      background: var(--cream); color: var(--ink);
+      border: 3px solid var(--gold); border-radius: 14px;
+      padding: 7px 10px; font-weight: 800; font-size: 13px;
+      line-height: 1.25; text-align: left; cursor: pointer;
+      box-shadow: 0 4px 12px #0004;
+    }
+    #elon-tip.hidden { display: none; }
+    #elon-tip img {
+      width: 46px; height: 46px; border-radius: 50%; object-fit: cover;
+      border: 2px solid var(--gold); flex: 0 0 auto; background: #6B9E3A;
+    }
     @media (max-height: 560px) {
       .card { min-height: 52px; padding: 3px 2px 4px; }
       .card img { width: 24px; height: 20px; }
@@ -228,6 +242,10 @@
       <canvas id="cv"></canvas>
       <div id="banner" class="hidden"></div>
       <button id="btn-skip" class="hidden" type="button">Skip</button>
+      <div id="elon-tip" class="hidden">
+        <img src="assets/sprites/buddy.png" alt="" />
+        <p id="elon-line">Hold the capital.</p>
+      </div>
     </div>
     <div id="dock">
       <button class="card" id="card-bow" type="button" data-kind="bow">
@@ -321,13 +339,13 @@
     pierce: [0, 0, 1]
   };
   var MOBS = {
-    rat: { hp: 2, spd: 82, wood: 2, dmg: 1, scale: 0.62 },
-    bandit: { hp: 6, spd: 66, wood: 4, dmg: 1, scale: 0.82 },
-    brute: { hp: 18, spd: 28, wood: 12, dmg: 2, scale: 1.18 },
-    thief: { hp: 3, spd: 118, wood: 3, dmg: 1, scale: 0.7 },
+    rat: { hp: 2, spd: 70, wood: 2, dmg: 1, scale: 0.62 },
+    bandit: { hp: 6, spd: 60, wood: 4, dmg: 1, scale: 0.82 },
+    brute: { hp: 18, spd: 26, wood: 12, dmg: 2, scale: 1.18 },
+    thief: { hp: 3, spd: 100, wood: 3, dmg: 1, scale: 0.7 },
     goat: { hp: 8, spd: 42, wood: 6, dmg: 1, scale: 0.95 },
     knight: { hp: 22, spd: 50, wood: 15, dmg: 2, scale: 1.12 },
-    reed: { hp: 2, spd: 128, wood: 2, dmg: 1, scale: 0.58 },
+    reed: { hp: 2, spd: 108, wood: 2, dmg: 1, scale: 0.58 },
     wagon: { hp: 28, spd: 36, wood: 16, dmg: 2, scale: 1.22 }
   };
   var LEVELS = [
@@ -523,11 +541,11 @@
         var extra = [];
         var j;
         for (j = 0; j < w.list.length; j++) {
-          if (fodder[w.list[j]] && extra.length < 2) extra.push(w.list[j]);
+          if (fodder[w.list[j]] && extra.length < 4) extra.push(w.list[j]);
         }
-        if (extra.length && w.list.length < 7) w.list = w.list.concat(extra);
+        if (extra.length && w.list.length < 10) w.list = w.list.concat(extra);
         var boss = w.list.indexOf("wagon") >= 0 || w.list.indexOf("knight") >= 0 || w.list.indexOf("brute") >= 0;
-        if (!boss && w.gap > 0.32) w.gap = Math.max(0.3, w.gap - 0.02);
+        if (!boss) w.gap = Math.max(0.26, (w.gap || 0.4) - 0.06);
       });
     });
   })();
@@ -591,6 +609,29 @@
     { src: "assets/film/f10.jpg", cap: "A Bober family." }
   ];
   var filmI = 0, filmT = 0, filmFrom = "splash";
+  var tipT = 0;
+  var TIPS = [
+    "Drag the king. Plant a crossbow. Hold the capital.",
+    "Ride the lane. Scoop the gold wood coins.",
+    "Place while they march. Upgrade when you can.",
+    "Heavy Crossbow hits harder. Keep scooping.",
+    "Brute incoming. Kite. Scoop. Don’t AFK the coins.",
+    "Guests with knives. The swarm is the feature.",
+    "Feast riot. Towers chew. You collect.",
+    "Tin crowns. Rear shots on goats.",
+    "Banners flood. Ballista pierce is your friend.",
+    "Knight charges you. Sidestep. Scoop the gold.",
+    "Reeds in the lane. Fast fodder, easy coins.",
+    "River feast. Ride, don’t camp the keep.",
+    "Max the bows. Then the king hits harder.",
+    "Royal Guard is the payoff. All ballistae.",
+    "Wagon on the road. Slow, fat, juicy coins.",
+    "Crown Road. The capital wants you riding.",
+    "Feast riot, round two. Don’t freeze.",
+    "Tin siege. Wagons plus the swarm.",
+    "Banner flood. Wow that’s a lot to kill.",
+    "Claim summer. Scoop, then tap Next."
+  ];
 
   function defaultSave() {
     return { unlocked: 1, wood: 12, stars: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], tutDone: false, tutMidBuild: false, filmSeen: false, mute: false };
@@ -652,6 +693,7 @@
       brute: "assets/sprites/brute.png", thief: "assets/sprites/thief.png",
       goat: "assets/sprites/goat.png", knight: "assets/sprites/knight.png",
       reed: "assets/sprites/reed.png", wagon: "assets/sprites/wagon.png",
+      city: "assets/sprites/city.png", buddy: "assets/sprites/buddy.png",
       berry: "assets/sprites/berry.png"
     };
     function restDone() {
@@ -1096,8 +1138,21 @@
     spawnI = 0; spawnT = 0.15;
     selected = null;
     if (tutActive() && tut.step === 2) tut.step = 3;
+    if (waveI === 0) showBuddyTip();
     renderHud();
     beep(330, 0.1, "square", 0.05);
+  }
+  function showBuddyTip() {
+    var el = document.getElementById("elon-tip");
+    var line = TIPS[level % TIPS.length];
+    document.getElementById("elon-line").textContent = line;
+    el.classList.remove("hidden");
+    tipT = 3.4;
+  }
+  function hideBuddyTip() {
+    var el = document.getElementById("elon-tip");
+    if (el) el.classList.add("hidden");
+    tipT = 0;
   }
 
   function hitCrown(n) {
@@ -1930,34 +1985,18 @@
       }});
     });
     enemies.forEach(function (e) { list.push({ y: e.y, draw: function () { drawMob(e); } }); });
-    list.push({ y: crown.y, draw: function () {
-      ellipseShadow(crown.x, crown.y + 4, 32 * sc, 14 * sc);
-      ctx.fillStyle = "#7A7A72";
-      ctx.beginPath();
-      ctx.ellipse(crown.x, crown.y + 6, 32 * sc, 14 * sc, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = "#4A4A44";
-      ctx.lineWidth = 3;
-      ctx.stroke();
-      ctx.fillStyle = "#9A9A90";
-      ctx.beginPath();
-      ctx.ellipse(crown.x, crown.y - 2, 24 * sc, 11 * sc, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = "#5C5C54";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      if (!drawSpriteChunky(IM.crown, crown.x, crown.y + 2, 84 * sc, 76 * sc)) {
-        ctx.fillStyle = "#F5C400";
-        ctx.strokeStyle = "#1A2810";
+    list.push({ y: crown.y - 10, draw: function () {
+      ellipseShadow(crown.x, crown.y + 8, 48 * sc, 16 * sc);
+      if (IM.city) {
+        drawSpriteChunky(IM.city, crown.x, crown.y + 10, 150 * sc, 128 * sc);
+      } else {
+        ctx.fillStyle = "#F4E6C3";
+        ctx.strokeStyle = "#5C3A1A";
         ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(crown.x - 26 * sc, crown.y);
-        ctx.lineTo(crown.x - 16 * sc, crown.y - 22 * sc);
-        ctx.lineTo(crown.x, crown.y - 36 * sc);
-        ctx.lineTo(crown.x + 16 * sc, crown.y - 22 * sc);
-        ctx.lineTo(crown.x + 26 * sc, crown.y);
-        ctx.closePath();
-        ctx.fill(); ctx.stroke();
+        ctx.fillRect(crown.x - 40 * sc, crown.y - 50 * sc, 80 * sc, 58 * sc);
+        ctx.strokeRect(crown.x - 40 * sc, crown.y - 50 * sc, 80 * sc, 58 * sc);
+        ctx.fillStyle = "#F5C400";
+        ctx.fillRect(crown.x - 8 * sc, crown.y - 70 * sc, 16 * sc, 20 * sc);
       }
     }});
     dust.forEach(function (du) {
@@ -2032,6 +2071,10 @@
         if (filmI >= FILM.length) endFilm();
         else paintFilm();
       }
+    }
+    if (tipT > 0) {
+      tipT -= dt;
+      if (tipT <= 0) hideBuddyTip();
     }
     if (screen === "play" && !paused) {
       tickKing(dt);
@@ -2163,6 +2206,7 @@
     startWave();
   });
   skipEl.addEventListener("click", function () { ensureAudio(); skipTut(); });
+  document.getElementById("elon-tip").addEventListener("click", function () { hideBuddyTip(); });
   document.getElementById("card-bow").addEventListener("click", function () {
     if (!canPlaceNow() && !(tutActive() && tut.step === 1)) return;
     selected = selected === "bow" ? null : "bow";

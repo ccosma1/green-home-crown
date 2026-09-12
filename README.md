@@ -4,7 +4,7 @@ Fan game by a holder. Not affiliated with any token, studio, or official Bober p
 
 **Play online:** https://ccosma1.github.io/green-home-crown/
 
-You ARE the summer king. Move. Strike. Crossbows hold the crown line.
+You ARE the summer king. Move. Strike. Crossbows hold the **capital**. The lane comes in packed. Scoop coins. Tap Next when you’re ready.
 
 No install. No wallet. No login. No gacha. No PvP.
 
