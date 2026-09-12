@@ -56,8 +56,10 @@ def swarmify(levels: list[tuple[str, list[tuple[float, list[str]]]]]) -> list:
                 target = 10 + li
             elif li < 5:
                 target = 12 + li
-            elif li < 10:
+            elif li < 7:
                 target = 16 + li
+            elif li < 10:
+                target = 26 + li
             elif li < 15:
                 target = 24 + (li - 10) * 3
             elif li < 20:
@@ -70,7 +72,14 @@ def swarmify(levels: list[tuple[str, list[tuple[float, list[str]]]]]) -> list:
                 lst.append(fodder[j % len(fodder)])
                 j += 1
             boss = any(k in lst for k in ("wagon", "knight", "brute"))
-            base = 0.30 if li < 3 else (0.26 if li < 5 else (0.20 if li < 10 else (0.16 if li < 15 else (0.14 if li < 20 else 0.13))))
+            base = (
+                0.30 if li < 3 else
+                (0.26 if li < 5 else
+                 (0.20 if li < 7 else
+                  (0.16 if li < 10 else
+                   (0.16 if li < 15 else
+                    (0.14 if li < 20 else 0.13)))))
+            )
             g = max(0.28, min(0.42, gap)) if boss else base
             nw.append((g, lst))
         packed.append((name, nw))
@@ -102,14 +111,57 @@ def ranks_for(li: int, n: int) -> list[int]:
 
 def mob_hp(kind: str, li: int) -> int:
     hp = MOBS[kind]["hp"]
-    if li >= 15:
-        if kind == "goat":
+    if li >= 7:
+        if kind == "rat":
+            hp += 1
+        if kind == "thief":
             hp += 2
-        elif kind == "knight":
-            hp += 4
-        elif kind == "wagon":
+        if kind == "bandit":
+            hp += 3
+        if kind == "goat":
+            hp += 5
+        if kind == "brute":
             hp += 6
-        elif kind == "bandit":
+        if kind == "knight":
+            hp += 6
+    if li >= 10:
+        if kind == "reed":
+            hp += 1
+        if kind == "thief":
+            hp += 1
+        if kind == "bandit":
+            hp += 2
+        if kind == "goat":
+            hp += 3
+        if kind == "knight":
+            hp += 8
+        if kind == "brute":
+            hp += 6
+    if li >= 14:
+        if kind == "reed":
+            hp += 1
+        if kind == "wagon":
+            hp += 10
+        if kind == "knight":
+            hp += 8
+        if kind == "goat":
+            hp += 3
+        if kind == "bandit":
+            hp += 2
+        if kind == "brute":
+            hp += 8
+        if kind == "thief":
+            hp += 1
+    if li >= 20:
+        if kind == "wagon":
+            hp += 10
+        if kind == "knight":
+            hp += 8
+        if kind == "goat":
+            hp += 4
+        if kind == "brute":
+            hp += 10
+        if kind == "reed":
             hp += 1
     return hp
 
@@ -210,6 +262,21 @@ def main() -> None:
     must("spd: 80" in HTML, "thieves slowed")
     must("level >= 5) liveN = 3" in HTML, "L6 third pad")
     must("bober.cd = royal ? 0.48 : 0.62" in HTML, "king still slow")
+    must("cost: 120" in HTML and "cost: 250" in HTML and "cost: 480" in HTML, "cheaper gear")
+    must("cost: 40" in HTML and "cost: 490" in HTML, "cheaper cosmetics")
+    must("cost: 980" not in HTML, "old feast prices gone")
+    must("shop-ico" in HTML and "shopIconUrl" in HTML and "drawItemGlyph" in HTML, "shop icons")
+    must("miceTrap" in HTML and "scarecrow" in HTML and "boneTotem" in HTML, "road scares")
+    must("scarePlace" in HTML and "tryPlaceScare" in HTML, "scare save + place")
+    must("Looks only" in HTML and "no damage" in HTML, "scares visual only")
+    must("function mobHp" in HTML, "scaled mob HP")
+    must("target = 26 + li" in HTML, "mid-act denser swarm")
+    must("li < 7 ? 0.20" in HTML, "L8 gap tighten")
+    must("startMagnet" in HTML and "tickMagnet" in HTML and "batchCoins" in HTML, "Next coin magnet")
+    must('phase === "magnet"' in HTML, "magnet phase")
+    must("c.fly" in HTML and "Gold flies to the King" in HTML, "coins arc to king")
+    must("drawWorldProp" in HTML and "pushGroundDress" in HTML, "in-world feast props")
+    must("startMagnet" in HTML and "coins = []" not in HTML[HTML.find("function beginClear"):HTML.find("function finishWin")], "Next does not dump coins")
     levels = parse_levels()
     must(len(levels) == 25, "25 levels")
     packed = swarmify(levels)
@@ -223,6 +290,9 @@ def main() -> None:
             must(simulate(waves, [0, 0], li) <= 1, "L6 not clearable with 2 T1")
         if li >= 9:
             must(simulate(waves, [], li) >= hearts, "naked king-less L%s still too easy" % (li + 1))
+        if li >= 7:
+            t1 = simulate(waves, [0] * n, li)
+            must(t1 >= hearts, "L%s T1-only still too easy: leaks %s" % (li + 1, t1))
         if li == 24:
             must(leaks <= 1, "L25 finale too leaky: %s" % leaks)
             must(any("brute" in lst or "wagon" in lst for _g, lst in waves), "L25 siege")

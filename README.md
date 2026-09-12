@@ -20,8 +20,9 @@ Run `START.bat` or open `index.html`.
 4. **L1–2** place only between waves. **L3+** can place/upgrade during waves.
 5. Enemies drain Crown HP only at the **pedestal**. Kite them through tower range.
 6. **Royal Guard** once per level: all *placed* towers T3, and either ≥2 towers **or** the only live pad is already T3.
+7. After the last wave, **scoop** leftover coins. **Next** flies remaining gold to the King, then the clear.
 
-L1 start wood is **50** (one Crossbow). Kills drop **1–12** coins; income tapers after 280 dropped so the bank does not explode. Extra coins buy **Feast shop** cosmetics (80–980, visual) or **king barding** (leather 240 / mail 520 / royal plate 980 — modest hearts and damage reduction only).
+L1 start wood is **50** (one Crossbow). Kills drop **1–12** coins; income tapers after 280 dropped so the bank does not explode. Extra coins buy **Feast shop** cosmetics (40–490, visual), **road scares** (looks only, path-side), or **king barding** (leather 120 / mail 250 / royal plate 480 — modest hearts and damage reduction only). Mid/late waves need Heavy Crossbow / Ballista — T1-only will leak.
 
 ### Pads live
 
@@ -51,9 +52,9 @@ First L5 clear plays the chapter film. Splash **Watch story** replays it.
 
 ## Soft save
 
-Key `green-home-crown-v1`: unlocked (1–10), wood, stars, tutDone, tutMidBuild, filmSeen, mute.
+Key `green-home-crown-v1`: unlocked, wood, stars, tutDone, tutMidBuild, filmSeen, mute, shopTip, cosmetics, scarePlace.
 
-**Reset** on the Map (confirm). Mute stays. Extra coins buy **Feast shop** cosmetics (banners, flowers, fountain, lanterns, horse blanket, bunting) — visual only.
+**Reset** on the Map (confirm). Mute stays. Extra coins buy **Feast shop** cosmetics (banners, flowers, fountain, lanterns, horse blanket, bunting, flag, hearth, statue) and **road scares** (mice traps, scarecrow, snare, pelts, lane warning, bone totem) — visual only, saved with the feast. Armor is the only fight help.
 
 ## GitHub Pages
 
