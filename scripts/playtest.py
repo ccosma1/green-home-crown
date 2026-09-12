@@ -37,6 +37,8 @@ def main() -> None:
     must("IM.city" in HTML, "capital city")
     must("btn-reset" in HTML, "reset on map")
     must("LIVE_CAP" in HTML and "swarmify" in HTML, "hundreds swarm")
+    must("startStick" in HTML, "king drag")
+    must("armies fire harder" in HTML, "Royal Guard army buff")
     must("Ride over gold coins" in HTML, "coin tip")
     must((ROOT / "assets/sprites/reed.png").is_file(), "reed.png")
     must((ROOT / "assets/sprites/wagon.png").is_file(), "wagon.png")

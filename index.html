@@ -586,6 +586,7 @@
   var pulses = [];
   var path = [];
   var crown = { x: 0, y: 0 };
+  var city = { x: 0, y: 0 };
   var bober = { x: 0, y: 0, cd: 0, facing: Math.PI, moving: 0, atFlash: 0 };
   var dust = [];
   var coins = [];
@@ -799,8 +800,8 @@
       setBanner("Scoop coins, then Next");
       setHint("Ride to collect wood");
     } else if (royal && royalTold && kingCele > 0) {
-      setBanner("All ballistae ready — the King grows stronger.");
-      setHint("The King grows stronger");
+      setBanner("All ballistae ready — armies fire harder.");
+      setHint("Armies fire harder");
     } else if (phase === "build") {
       setBanner(waveI === 0 ? (L.tip || "Build · then START WAVE") : "Build · then NEXT WAVE");
       setHint("Tap a pad to place / upgrade");
@@ -910,10 +911,11 @@
     path = samplePath();
     var last = path[path.length - 1];
     crown = { x: last.x, y: last.y };
+    city = { x: W * 0.82, y: H * 0.93 };
     if (!bober.x) {
-      bober.x = Math.min(W - 40, last.x + 56 * sc);
-      bober.y = last.y - 12 * sc;
-      bober.facing = Math.PI;
+      bober.x = W * 0.30;
+      bober.y = H * 0.76;
+      bober.facing = 0;
     }
     var plen = pathLen();
     var mag = Math.max(44, 52 * sc);
@@ -976,24 +978,16 @@
     return { x: p.x + Math.cos(ang) * want * side, y: p.y + Math.sin(ang) * want * side };
   }
   function clampKing() {
-    var ox = W * 0.5, oy = H * 0.56, rx = W * 0.46, ry = H * 0.42;
+    var ox = W * 0.5, oy = H * 0.56, rx = W * 0.47, ry = H * 0.43;
     var dx = (bober.x - ox) / rx, dy = (bober.y - oy) / ry;
     var m = dx * dx + dy * dy;
     if (m > 1) {
       var k = 1 / Math.sqrt(m);
-      bober.x = ox + dx * rx * k;
-      bober.y = oy + dy * ry * k;
+      bober.x = ox + dx * rx * k * 0.98;
+      bober.y = oy + dy * ry * k * 0.98;
     }
-    bober.x = Math.max(24, Math.min(W - 24, bober.x));
-    bober.y = Math.max(40, Math.min(H - 18, bober.y));
-    pads.forEach(function (p) {
-      var d = Math.hypot(bober.x - p.x, bober.y - p.y);
-      if (d < 34 * sc && d > 0.1) {
-        var u = 34 * sc / d;
-        bober.x = p.x + (bober.x - p.x) * u;
-        bober.y = p.y + (bober.y - p.y) * u;
-      }
-    });
+    bober.x = Math.max(28, Math.min(W - 28, bober.x));
+    bober.y = Math.max(48, Math.min(H - 22, bober.y));
   }
   function seedScenery() {
     if (scenery.length) return;
@@ -1049,11 +1043,10 @@
     royal = false; royalTold = false;
     kingFlash = 0; kingCele = 0;
     layout();
-    var last = path[path.length - 1];
-    bober.x = Math.min(W - 40, last.x + 56 * sc);
-    bober.y = last.y - 12 * sc;
+    bober.x = W * 0.30;
+    bober.y = H * 0.76;
     bober.cd = 0;
-    bober.facing = Math.PI;
+    bober.facing = 0;
     bober.moving = 0;
     bober.atFlash = 0;
     dust = [];
@@ -1279,7 +1272,8 @@
       if (p.kind !== "bow" || p.locked) continue;
       p.cd -= dt;
       var r = p.rank || 0;
-      var t = nearest(p.x, p.y, BOW.range[r] * sc);
+      var rng = BOW.range[r] * sc * (royal ? 1.22 : 1);
+      var t = nearest(p.x, p.y, rng);
       if (t) {
         var want = Math.atan2(t.y - p.y, t.x - p.x);
         p.aim = turnToward(p.aim || 0, want, 12 * dt);
@@ -1287,8 +1281,8 @@
       if (p.cd <= 0 && t) {
         var ox = p.x + Math.cos(p.aim || 0) * 14 * sc;
         var oy = p.y - 8 * sc + Math.sin(p.aim || 0) * 10 * sc;
-        fireShot(ox, oy, t, BOW.dmg[r], BOW.pierce[r], "tower");
-        p.cd = BOW.rate[r];
+        fireShot(ox, oy, t, BOW.dmg[r] + (royal ? 1 : 0), BOW.pierce[r] + (royal ? 1 : 0), "tower");
+        p.cd = BOW.rate[r] * (royal ? 0.62 : 1);
         beep(820, 0.03, "square", 0.03);
       }
     }
@@ -1429,7 +1423,7 @@
       bober.x += mx * 150 * sc * dt;
       bober.y += my * 150 * sc * dt;
       clampKing();
-      if (tutActive() && tut.step === 0 && Math.hypot(bober.x - kingHome.x, bober.y - kingHome.y) > 36) {
+      if (tutActive() && tut.step === 0 && Math.hypot(bober.x - kingHome.x, bober.y - kingHome.y) > 22) {
         tut.step = 1;
         selected = "bow";
         renderHud();
@@ -1455,8 +1449,8 @@
     if (t && bober.cd <= 0 && Math.abs(angWrap(want - bober.facing)) < 0.55) {
       var fx = bober.x + Math.cos(bober.facing) * 26 * sc;
       var fy = bober.y - 18 * sc + Math.sin(bober.facing) * 10 * sc;
-      fireShot(fx, fy, t, royal ? 2 : 1, 0, "king");
-      bober.cd = 0.26;
+      fireShot(fx, fy, t, royal ? 3 : 1, royal ? 1 : 0, "king");
+      bober.cd = royal ? 0.18 : 0.26;
       bober.atFlash = 0.12;
       beep(640, 0.03, "square", 0.035);
     }
@@ -1479,7 +1473,7 @@
       royal = true;
       royalTold = true;
       kingCele = 2.8;
-      setBanner("All ballistae ready — the King grows stronger.");
+      setBanner("All ballistae ready — armies fire harder.");
       beep(523, 0.12, "square", 0.06);
     }
   }
@@ -1996,18 +1990,16 @@
       }});
     });
     enemies.forEach(function (e) { list.push({ y: e.y, draw: function () { drawMob(e); } }); });
-    list.push({ y: crown.y - 10, draw: function () {
-      ellipseShadow(crown.x, crown.y + 8, 48 * sc, 16 * sc);
+    list.push({ y: city.y - 8, draw: function () {
+      ellipseShadow(city.x, city.y + 6, 40 * sc, 14 * sc);
       if (IM.city) {
-        drawSpriteChunky(IM.city, crown.x, crown.y + 10, 150 * sc, 128 * sc);
+        drawSpriteChunky(IM.city, city.x, city.y + 8, 118 * sc, 100 * sc);
       } else {
-        ctx.fillStyle = "#F4E6C3";
+        ctx.fillStyle = "#E8D4A8";
         ctx.strokeStyle = "#5C3A1A";
         ctx.lineWidth = 3;
-        ctx.fillRect(crown.x - 40 * sc, crown.y - 50 * sc, 80 * sc, 58 * sc);
-        ctx.strokeRect(crown.x - 40 * sc, crown.y - 50 * sc, 80 * sc, 58 * sc);
-        ctx.fillStyle = "#F5C400";
-        ctx.fillRect(crown.x - 8 * sc, crown.y - 70 * sc, 16 * sc, 20 * sc);
+        ctx.fillRect(city.x - 36 * sc, city.y - 44 * sc, 72 * sc, 50 * sc);
+        ctx.strokeRect(city.x - 36 * sc, city.y - 44 * sc, 72 * sc, 50 * sc);
       }
     }});
     dust.forEach(function (du) {
@@ -2145,15 +2137,30 @@
     var r = cv.getBoundingClientRect();
     return { x: (ev.clientX - r.left) * (W / r.width), y: (ev.clientY - r.top) * (H / r.height) };
   }
+  function startStick(pt) {
+    stick.on = true;
+    stick.x = (pt.x - bober.x) / 70;
+    stick.y = (pt.y - bober.y) / 70;
+    var m = Math.hypot(stick.x, stick.y);
+    if (m > 1) { stick.x /= m; stick.y /= m; }
+    if (m < 0.12) { stick.x = 0.35; stick.y = 0; }
+  }
   function onPtr(ev) {
     if (screen !== "play" || paused) return;
     var pt = canvasXY(ev);
+    var nearKing = Math.hypot(pt.x - bober.x, pt.y - bober.y) < 72 * sc;
+    if (tutActive() && tut.step === 0) {
+      startStick(pt);
+      try { cv.setPointerCapture(ev.pointerId); } catch (err) {}
+      return;
+    }
+    if (nearKing && !(tutActive() && tut.step === 1)) {
+      startStick(pt);
+      try { cv.setPointerCapture(ev.pointerId); } catch (err) {}
+      return;
+    }
     if (tapWorld(pt.x, pt.y)) return;
-    stick.on = true;
-    stick.x = (pt.x - bober.x) / 80;
-    stick.y = (pt.y - bober.y) / 80;
-    var m = Math.hypot(stick.x, stick.y);
-    if (m > 1) { stick.x /= m; stick.y /= m; }
+    startStick(pt);
     try { cv.setPointerCapture(ev.pointerId); } catch (err) {}
   }
   function onMove(ev) {
