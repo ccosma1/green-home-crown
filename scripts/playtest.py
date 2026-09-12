@@ -26,6 +26,8 @@ def main() -> None:
     must("min(15" in HTML, "unlock to 15")
     must(HTML.count("{ gap:") >= 80, "longer L1-15 waves")
     must("sepia" not in HTML, "king glow")
+    must("dropCoin" in HTML and "tickCoins" in HTML, "coin pickups")
+    must("Ride over gold coins" in HTML, "coin tip")
     must((ROOT / "assets/sprites/reed.png").is_file(), "reed.png")
     must((ROOT / "assets/sprites/wagon.png").is_file(), "wagon.png")
     print("playtest ok")

@@ -21,7 +21,7 @@ Run `START.bat` or open `index.html`.
 5. Enemies drain Crown HP only at the **pedestal**. Kite them through tower range.
 6. **Royal Guard** once per level: all *placed* towers T3, and either ≥2 towers **or** the only live pad is already T3.
 
-L1 start wood is **12** (one Crossbow). Skip auto-places that one. Levels run long enough to fund Crossbow → Heavy → Ballista on live pads; **Royal Guard** is the T3 payoff.
+L1 start wood is **12** (one Crossbow). Skip auto-places that one. Kills drop **gold coins** on the path — wood only when the King rides close and scoops them. Levels run long enough to fund Crossbow → Heavy → Ballista on live pads; **Royal Guard** is the T3 payoff.
 
 ### Pads live
 
