@@ -32,7 +32,7 @@ def main() -> None:
     must("snapCoinPos" in HTML, "reachable coins")
     must("hopH" in HTML, "bouncy coins")
     must("64 * sc" in HTML, "bigger scoop")
-    must("densify" in HTML, "more NPCs")
+    must("swarmify" in HTML, "more NPCs")
     must("showBuddyTip" in HTML and "TIPS" in HTML, "buddy tips")
     must("IM.city" in HTML, "capital city")
     must("btn-reset" in HTML, "reset on map")
