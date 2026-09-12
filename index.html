@@ -87,15 +87,16 @@
     #app.menu #dock, #app.boot #dock { display: none; }
     .card {
       appearance: none; border: 3px solid #5C3A1A; background: var(--fur);
-      color: var(--cream); border-radius: 14px; padding: 5px 3px 6px;
-      cursor: pointer; min-height: 62px; min-width: 140px; max-width: 200px;
+      color: var(--cream); border-radius: 14px; padding: 8px 14px;
+      cursor: pointer; min-height: 48px; min-width: 168px; max-width: 260px;
       justify-self: center;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+      display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 10px;
       font-weight: 800;
     }
-    .card img { width: 30px; height: 24px; object-fit: contain; pointer-events: none; }
-    .card .name { font-size: 10px; letter-spacing: 0.01em; text-align: center; line-height: 1.1; }
-    .card .cost { font-size: 13px; color: var(--gold); }
+    .card img { width: 36px; height: 32px; object-fit: contain; pointer-events: none; flex: 0 0 auto; }
+    .card .meta { display: flex; flex-direction: column; align-items: flex-start; gap: 0; min-width: 0; }
+    .card .name { font-size: 14px; letter-spacing: 0.01em; text-align: left; line-height: 1.15; white-space: nowrap; }
+    .card .cost { font-size: 15px; color: var(--gold); line-height: 1.15; white-space: nowrap; }
     .card.on { border-color: var(--gold); box-shadow: 0 0 0 2px #F5C40088; background: #a06a34; }
     .card:disabled { opacity: 0.45; }
     .card.flash { animation: shake 0.35s ease; background: #6a2a3a; }
@@ -150,8 +151,10 @@
     }
     .shop-row button:disabled { filter: grayscale(0.4); opacity: 0.7; }
     @media (max-height: 560px) {
-      .card { min-height: 52px; padding: 3px 2px 4px; }
-      .card img { width: 24px; height: 20px; }
+      .card { min-height: 44px; padding: 6px 12px; gap: 8px; }
+      .card img { width: 28px; height: 24px; }
+      .card .name { font-size: 13px; }
+      .card .cost { font-size: 14px; }
       #btn-go { min-height: 42px; font-size: 15px; }
       header { padding: 4px 8px; }
       .icon-btn { width: 32px; height: 32px; }
@@ -262,8 +265,10 @@
     <div id="dock">
       <button class="card" id="card-bow" type="button" data-kind="bow">
         <img src="assets/sprites/bow.png" alt="" />
-        <span class="name" id="bow-name">Crossbow</span>
-        <span class="cost" id="cost-bow">12</span>
+        <span class="meta">
+          <span class="name" id="bow-name">Crossbow</span>
+          <span class="cost" id="cost-bow">50</span>
+        </span>
       </button>
       <div id="dock-hint">Tap a pad · place a Crossbow</div>
       <button id="btn-go" type="button">START WAVE</button>
@@ -912,8 +917,9 @@
       { nx: 0.72, ny: 0.34 },
       { nx: 0.18, ny: 0.46 },
       { nx: 0.28, ny: 0.62 },
-      { nx: 0.82, ny: 0.76 },
-      { nx: 0.50, ny: 0.91 }
+      { nx: 0.72, ny: 0.74 },
+      { nx: 0.66, ny: 0.84 },
+      { nx: 0.70, ny: 0.905 }
     ];
     var ext = [wps[0]].concat(wps).concat([wps[wps.length - 1]]);
     var out = [];
@@ -964,7 +970,9 @@
     path = samplePath();
     var last = path[path.length - 1];
     crown = { x: last.x, y: last.y };
-    city = { x: W * 0.82, y: H * 0.93 };
+    // Sprite is bottom-centered at (city.x, city.y+8), 118x100 sc.
+    // Gate / dirt ramp sits left of center, near the sprite feet.
+    city = { x: last.x + 18 * sc, y: last.y + 8 * sc };
     if (!bober.x) {
       bober.x = W * 0.30;
       bober.y = H * 0.76;
@@ -973,8 +981,8 @@
     var plen = pathLen();
     var mag = Math.max(44, 52 * sc);
     var specs = [
-      { id: "A", t: 0.90, side: 1 },
-      { id: "B", t: 0.82, side: -1 },
+      { id: "A", t: 0.80, side: 1 },
+      { id: "B", t: 0.72, side: -1 },
       { id: "C", t: 0.56, side: 1 },
       { id: "E", t: 0.70, side: -1 },
       { id: "D", t: 0.20, side: -1 }
@@ -986,6 +994,12 @@
     var defs = specs.map(function (s, i) {
       var pos = sideOfPath(plen * s.t, mag * s.side);
       pos = pushOffLane(pos, 42, Math.min(80, BOW.range[0] * sc - 12));
+      var cd = Math.hypot(pos.x - city.x, pos.y - city.y);
+      if (cd < 72 * sc && cd > 1) {
+        pos.x = city.x + (pos.x - city.x) / cd * 72 * sc;
+        pos.y = city.y + (pos.y - city.y) / cd * 72 * sc;
+        pos = pushOffLane(pos, 42, Math.min(80, BOW.range[0] * sc - 12));
+      }
       var locked = i >= liveN || s.id === "D";
       return { id: s.id, slot: "build", x: pos.x, y: pos.y, locked: locked };
     });
@@ -1837,7 +1851,8 @@
       var a = (i / 10) * Math.PI * 2 + 0.2;
       var hx = ox + Math.cos(a) * rx * 0.98, hy = oy + Math.sin(a) * ry * 0.98;
       if (Math.abs(hx - W * 0.5) < 36 * sc && hy < H * 0.28) continue;
-      if (Math.abs(hx - crown.x) < 40 * sc && hy > H * 0.72) continue;
+      if (Math.abs(hx - crown.x) < 56 * sc && hy > H * 0.70) continue;
+      if (Math.hypot(hx - city.x, hy - city.y) < 70 * sc) continue;
       ctx.beginPath();
       ctx.ellipse(hx, hy, 14 * sc, 8 * sc, a, 0, Math.PI * 2);
       ctx.fill();
@@ -2247,7 +2262,7 @@
       }});
     });
     enemies.forEach(function (e) { list.push({ y: e.y, draw: function () { drawMob(e); } }); });
-    list.push({ y: city.y - 8, draw: function () {
+    list.push({ y: crown.y - 10, draw: function () {
       ellipseShadow(city.x, city.y + 6, 40 * sc, 14 * sc);
       if (IM.city) {
         drawSpriteChunky(IM.city, city.x, city.y + 8, 118 * sc, 100 * sc);
