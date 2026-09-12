@@ -20,9 +20,12 @@ Run `START.bat` or open `index.html` in a browser.
 
 1. **FACE THE SUMMER**, then pick a level. L1 is unlocked; beat a level to open the next.
 2. **Build phase** — tap a pad to place **Sling Nest** or **Feast Drum**. **Oak Gate** only goes on the blue **gate pad** at the choke bend. Tap a berry bush once for wood. Tap a building again to upgrade (once).
-3. **START WAVE** — enemies walk the bent meadow road toward the Crown (5 hearts). They stop to melee a live Gate until it breaks. You cannot place during a wave.
-4. Clear every wave to win. Crown HP ≤ 0 → **Retry** (soft save).
-5. **L1** teaches Nest then Gate. **Skip** is always on screen and auto-places a Nest so you cannot softlock.
+3. **START WAVE** — enemies walk the bent meadow road toward the Crown (5 hearts). They stop to melee a live Gate until it breaks.
+4. **L1–2** build only between waves. **L3+** can place on empty pads during waves (Gate still only on blue pads).
+5. Pads ramp 2 → 3 → 4. Locked pads ghost with a lock. Tap → “Opens later.”
+6. Clear every wave to win. Crown HP ≤ 0 → **Retry** (soft save).
+7. **L1** teaches Nest then Gate. **Skip** auto-places a Nest so you cannot softlock.
+8. First **L5** clear plays the chapter film (marriage / family). Tap **Skip**. Splash **Watch story** replays it.
 
 ### Buildings
 
@@ -42,13 +45,13 @@ Run `START.bat` or open `index.html` in a browser.
 
 Wood drops from clears. Tiny costs. No shop maze. No job cards.
 
-L5 clear plays a skippable cartoon picnic-truck cameo.
+First L5 clear plays the chapter film under `assets/film/`.
 
 ## Soft save
 
-Key `green-home-crown-v1`: unlocked level, wood, stars, tutDone, mute.
+Key `green-home-crown-v1`: unlocked level, wood, stars, tutDone, tutMidBuild, filmSeen, mute.
 
-**New game** wipes unlocks, wood, and tutorial. Splash **FACE THE SUMMER** goes straight to the level map — no history slideshow.
+**Wipe run?** lives on Pause (confirm). Splash has one primary: **FACE THE SUMMER**.
 
 ## GitHub Pages
 
@@ -62,8 +65,8 @@ Repo slant: `green-home-crown`
 
 - `index.html` — the game (HTML, CSS, canvas JS)
 - `assets/splash.jpg` — title art
-- `assets/cameo-picnic.jpg` — L5 picnic-truck cameo
-- `assets/sprites/` — keyed buildings, enemies, Bober, Crown
+- `assets/film/` — Act I chapter stills
+- `assets/sprites/` — keyed buildings, enemies, crowned king-on-horse
 - `assets/icons/` — original crown-on-grass mark (summer sky, not night purple)
 - `scripts/make_icon.py` — regenerates the mark
 - `scripts/prep_assets.py` — chroma-key sprites + hub card crop
