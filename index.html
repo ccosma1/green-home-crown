@@ -8,6 +8,7 @@
   <meta name="theme-color" content="#87C6E8" />
   <meta name="description" content="Green Home Crown — fan game by a holder. Summer stays. Hold the town." />
   <title>Green Home Crown · Summer stays</title>
+  <!-- ghc-21b -->
   <link rel="icon" href="assets/icons/green-home-crown.ico" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
@@ -66,6 +67,7 @@
     }
     .icon-btn:active { transform: translateY(1px); filter: brightness(0.85); }
     .icon-btn.on { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+    #btn-mute { width: auto; min-width: 36px; padding: 0 7px; font-size: 11px; }
     #stage {
       flex: 1 1 auto; min-height: 55dvh; min-width: 0; width: 100%;
       position: relative; z-index: 1; background: var(--sky);
@@ -244,7 +246,7 @@
       </div>
       <div class="btns">
         <button class="icon-btn" id="btn-pause" type="button" aria-label="Pause">⏸</button>
-        <button class="icon-btn" id="btn-mute" type="button" aria-label="Mute">🔊</button>
+        <button class="icon-btn" id="btn-mute" type="button" aria-label="Sound">Sound</button>
       </div>
     </header>
     <div id="stage">
@@ -270,13 +272,13 @@
     <div id="also">More games · <a href="https://ccosma1.github.io/green-home-games/">Green Home Games</a></div>
 
     <div id="splash" class="overlay">
-      <img class="hero" src="assets/splash.jpg" alt="" />
+      <img class="hero" src="assets/splash.jpg?v=21b" alt="" />
       <h1>GREEN HOME CROWN</h1>
       <p class="tag">Summer stays.</p>
       <p class="tag">Fan game by a holder.</p>
       <p class="how">Move the King. Hold the Crown. Don’t freeze.</p>
-      <p id="boot-load">Loading…</p>
-      <button class="play" id="btn-face" type="button">FACE THE SUMMER</button>
+      <p id="boot-load"></p>
+      <button class="play" id="btn-face" type="button" onclick="if(window.ghcFace)window.ghcFace();">FACE THE SUMMER</button>
       <button class="play ghost" id="btn-more" type="button">More games · Green Home Games</button>
       <button class="film-link" id="btn-watch" type="button">Victory history</button>
     </div>
@@ -341,6 +343,24 @@
     </div>
   </div>
 
+<script>
+(function () {
+  try {
+    var bootEl = document.getElementById("boot-load");
+    if (bootEl) bootEl.textContent = "";
+  } catch (e) {}
+  window.ghcFace = function () {
+    try {
+      var el = document.getElementById("boot-load");
+      if (el) el.textContent = "";
+      var sp = document.getElementById("splash");
+      var lv = document.getElementById("levels");
+      if (sp) sp.classList.add("hidden");
+      if (lv) lv.classList.remove("hidden");
+    } catch (e2) {}
+  };
+})();
+</script>
 <script>
 (function () {
   "use strict";
@@ -1451,7 +1471,7 @@
         }
         w.list = out;
         var boss = w.list.indexOf("wagon") >= 0 || w.list.indexOf("knight") >= 0 || w.list.indexOf("brute") >= 0;
-        var base = li < 3 ? 0.30 : (li < 5 ? 0.26 : (li < 7 ? 0.20 : (li < 10 ? 0.16 : (li < 15 ? 0.16 : (li < 20 ? 0.14 : (li < 25 ? 0.13 : (li < 32 ? 0.12 : (li < 40 ? 0.11 : (li < 47 ? 0.11 : (li < 55 ? 0.10 : (li < 62 ? 0.10 : (li < 70 ? 0.09 : (li < 77 ? 0.09 : (li < 85 ? 0.08 : (li < 92 ? 0.08 : 0.07))))))))))))))));
+        var base = li < 3 ? 0.30 : (li < 5 ? 0.26 : (li < 7 ? 0.20 : (li < 10 ? 0.16 : (li < 15 ? 0.16 : (li < 20 ? 0.14 : (li < 25 ? 0.13 : (li < 32 ? 0.12 : (li < 40 ? 0.11 : (li < 47 ? 0.11 : (li < 55 ? 0.10 : (li < 62 ? 0.10 : (li < 70 ? 0.09 : (li < 77 ? 0.09 : (li < 85 ? 0.08 : (li < 92 ? 0.08 : 0.07)))))))))))))));
         w.gap = boss ? Math.max(0.28, Math.min(0.42, w.gap)) : base;
       });
     });
@@ -1715,39 +1735,71 @@
       im.src = src;
     });
   }
-  function boot() {
-    var loadEl = document.getElementById("boot-load");
-    muteBtn.textContent = mute ? "🔇" : "🔊";
+  function clearBootLoad() {
+    try {
+      var el = document.getElementById("boot-load");
+      if (el) el.textContent = "";
+    } catch (e) {}
+  }
+  function setMuteLabel() {
+    if (!muteBtn) return;
+    muteBtn.textContent = mute ? "Mute" : "Sound";
+    muteBtn.setAttribute("aria-label", mute ? "Mute" : "Sound");
     muteBtn.classList.toggle("on", mute);
-    app.classList.remove("boot");
-    show("splash");
-    resize();
-    loop(0);
-    var rest = {
-      cameo: "assets/cameo-picnic.jpg",
-      bober: "assets/sprites/bober.png", king: "assets/sprites/king-horse.png",
-      crown: "assets/sprites/crown.png",
-      bow: "assets/sprites/bow.png", ballista: "assets/sprites/ballista.png",
-      rat: "assets/sprites/rat.png", bandit: "assets/sprites/bandit.png",
-      brute: "assets/sprites/brute.png", thief: "assets/sprites/thief.png",
-      goat: "assets/sprites/goat.png", knight: "assets/sprites/knight.png",
-      reed: "assets/sprites/reed.png", wagon: "assets/sprites/wagon.png",
-      city: "assets/sprites/city.png", buddy: "assets/sprites/buddy.png",
-      berry: "assets/sprites/berry.png"
-    };
-    function restDone() {
-      if (loadEl) loadEl.textContent = "";
+  }
+  function faceSummer() {
+    clearBootLoad();
+    try { ensureAudio(); } catch (e) {}
+    try { openMap(); } catch (e2) {
+      try {
+        var sp = document.getElementById("splash");
+        var lv = document.getElementById("levels");
+        if (sp) sp.classList.add("hidden");
+        if (lv) lv.classList.remove("hidden");
+      } catch (e3) {}
     }
-    var to = setTimeout(restDone, 1500);
-    function loadRest() {
-      Promise.all(Object.keys(rest).map(function (k) {
-        return loadImg(rest[k]).then(function (img) { IM[k] = img; });
-      })).then(function () { clearTimeout(to); restDone(); }).catch(restDone);
+  }
+  function boot() {
+    clearBootLoad();
+    try {
+      setMuteLabel();
+      app.classList.remove("boot");
+      show("splash");
+      resize();
+      loop(0);
+      var rest = {
+        cameo: "assets/cameo-picnic.jpg",
+        bober: "assets/sprites/bober.png", king: "assets/sprites/king-horse.png",
+        crown: "assets/sprites/crown.png",
+        bow: "assets/sprites/bow.png", ballista: "assets/sprites/ballista.png",
+        rat: "assets/sprites/rat.png", bandit: "assets/sprites/bandit.png",
+        brute: "assets/sprites/brute.png", thief: "assets/sprites/thief.png",
+        goat: "assets/sprites/goat.png", knight: "assets/sprites/knight.png",
+        reed: "assets/sprites/reed.png", wagon: "assets/sprites/wagon.png",
+        city: "assets/sprites/city.png", buddy: "assets/sprites/buddy.png",
+        berry: "assets/sprites/berry.png"
+      };
+      var to = setTimeout(clearBootLoad, 1500);
+      function loadRest() {
+        var keys = [], k, n, i;
+        for (k in rest) if (Object.prototype.hasOwnProperty.call(rest, k)) keys.push(k);
+        n = keys.length;
+        i = 0;
+        function next() {
+          if (i >= n) { clearTimeout(to); clearBootLoad(); return; }
+          var key = keys[i++];
+          loadImg(rest[key]).then(function (img) { IM[key] = img; next(); }).catch(next);
+        }
+        next();
+      }
+      loadImg("assets/splash.jpg?v=21b").then(function (im) {
+        IM.splash = im;
+        loadRest();
+      }).catch(loadRest);
+    } catch (err) {
+      clearBootLoad();
+      try { app.classList.remove("boot"); show("splash"); } catch (e2) {}
     }
-    loadImg("assets/splash.jpg").then(function (im) {
-      IM.splash = im;
-      loadRest();
-    }).catch(loadRest);
   }
 
   function show(name) {
@@ -3689,10 +3741,7 @@
     if (k === "s" || k === "arrowdown") keys.d = down ? 1 : 0;
   }
 
-  document.getElementById("btn-face").addEventListener("click", function () {
-    ensureAudio();
-    openMap();
-  });
+  window.ghcFace = faceSummer;
   document.getElementById("btn-more").addEventListener("click", function () { location.href = HUB; });
   document.getElementById("btn-watch").addEventListener("click", function () {
     ensureAudio();
@@ -3732,8 +3781,7 @@
   });
   document.getElementById("btn-mute").addEventListener("click", function () {
     mute = !mute; save.mute = mute; persist();
-    muteBtn.textContent = mute ? "🔇" : "🔊";
-    muteBtn.classList.toggle("on", mute);
+    setMuteLabel();
     if (!mute) ensureAudio();
   });
   goBtn.addEventListener("click", function () {
@@ -3767,7 +3815,7 @@
   window.addEventListener("resize", resize);
   window.addEventListener("orientationchange", function () { setTimeout(resize, 80); });
 
-  boot();
+  try { boot(); } catch (e) { clearBootLoad(); }
 })();
 </script>
 </body>
