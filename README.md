@@ -30,6 +30,7 @@ L1 start wood is **12** (one Crossbow). Skip auto-places that one. Kills drop **
 | L1–3 | 1 | Crown approach |
 | L4–6 | 2 | Crown / final bend |
 | L7–15 | 3 | Approach + one mid-bend |
+| L16–20 | 4 | Approach + mid + extra final bend |
 | Far / spawn | locked | “Opens later.” |
 
 Ghost pads say **Opens later**.

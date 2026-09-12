@@ -255,7 +255,7 @@
     <div id="levels" class="overlay hidden">
       <img class="hero" src="assets/splash.jpg" alt="" />
       <h2>Summer Dawn</h2>
-      <p class="tag">Act I–III · L1–15</p>
+      <p class="tag">Act I–IV · L1–20</p>
       <p class="how">Move the King. Crossbows by the Crown.</p>
       <div id="level-grid"></div>
       <button class="play ghost" id="btn-back" type="button">Back</button>
@@ -467,6 +467,52 @@
         { gap: 0.45, list: ["reed", "wagon", "reed"] },
         { gap: 0.34, list: ["goat", "reed", "bandit", "reed"] },
         { gap: 0.42, list: ["reed", "wagon", "goat", "reed"] }
+      ] },
+    { name: "Crown Road", berries: 1, tip: "The road to the crown.",
+      waves: [
+        { gap: 0.34, list: ["reed", "goat", "reed", "bandit"] },
+        { gap: 0.32, list: ["reed", "reed", "goat", "thief"] },
+        { gap: 0.34, list: ["goat", "bandit", "reed", "reed"] },
+        { gap: 0.32, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.48, list: ["knight", "reed", "goat"] },
+        { gap: 0.32, list: ["reed", "goat", "bandit", "reed", "thief"] }
+      ] },
+    { name: "Feast Riot", berries: 1, tip: "The feast turns riot.",
+      waves: [
+        { gap: 0.32, list: ["thief", "reed", "thief", "goat"] },
+        { gap: 0.32, list: ["reed", "bandit", "reed", "thief"] },
+        { gap: 0.34, list: ["goat", "thief", "reed", "bandit"] },
+        { gap: 0.32, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.45, list: ["knight", "thief", "reed"] },
+        { gap: 0.32, list: ["thief", "goat", "reed", "bandit", "reed"] }
+      ] },
+    { name: "Tin Siege", berries: 1, tip: "Tin wagons. Hold fast.",
+      waves: [
+        { gap: 0.34, list: ["goat", "reed", "bandit", "reed"] },
+        { gap: 0.55, list: ["wagon", "reed"] },
+        { gap: 0.32, list: ["reed", "goat", "thief", "reed"] },
+        { gap: 0.5, list: ["wagon", "goat"] },
+        { gap: 0.32, list: ["reed", "bandit", "goat", "reed"] },
+        { gap: 0.42, list: ["wagon", "reed", "knight"] }
+      ] },
+    { name: "Banner Flood", berries: 1, tip: "Banners flood the lane.",
+      waves: [
+        { gap: 0.3, list: ["reed", "reed", "goat", "reed", "thief"] },
+        { gap: 0.3, list: ["reed", "bandit", "reed", "goat", "reed"] },
+        { gap: 0.32, list: ["thief", "goat", "reed", "reed"] },
+        { gap: 0.48, list: ["knight", "reed", "goat"] },
+        { gap: 0.3, list: ["reed", "thief", "reed", "goat", "reed"] },
+        { gap: 0.4, list: ["wagon", "reed", "goat", "reed"] }
+      ] },
+    { name: "Summer Claim", berries: 1, tip: "Claim the summer.",
+      waves: [
+        { gap: 0.34, list: ["reed", "goat", "bandit", "reed"] },
+        { gap: 0.5, list: ["knight", "wagon"] },
+        { gap: 0.32, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.48, list: ["wagon", "knight"] },
+        { gap: 0.32, list: ["reed", "goat", "reed", "bandit"] },
+        { gap: 0.36, list: ["thief", "knight", "reed"] },
+        { gap: 0.42, list: ["wagon", "knight", "goat", "reed"] }
       ] }
   ];
 
@@ -531,7 +577,7 @@
   var filmI = 0, filmT = 0, filmFrom = "splash";
 
   function defaultSave() {
-    return { unlocked: 1, wood: 12, stars: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], tutDone: false, tutMidBuild: false, filmSeen: false, mute: false };
+    return { unlocked: 1, wood: 12, stars: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], tutDone: false, tutMidBuild: false, filmSeen: false, mute: false };
   }
   function loadSave() {
     try {
@@ -539,10 +585,10 @@
       if (!raw) return defaultSave();
       var s = JSON.parse(raw);
       var d = defaultSave();
-      d.unlocked = Math.max(1, Math.min(15, s.unlocked | 0));
+      d.unlocked = Math.max(1, Math.min(20, s.unlocked | 0));
       d.wood = Math.max(0, s.wood | 0);
-      d.stars = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-      if (s.stars) for (var i = 0; i < 15; i++) d.stars[i] = Math.max(0, Math.min(3, s.stars[i] | 0));
+      d.stars = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      if (s.stars) for (var i = 0; i < 20; i++) d.stars[i] = Math.max(0, Math.min(3, s.stars[i] | 0));
       d.tutDone = !!s.tutDone;
       d.tutMidBuild = !!s.tutMidBuild;
       d.filmSeen = !!s.filmSeen;
@@ -798,11 +844,13 @@
       { id: "A", t: 0.90, side: 1 },
       { id: "B", t: 0.82, side: -1 },
       { id: "C", t: 0.56, side: 1 },
+      { id: "E", t: 0.70, side: -1 },
       { id: "D", t: 0.20, side: -1 }
     ];
     var liveN = 1;
     if (level >= 3) liveN = 2;
     if (level >= 6) liveN = 3;
+    if (level >= 15) liveN = 4;
     var defs = specs.map(function (s, i) {
       var pos = sideOfPath(plen * s.t, mag * s.side);
       pos = pushOffLane(pos, 42, Math.min(80, BOW.range[0] * sc - 12));
@@ -995,8 +1043,15 @@
     var m = MOBS[kind];
     if (!m) return;
     var p0 = path[0];
+    var hp = m.hp;
+    if (level >= 15) {
+      if (kind === "goat") hp += 2;
+      if (kind === "knight") hp += 4;
+      if (kind === "wagon") hp += 6;
+      if (kind === "bandit") hp += 1;
+    }
     enemies.push({
-      id: eid++, kind: kind, hp: m.hp, max: m.hp, spd: m.spd * sc, d: 0,
+      id: eid++, kind: kind, hp: hp, max: hp, spd: m.spd * sc, d: 0,
       x: p0.x, y: p0.y, tele: 0, teleOn: false, slamCd: 0.8, hit: 0,
       charging: false, chargeCd: 1.2, chargeT: null, facing: Math.PI / 2, lx: p0.x, ly: p0.y
     });
@@ -1370,7 +1425,7 @@
   function finishWin() {
     var stars = starCount();
     if (stars > save.stars[level]) save.stars[level] = stars;
-    if (save.unlocked < level + 2) save.unlocked = Math.min(15, level + 2);
+    if (save.unlocked < level + 2) save.unlocked = Math.min(20, level + 2);
     save.wood = wood;
     persist();
     if (level === 0) {

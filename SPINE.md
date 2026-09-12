@@ -7,12 +7,12 @@ You ARE the summer king. Crossbows sit on the crown line. Upgrades feed HIS powe
 | I | 1–5 | Summer Dawn | Playable. 1–2 crown pads. |
 | II | 6–10 | Feast Draws Flies | Playable. 2–3 pads. Thief, Goat, Fair Knight. |
 | III | 11–15 | False Crowns / River Feast | Playable. Reed Runner, Siege Wagon. |
-| IV | 16–20 | Usurper Banner | Later (SPINE only). |
+| IV | 16–20 | Usurper Banner | Playable. Crown Road → Summer Claim. |
 | V | 21–25 | Crown Trial | True end. **The False Summer** / Pretender — not the Frost King. |
 
 Mid-act **CONTINUE**. Act V is the true ending.
 
-## Implemented enemies (L1–15)
+## Implemented enemies (L1–20)
 
 | Unit | Debut | Role |
 |---|---|---|
@@ -27,11 +27,11 @@ Mid-act **CONTINUE**. Act V is the true ending.
 
 **Royal Guard:** all *placed* towers T3, and either ≥2 towers **or** the only live pad is 1×T3.
 
-## Names for later (L16–25, not in this slice)
+## Names for later (L21–25, not in this slice)
 
 **Bosses:** Pretender / The False Summer.
 
-**Pads:** L1–3 one crown pad; L4–6 two approach pads; L7–15 three (approach + one mid). Spawn-mouth pads stay locked.
+**Pads:** L1–3 one crown pad; L4–6 two; L7–15 three (approach + mid); L16–20 four (extra final-approach pad). Spawn-mouth pads stay locked.
 
 **Trash:** Pie Snatchers, Toll Hogs, Fork Bandits.
 
