@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static checks plus a 1D fair-player leak sim for L1-25."""
+"""Static checks plus a 1D fair-player leak sim for L1-40."""
 
 from __future__ import annotations
 
@@ -64,8 +64,12 @@ def swarmify(levels: list[tuple[str, list[tuple[float, list[str]]]]]) -> list:
                 target = 24 + (li - 10) * 3
             elif li < 20:
                 target = 36 + (li - 15) * 4
-            else:
+            elif li < 25:
                 target = 50 + (li - 20) * 2
+            elif li < 32:
+                target = 60 + (li - 25) * 2
+            else:
+                target = 74 + (li - 32) * 2
             lst = list(kinds)
             j = 0
             while len(lst) < target:
@@ -78,7 +82,9 @@ def swarmify(levels: list[tuple[str, list[tuple[float, list[str]]]]]) -> list:
                  (0.20 if li < 7 else
                   (0.16 if li < 10 else
                    (0.16 if li < 15 else
-                    (0.14 if li < 20 else 0.13)))))
+                    (0.14 if li < 20 else
+                     (0.13 if li < 25 else
+                      (0.12 if li < 32 else 0.11)))))))
             )
             g = max(0.28, min(0.42, gap)) if boss else base
             nw.append((g, lst))
@@ -163,6 +169,32 @@ def mob_hp(kind: str, li: int) -> int:
             hp += 10
         if kind == "reed":
             hp += 1
+    if li >= 25:
+        if kind == "reed":
+            hp += 1
+        if kind == "wagon":
+            hp += 8
+        if kind == "knight":
+            hp += 6
+        if kind == "goat":
+            hp += 3
+        if kind == "brute":
+            hp += 8
+        if kind == "bandit":
+            hp += 2
+        if kind == "thief":
+            hp += 1
+    if li >= 32:
+        if kind == "reed":
+            hp += 1
+        if kind == "wagon":
+            hp += 8
+        if kind == "knight":
+            hp += 6
+        if kind == "goat":
+            hp += 3
+        if kind == "brute":
+            hp += 8
     return hp
 
 
@@ -224,14 +256,17 @@ def main() -> None:
     must("reed" in HTML and "wagon" in HTML, "Act III enemies")
     must("live === 1" in HTML or "livePadCount" in HTML, "1-pad Royal Guard")
     must("wood: 50" in HTML, "L1 one T1 wood")
-    must("leather" in HTML and "Royal plate" in HTML, "king gear")
     must("cost: [50, 90, 160]" in HTML, "tower prices")
-    must("Math.min(LEVELS.length" in HTML, "unlock to 25")
+    must("Math.min(LEVELS.length" in HTML, "unlock to campaign length")
     must("Crown Road" in HTML and "Summer Claim" in HTML, "L16-20")
     must("Crown March" in HTML and "Feast Storm" in HTML, "L21-22")
     must("Tin Claim" in HTML and "Banner War" in HTML, "L23-24")
-    must("Summer Crown" in HTML, "L25 finale")
-    must(HTML.count("{ gap:") >= 140, "L1-25 waves")
+    must("Summer Crown" in HTML, "L25")
+    must("Gate Dust" in HTML and "Capital Stand" in HTML, "L26 and L40")
+    must("STAR_CAP" in HTML and "STAR_CAP = 100" in HTML, "stars toward 100")
+    must("Feast shop" not in HTML and "btn-shop" not in HTML, "shop UI gone")
+    must("COSMETICS" not in HTML and "scarePlace" not in HTML, "shop data gone")
+    must(HTML.count("{ gap:") >= 220, "L1-40 waves")
     must("sepia" not in HTML, "king glow")
     must("dropCoin" in HTML and "tickCoins" in HTML, "coin pickups")
     must("snapCoinPos" in HTML, "reachable coins")
@@ -249,36 +284,25 @@ def main() -> None:
     must("LIVE_CAP" in HTML and "swarmify" in HTML, "hundreds swarm")
     must("startStick" in HTML, "king drag")
     must("armies fire harder" in HTML, "Royal Guard army buff")
-    must("COSMETICS" in HTML and "Feast shop" in HTML, "story cosmetics")
     must("stride" in HTML, "walk cycle")
     must("var rim" not in HTML, "color rims still present")
     must("drawMobFallback" in HTML, "creature fallbacks")
     must("Ride over gold coins" in HTML, "coin tip")
     must((ROOT / "assets/sprites/reed.png").is_file(), "reed.png")
     must((ROOT / "assets/sprites/wagon.png").is_file(), "wagon.png")
-    must("Need Leather first" in HTML and "Need Mail barding" in HTML, "gear lock labels")
-    must('"Need " + item.req' not in HTML, "cryptic Need mail")
-    must("overflow-y: auto" in HTML and "shop-panel" in HTML, "shop list scrolls")
     must("spd: 80" in HTML, "thieves slowed")
     must("level >= 5) liveN = 3" in HTML, "L6 third pad")
     must("bober.cd = royal ? 0.48 : 0.62" in HTML, "king still slow")
-    must("cost: 120" in HTML and "cost: 250" in HTML and "cost: 480" in HTML, "cheaper gear")
-    must("cost: 40" in HTML and "cost: 490" in HTML, "cheaper cosmetics")
-    must("cost: 980" not in HTML, "old feast prices gone")
-    must("shop-ico" in HTML and "shopIconUrl" in HTML and "drawItemGlyph" in HTML, "shop icons")
-    must("miceTrap" in HTML and "scarecrow" in HTML and "boneTotem" in HTML, "road scares")
-    must("scarePlace" in HTML and "tryPlaceScare" in HTML, "scare save + place")
-    must("Looks only" in HTML and "no damage" in HTML, "scares visual only")
     must("function mobHp" in HTML, "scaled mob HP")
     must("target = 26 + li" in HTML, "mid-act denser swarm")
     must("li < 7 ? 0.20" in HTML, "L8 gap tighten")
+    must("lv >= 25" in HTML, "L26+ HP scale")
     must("startMagnet" in HTML and "tickMagnet" in HTML and "batchCoins" in HTML, "Next coin magnet")
     must('phase === "magnet"' in HTML, "magnet phase")
     must("c.fly" in HTML and "Gold flies to the King" in HTML, "coins arc to king")
-    must("drawWorldProp" in HTML and "pushGroundDress" in HTML, "in-world feast props")
     must("startMagnet" in HTML and "coins = []" not in HTML[HTML.find("function beginClear"):HTML.find("function finishWin")], "Next does not dump coins")
     levels = parse_levels()
-    must(len(levels) == 25, "25 levels")
+    must(len(levels) == 40, "40 levels")
     packed = swarmify(levels)
     for li, (name, waves) in enumerate(packed):
         n = live_n(li)
@@ -294,8 +318,11 @@ def main() -> None:
             t1 = simulate(waves, [0] * n, li)
             must(t1 >= hearts, "L%s T1-only still too easy: leaks %s" % (li + 1, t1))
         if li == 24:
-            must(leaks <= 1, "L25 finale too leaky: %s" % leaks)
+            must(leaks <= 1, "L25 too leaky: %s" % leaks)
             must(any("brute" in lst or "wagon" in lst for _g, lst in waves), "L25 siege")
+        if li == 39:
+            must(leaks <= 1, "L40 finale too leaky: %s" % leaks)
+            must(any("brute" in lst or "wagon" in lst for _g, lst in waves), "L40 siege")
     print("playtest ok")
 
 

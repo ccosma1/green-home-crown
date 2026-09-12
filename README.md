@@ -22,7 +22,7 @@ Run `START.bat` or open `index.html`.
 6. **Royal Guard** once per level: all *placed* towers T3, and either ≥2 towers **or** the only live pad is already T3.
 7. After the last wave, **scoop** leftover coins. **Next** flies remaining gold to the King, then the clear.
 
-L1 start wood is **50** (one Crossbow). Kills drop **1–12** coins; income tapers after 280 dropped so the bank does not explode. Extra coins buy **Feast shop** cosmetics (40–490, visual), **road scares** (looks only, path-side), or **king barding** (leather 120 / mail 250 / royal plate 480 — modest hearts and damage reduction only). Mid/late waves need Heavy Crossbow / Ballista — T1-only will leak.
+L1 start wood is **50** (one Crossbow). Kills drop **1–12** coins; income tapers after 280 dropped so the bank does not explode. Wood is for **place/upgrade crossbows only**. Mid/late waves need Heavy Crossbow / Ballista — T1-only will leak.
 
 ### Pads live
 
@@ -31,7 +31,7 @@ L1 start wood is **50** (one Crossbow). Kills drop **1–12** coins; income tape
 | L1–3 | 1 | Crown approach |
 | L4–6 | 2 | Crown / final bend |
 | L7–15 | 3 | Approach + one mid-bend |
-| L16–20 | 4 | Approach + mid + extra final bend |
+| L16–40 | 4 | Approach + mid + extra final bend |
 | Far / spawn | locked | “Opens later.” |
 
 Ghost pads say **Opens later**.
@@ -52,9 +52,9 @@ First L5 clear plays the chapter film. Splash **Watch story** replays it.
 
 ## Soft save
 
-Key `green-home-crown-v1`: unlocked, wood, stars, tutDone, tutMidBuild, filmSeen, mute, shopTip, cosmetics, scarePlace.
+Key `green-home-crown-v1`: unlocked, wood, stars (capped to 100 slots), tutDone, tutMidBuild, filmSeen, mute.
 
-**Reset** on the Map (confirm). Mute stays. Extra coins buy **Feast shop** cosmetics (banners, flowers, fountain, lanterns, horse blanket, bunting, flag, hearth, statue) and **road scares** (mice traps, scarecrow, snare, pelts, lane warning, bone totem) — visual only, saved with the feast. Armor is the only fight help.
+**Reset** on the Map (confirm). Mute stays. Campaign is L1–40 now (stars array ready toward 100).
 
 ## GitHub Pages
 
