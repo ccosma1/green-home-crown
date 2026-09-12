@@ -31,7 +31,7 @@ L1 start wood is **50** (one Crossbow). Kills drop **1–12** coins; income tape
 | L1–3 | 1 | Crown approach |
 | L4–6 | 2 | Crown / final bend |
 | L7–15 | 3 | Approach + one mid-bend |
-| L16–85 | 4 | Approach + mid + extra final bend |
+| L16–100 | 4 | Approach + mid + extra final bend |
 | Far / spawn | locked | “Opens later.” |
 
 Ghost pads say **Opens later**.
@@ -54,7 +54,7 @@ First L5 clear plays the chapter film. Splash **Watch story** replays it.
 
 Key `green-home-crown-v1`: unlocked, wood, stars (capped to 100 slots), tutDone, tutMidBuild, filmSeen, mute.
 
-**Reset** on the Map (confirm). Mute stays. Campaign is L1–85 now (stars array ready toward 100). Clearing L15 / 30 / 45 / 60 / 75 / 90 unlocks a victory reel; L100 has the Assemble finale hooked. Replay from Map → History.
+**Reset** on the Map (confirm). Mute stays. Campaign is **L1–100**. Clearing L15 / 30 / 45 / 60 / 75 / 90 unlocks a victory reel; L100 plays the Assemble finale. Replay from Map → History.
 
 ## GitHub Pages
 

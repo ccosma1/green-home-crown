@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static checks plus a 1D fair-player leak sim for L1-85."""
+"""Static checks plus a 1D fair-player leak sim for L1-100."""
 
 from __future__ import annotations
 
@@ -80,8 +80,12 @@ def swarmify(levels: list[tuple[str, list[tuple[float, list[str]]]]]) -> list:
                 target = 134 + (li - 62) * 2
             elif li < 77:
                 target = 150 + (li - 70) * 2
-            else:
+            elif li < 85:
                 target = 164 + (li - 77) * 2
+            elif li < 92:
+                target = 180 + (li - 85) * 2
+            else:
+                target = 194 + (li - 92) * 2
             lst = list(kinds)
             j = 0
             while len(lst) < target:
@@ -99,7 +103,8 @@ def swarmify(levels: list[tuple[str, list[tuple[float, list[str]]]]]) -> list:
                       (0.12 if li < 32 else
                        (0.11 if li < 47 else
                         (0.10 if li < 62 else
-                         (0.09 if li < 77 else 0.08))))))))))
+                         (0.09 if li < 77 else
+                          (0.08 if li < 92 else 0.07)))))))))))
             )
             g = max(0.28, min(0.42, gap)) if boss else base
             nw.append((g, lst))
@@ -282,6 +287,30 @@ def mob_hp(kind: str, li: int) -> int:
             hp += 2
         if kind == "brute":
             hp += 6
+    if li >= 85:
+        if kind == "reed":
+            hp += 1
+        if kind == "wagon":
+            hp += 6
+        if kind == "knight":
+            hp += 4
+        if kind == "goat":
+            hp += 2
+        if kind == "brute":
+            hp += 6
+        if kind == "thief":
+            hp += 1
+    if li >= 92:
+        if kind == "reed":
+            hp += 1
+        if kind == "wagon":
+            hp += 6
+        if kind == "knight":
+            hp += 4
+        if kind == "goat":
+            hp += 2
+        if kind == "brute":
+            hp += 6
     return hp
 
 
@@ -354,6 +383,8 @@ def main() -> None:
     must("Sun Gate" in HTML and "Keep Road" in HTML, "L56 and L70")
     must("Heat Gate" in HTML and "Keep March" in HTML, "L71 and L85")
     must("Gold Banner" in HTML, "L75 milestone")
+    must("Gate Storm" in HTML and "Summer Stays" in HTML, "L86 and L100")
+    must("Sun Claim" in HTML, "L90 milestone")
     must("STAR_CAP" in HTML and "STAR_CAP = 100" in HTML, "stars toward 100")
     must("Feast shop" not in HTML and "btn-shop" not in HTML, "shop UI gone")
     must("COSMETICS" not in HTML and "scarePlace" not in HTML, "shop data gone")
@@ -362,9 +393,10 @@ def main() -> None:
     must("reelIdForClear" in HTML, "milestone reel unlock")
     must((ROOT / "assets/film/reels/r15-1.jpg").is_file(), "r15 art")
     must((ROOT / "assets/film/reels/r75-1.jpg").is_file(), "r75 art")
+    must((ROOT / "assets/film/reels/r90-1.jpg").is_file(), "r90 art")
     must((ROOT / "assets/film/reels/r100-4.jpg").is_file(), "r100 finale art")
-    must('n === 75' in HTML, "L75 reel id")
-    must(HTML.count("{ gap:") >= 520, "L1-85 waves")
+    must('n === 75' in HTML and "n === 90" in HTML and "n === 100" in HTML, "L75/90/100 reel ids")
+    must(HTML.count("{ gap:") >= 640, "L1-100 waves")
     must("sepia" not in HTML, "king glow")
     must("dropCoin" in HTML and "tickCoins" in HTML, "coin pickups")
     must("snapCoinPos" in HTML, "reachable coins")
@@ -398,12 +430,13 @@ def main() -> None:
     must("lv >= 40" in HTML and "lv >= 47" in HTML, "L41+ HP scale")
     must("lv >= 55" in HTML and "lv >= 62" in HTML, "L56+ HP scale")
     must("lv >= 70" in HTML and "lv >= 77" in HTML, "L71+ HP scale")
+    must("lv >= 85" in HTML and "lv >= 92" in HTML, "L86+ HP scale")
     must("startMagnet" in HTML and "tickMagnet" in HTML and "batchCoins" in HTML, "Next coin magnet")
     must('phase === "magnet"' in HTML, "magnet phase")
     must("c.fly" in HTML and "Gold flies to the King" in HTML, "coins arc to king")
     must("startMagnet" in HTML and "coins = []" not in HTML[HTML.find("function beginClear"):HTML.find("function finishWin")], "Next does not dump coins")
     levels = parse_levels()
-    must(len(levels) == 85, "85 levels")
+    must(len(levels) == 100, "100 levels")
     packed = swarmify(levels)
     for li, (name, waves) in enumerate(packed):
         n = live_n(li)
@@ -433,8 +466,14 @@ def main() -> None:
         if li == 74:
             must(any("knight" in lst or "wagon" in lst for _g, lst in waves), "L75 siege")
         if li == 84:
-            must(leaks <= 1, "L85 finale too leaky: %s" % leaks)
+            must(leaks <= 1, "L85 too leaky: %s" % leaks)
             must(any("brute" in lst or "wagon" in lst for _g, lst in waves), "L85 siege")
+        if li == 89:
+            must(any("knight" in lst or "wagon" in lst for _g, lst in waves), "L90 siege")
+        if li == 99:
+            must(leaks <= 1, "L100 finale too leaky: %s" % leaks)
+            must(any("brute" in lst or "wagon" in lst for _g, lst in waves), "L100 siege")
+            must(len(waves) >= 8, "L100 enough waves")
     print("playtest ok")
 
 
