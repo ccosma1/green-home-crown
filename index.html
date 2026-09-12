@@ -515,6 +515,22 @@
         { gap: 0.42, list: ["wagon", "knight", "goat", "reed"] }
       ] }
   ];
+  (function densify() {
+    var fodder = { rat: 1, reed: 1, thief: 1 };
+    LEVELS.forEach(function (L, li) {
+      L.waves.forEach(function (w, wi) {
+        if (li === 0 && wi === 0) return;
+        var extra = [];
+        var j;
+        for (j = 0; j < w.list.length; j++) {
+          if (fodder[w.list[j]] && extra.length < 2) extra.push(w.list[j]);
+        }
+        if (extra.length && w.list.length < 7) w.list = w.list.concat(extra);
+        var boss = w.list.indexOf("wagon") >= 0 || w.list.indexOf("knight") >= 0 || w.list.indexOf("brute") >= 0;
+        if (!boss && w.gap > 0.32) w.gap = Math.max(0.3, w.gap - 0.02);
+      });
+    });
+  })();
 
   var app = document.getElementById("app");
   var cv = document.getElementById("cv");
@@ -945,12 +961,16 @@
   }
 
   function berrySpots(n) {
-    var spots = [
-      { nx: 0.12, ny: 0.18 }, { nx: 0.88, ny: 0.18 }, { nx: 0.12, ny: 0.80 }
+    var plen = pathLen();
+    var specs = [
+      { t: 0.76, side: 1 },
+      { t: 0.86, side: -1 }
     ];
     var out = [];
-    for (var i = 0; i < n; i++) {
-      out.push({ nx: spots[i].nx, ny: spots[i].ny, x: W * spots[i].nx, y: H * spots[i].ny, used: false });
+    for (var i = 0; i < n && i < specs.length; i++) {
+      var pos = sideOfPath(plen * specs[i].t, 34 * sc * specs[i].side);
+      pos = pushOffLane(pos, 28, 48);
+      out.push({ nx: pos.x / W, ny: pos.y / H, x: pos.x, y: pos.y, used: false });
     }
     return out;
   }
@@ -1081,6 +1101,17 @@
     fx.push({ x: x, y: y, text: text, col: col || "#F5C400", t: 0.7 });
   }
 
+  function snapCoinPos(x, y) {
+    var along = nearestPathDist(x, y);
+    var p = posOnPath(along);
+    var d = distToPath(x, y);
+    var maxOff = 56 * sc;
+    if (d > maxOff && d > 1) {
+      var t = maxOff / d;
+      return { x: p.x + (x - p.x) * t, y: p.y + (y - p.y) * t };
+    }
+    return { x: x, y: y };
+  }
   function dropCoin(x, y, val) {
     if (val <= 0) return;
     if (coins.length >= 90) {
@@ -1088,11 +1119,12 @@
       if (coins.length) coins[0].val += old.val;
       else coins.push(old);
     }
+    var pos = snapCoinPos(x + (Math.random() - 0.5) * 14 * sc, y + (Math.random() - 0.5) * 10 * sc);
     coins.push({
-      x: x + (Math.random() - 0.5) * 18 * sc,
-      y: y + (Math.random() - 0.5) * 12 * sc,
-      val: val,
-      ph: Math.random() * 6.28
+      x: pos.x, y: pos.y, val: val,
+      ph: Math.random() * 6.28,
+      hop: 0.34,
+      hopH: 16 + Math.random() * 10
     });
     if (!coinTip) {
       coinTip = true;
@@ -1106,11 +1138,12 @@
     beep(1040, 0.05, "sine", 0.045);
     renderHud();
   }
-  function tickCoins() {
-    var r = 36 * sc;
+  function tickCoins(dt) {
+    var r = Math.max(52, 64 * sc);
     var i, c, b;
     for (i = coins.length - 1; i >= 0; i--) {
       c = coins[i];
+      if (c.hop > 0) c.hop = Math.max(0, c.hop - dt);
       if (Math.hypot(c.x - bober.x, c.y - bober.y) < r) {
         collectCoin(c);
         coins.splice(i, 1);
@@ -1826,19 +1859,37 @@
     var list = [];
     coins.forEach(function (c) {
       list.push({ y: c.y, draw: function () {
-        var bob = Math.sin(tGame * 5 + c.ph) * 2;
+        var hopT = c.hop > 0 ? c.hop / 0.34 : 0;
+        var hopY = hopT > 0 ? Math.sin((1 - hopT) * Math.PI) * (c.hopH || 18) : Math.sin(tGame * 4.2 + c.ph) * 1.8;
+        var squash = hopT > 0.85 ? 0.82 : 1;
         ctx.save();
-        ctx.translate(c.x, c.y + bob);
-        ellipseShadow(0, 4, 8 * sc, 4 * sc);
+        ctx.translate(c.x, c.y + hopY);
+        ellipseShadow(0, 5, 9 * sc, 3.5 * sc);
+        ctx.scale(1, 0.72 * squash);
+        ctx.fillStyle = "#C9A227";
+        ctx.beginPath();
+        ctx.ellipse(0, 1.5 * sc, 9.5 * sc, 9.5 * sc, 0, 0, Math.PI * 2);
+        ctx.fill();
         ctx.fillStyle = "#F5C400";
-        ctx.strokeStyle = "#8a6a00";
-        ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.ellipse(0, 0, 8 * sc, 8 * sc, 0, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = "#FFF4B0";
+        ctx.ellipse(0, 0, 8.5 * sc, 8.5 * sc, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#8B5A2B";
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+        ctx.strokeStyle = "rgba(139,90,43,0.35)";
+        ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.ellipse(-2 * sc, -2 * sc, 2.4 * sc, 2 * sc, 0, 0, Math.PI * 2);
+        ctx.moveTo(-4 * sc, -1 * sc);
+        ctx.quadraticCurveTo(0, 2 * sc, 4 * sc, -1 * sc);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(-3 * sc, 2 * sc);
+        ctx.quadraticCurveTo(1 * sc, 4 * sc, 3.5 * sc, 1.5 * sc);
+        ctx.stroke();
+        ctx.fillStyle = "rgba(255,248,200,0.7)";
+        ctx.beginPath();
+        ctx.ellipse(-2.2 * sc, -2.4 * sc, 2.2 * sc, 1.6 * sc, -0.4, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       }});
@@ -1967,7 +2018,7 @@
     }
     if (screen === "play" && !paused) {
       tickKing(dt);
-      tickCoins();
+      tickCoins(dt);
       if (phase === "wave") tickWave(dt);
       if (phase === "clear") {
         winHold -= dt;
