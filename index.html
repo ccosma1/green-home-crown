@@ -251,11 +251,11 @@
     }
     .lvl {
       appearance: none; border: 3px solid var(--gold); background: var(--fur); color: var(--cream);
-      border-radius: 14px; min-height: 62px; padding: 5px 2px; font-weight: 800; cursor: pointer;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+      border-radius: 14px; min-height: 54px; padding: 4px 2px; font-weight: 800; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
     }
-    .lvl .num { font-size: 18px; color: var(--gold); line-height: 1; }
-    .lvl .lbl { font-size: 10px; letter-spacing: 0.02em; }
+    .lvl .num { font-size: 16px; color: var(--gold); line-height: 1; }
+    .lvl .lbl { font-size: 9px; letter-spacing: 0.01em; line-height: 1.1; }
     .lvl .stars { font-size: 12px; color: var(--gold); letter-spacing: 0.12em; }
     .lvl.locked { opacity: 0.5; border-color: #5C3A1A; cursor: default; }
     .lvl.locked .num { color: var(--cream); }
@@ -319,7 +319,7 @@
     <div id="levels" class="overlay hidden">
       <img class="hero" src="assets/splash.jpg" alt="" />
       <h2>Summer Dawn</h2>
-      <p class="tag">Act I–IV · L1–20</p>
+      <p class="tag">Act I–V · L1–25</p>
       <p class="how">Move the King. Crossbows by the Crown.</p>
       <div id="level-grid"></div>
       <button class="play ghost" id="btn-back" type="button">Back</button>
@@ -589,6 +589,58 @@
         { gap: 0.32, list: ["reed", "goat", "reed", "bandit"] },
         { gap: 0.36, list: ["thief", "knight", "reed"] },
         { gap: 0.42, list: ["wagon", "knight", "goat", "reed"] }
+      ] },
+    { name: "Crown March", berries: 1, tip: "March on the capital.",
+      waves: [
+        { gap: 0.32, list: ["reed", "goat", "reed", "thief"] },
+        { gap: 0.32, list: ["reed", "bandit", "reed", "goat"] },
+        { gap: 0.48, list: ["knight", "reed", "reed"] },
+        { gap: 0.3, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.3, list: ["goat", "reed", "bandit", "reed"] },
+        { gap: 0.42, list: ["wagon", "reed", "goat"] },
+        { gap: 0.3, list: ["reed", "thief", "goat", "reed", "bandit"] }
+      ] },
+    { name: "Feast Storm", berries: 1, tip: "The feast becomes a storm.",
+      waves: [
+        { gap: 0.3, list: ["thief", "reed", "thief", "goat"] },
+        { gap: 0.3, list: ["reed", "thief", "reed", "thief"] },
+        { gap: 0.32, list: ["goat", "thief", "reed", "bandit"] },
+        { gap: 0.45, list: ["knight", "thief", "reed"] },
+        { gap: 0.3, list: ["thief", "reed", "goat", "reed"] },
+        { gap: 0.3, list: ["reed", "thief", "bandit", "thief"] },
+        { gap: 0.4, list: ["wagon", "thief", "reed"] }
+      ] },
+    { name: "Tin Claim", berries: 1, tip: "Tin wagons claim the lane.",
+      waves: [
+        { gap: 0.32, list: ["reed", "goat", "reed", "bandit"] },
+        { gap: 0.5, list: ["wagon", "reed"] },
+        { gap: 0.3, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.48, list: ["wagon", "goat"] },
+        { gap: 0.3, list: ["reed", "bandit", "reed", "goat"] },
+        { gap: 0.46, list: ["wagon", "knight"] },
+        { gap: 0.32, list: ["reed", "wagon", "goat", "reed"] }
+      ] },
+    { name: "Banner War", berries: 1, tip: "Banners on every bend.",
+      waves: [
+        { gap: 0.3, list: ["reed", "thief", "reed", "goat"] },
+        { gap: 0.3, list: ["thief", "reed", "bandit", "reed"] },
+        { gap: 0.46, list: ["knight", "reed", "goat"] },
+        { gap: 0.3, list: ["reed", "goat", "thief", "reed"] },
+        { gap: 0.44, list: ["wagon", "reed", "thief"] },
+        { gap: 0.3, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.42, list: ["knight", "wagon", "reed"] },
+        { gap: 0.3, list: ["thief", "reed", "goat", "bandit", "reed"] }
+      ] },
+    { name: "Summer Crown", berries: 1, tip: "Hold the summer. Last stand.",
+      waves: [
+        { gap: 0.3, list: ["reed", "goat", "thief", "reed"] },
+        { gap: 0.48, list: ["knight", "reed"] },
+        { gap: 0.3, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.5, list: ["wagon", "brute"] },
+        { gap: 0.3, list: ["thief", "reed", "goat", "reed"] },
+        { gap: 0.46, list: ["knight", "wagon"] },
+        { gap: 0.28, list: ["reed", "thief", "reed", "goat", "reed"] },
+        { gap: 0.42, list: ["wagon", "knight", "brute", "wagon"] }
       ] }
   ];
   (function swarmify() {
@@ -608,7 +660,8 @@
         else if (li < 5) target = 12 + li;
         else if (li < 10) target = 16 + li;
         else if (li < 15) target = 24 + (li - 10) * 3;
-        else target = 36 + (li - 15) * 4;
+        else if (li < 20) target = 36 + (li - 15) * 4;
+        else target = 50 + (li - 20) * 2;
         var out = w.list.slice();
         j = 0;
         while (out.length < target) {
@@ -617,7 +670,7 @@
         }
         w.list = out;
         var boss = w.list.indexOf("wagon") >= 0 || w.list.indexOf("knight") >= 0 || w.list.indexOf("brute") >= 0;
-        var base = li < 3 ? 0.30 : (li < 5 ? 0.26 : (li < 10 ? 0.20 : (li < 15 ? 0.16 : 0.14)));
+        var base = li < 3 ? 0.30 : (li < 5 ? 0.26 : (li < 10 ? 0.20 : (li < 15 ? 0.16 : (li < 20 ? 0.14 : 0.13))));
         w.gap = boss ? Math.max(0.28, Math.min(0.42, w.gap)) : base;
       });
     });
@@ -705,7 +758,12 @@
     "Feast riot, round two. Don’t freeze.",
     "Tin siege. Wagons plus the swarm.",
     "Banner flood. Wow that’s a lot to kill.",
-    "Claim summer. Scoop, then tap Next."
+    "Claim summer. Scoop, then tap Next.",
+    "Crown march. Ballistae on the last bend.",
+    "Feast storm. Scoop while they pile.",
+    "Tin claim. Wagons first, then the flies.",
+    "Banner war. Royal Guard if you can.",
+    "Summer Crown. Hold the gate. Don’t freeze."
   ];
   var COSMETICS = [
     { id: "leather", name: "Leather barding", cost: 240, kind: "gear", req: null },
@@ -723,8 +781,13 @@
   ];
   var shopFrom = "levels";
 
+  function blankStars() {
+    var a = [], i;
+    for (i = 0; i < LEVELS.length; i++) a.push(0);
+    return a;
+  }
   function defaultSave() {
-    return { unlocked: 1, wood: 50, stars: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], tutDone: false, tutMidBuild: false, filmSeen: false, mute: false, shopTip: false, cosmetics: {} };
+    return { unlocked: 1, wood: 50, stars: blankStars(), tutDone: false, tutMidBuild: false, filmSeen: false, mute: false, shopTip: false, cosmetics: {} };
   }
   function loadSave() {
     try {
@@ -732,10 +795,11 @@
       if (!raw) return defaultSave();
       var s = JSON.parse(raw);
       var d = defaultSave();
-      d.unlocked = Math.max(1, Math.min(20, s.unlocked | 0));
+      d.unlocked = Math.max(1, Math.min(LEVELS.length, s.unlocked | 0));
+      if ((s.unlocked | 0) >= 20) d.unlocked = Math.max(d.unlocked, 21);
       d.wood = Math.max(0, s.wood | 0);
-      d.stars = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-      if (s.stars) for (var i = 0; i < 20; i++) d.stars[i] = Math.max(0, Math.min(3, s.stars[i] | 0));
+      d.stars = blankStars();
+      if (s.stars) for (var i = 0; i < LEVELS.length; i++) d.stars[i] = Math.max(0, Math.min(3, s.stars[i] | 0));
       d.tutDone = !!s.tutDone;
       d.tutMidBuild = !!s.tutMidBuild;
       d.filmSeen = !!s.filmSeen;
@@ -1646,7 +1710,7 @@
   function finishWin() {
     var stars = starCount();
     if (stars > save.stars[level]) save.stars[level] = stars;
-    if (save.unlocked < level + 2) save.unlocked = Math.min(20, level + 2);
+    if (save.unlocked < level + 2) save.unlocked = Math.min(LEVELS.length, level + 2);
     save.wood = wood;
     persist();
     if (level === 0) {
@@ -1657,9 +1721,9 @@
     var last = LEVELS.length - 1;
     var starStr = "★★★".slice(0, stars) + "☆☆☆".slice(0, 3 - stars);
     document.getElementById("win-stars").textContent = starStr;
-    document.getElementById("win-msg").textContent = level === last ? (LEVELS[level].name + " holds.") : (level === 0 ? "L1 held." : (LEVELS[level].name + " holds."));
+    document.getElementById("win-msg").textContent = level === last ? "Summer stays. The crown holds." : (level === 0 ? "L1 held." : (LEVELS[level].name + " holds."));
     document.getElementById("btn-next").textContent = level < last ? "Next" : "Map";
-    var playFilmNow = !save.filmSeen && (level === 4 || level === last);
+    var playFilmNow = (!save.filmSeen && level === 4) || level === last;
     if (playFilmNow) playFilm("win");
     else show("win");
   }

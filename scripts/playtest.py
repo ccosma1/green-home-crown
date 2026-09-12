@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static checks plus a 1D fair-player leak sim for L1-20."""
+"""Static checks plus a 1D fair-player leak sim for L1-25."""
 
 from __future__ import annotations
 
@@ -60,15 +60,17 @@ def swarmify(levels: list[tuple[str, list[tuple[float, list[str]]]]]) -> list:
                 target = 16 + li
             elif li < 15:
                 target = 24 + (li - 10) * 3
-            else:
+            elif li < 20:
                 target = 36 + (li - 15) * 4
+            else:
+                target = 50 + (li - 20) * 2
             lst = list(kinds)
             j = 0
             while len(lst) < target:
                 lst.append(fodder[j % len(fodder)])
                 j += 1
             boss = any(k in lst for k in ("wagon", "knight", "brute"))
-            base = 0.30 if li < 3 else (0.26 if li < 5 else (0.20 if li < 10 else (0.16 if li < 15 else 0.14)))
+            base = 0.30 if li < 3 else (0.26 if li < 5 else (0.20 if li < 10 else (0.16 if li < 15 else (0.14 if li < 20 else 0.13))))
             g = max(0.28, min(0.42, gap)) if boss else base
             nw.append((g, lst))
         packed.append((name, nw))
@@ -93,10 +95,26 @@ def ranks_for(li: int, n: int) -> list[int]:
         return [1] + [0] * (n - 1)
     if li < 15:
         return [1] * n
-    return [2] + [1] * (n - 1)
+    if li < 20:
+        return [2] + [1] * (n - 1)
+    return [2] * n
 
 
-def simulate(waves: list[tuple[float, list[str]]], ranks: list[int]) -> int:
+def mob_hp(kind: str, li: int) -> int:
+    hp = MOBS[kind]["hp"]
+    if li >= 15:
+        if kind == "goat":
+            hp += 2
+        elif kind == "knight":
+            hp += 4
+        elif kind == "wagon":
+            hp += 6
+        elif kind == "bandit":
+            hp += 1
+    return hp
+
+
+def simulate(waves: list[tuple[float, list[str]]], ranks: list[int], li: int = 0) -> int:
     pads = [{"d": PATH * PAD_T[i], "cd": 0.0, "r": ranks[i]} for i in range(len(ranks))]
     enemies: list[dict] = []
     leaks = 0
@@ -115,7 +133,7 @@ def simulate(waves: list[tuple[float, list[str]]], ranks: list[int]) -> int:
             if spawn_i < len(lst) and spawn_t <= 0:
                 k = lst[spawn_i]
                 m = MOBS[k]
-                enemies.append({"hp": m["hp"], "spd": m["spd"], "d": 0.0, "kind": k})
+                enemies.append({"hp": mob_hp(k, li), "spd": m["spd"], "d": 0.0, "kind": k})
                 spawn_i += 1
                 spawn_t = gap
             if spawn_i >= len(lst) and not enemies:
@@ -156,9 +174,12 @@ def main() -> None:
     must("wood: 50" in HTML, "L1 one T1 wood")
     must("leather" in HTML and "Royal plate" in HTML, "king gear")
     must("cost: [50, 90, 160]" in HTML, "tower prices")
-    must("min(20" in HTML, "unlock to 20")
+    must("Math.min(LEVELS.length" in HTML, "unlock to 25")
     must("Crown Road" in HTML and "Summer Claim" in HTML, "L16-20")
-    must(HTML.count("{ gap:") >= 110, "L1-20 waves")
+    must("Crown March" in HTML and "Feast Storm" in HTML, "L21-22")
+    must("Tin Claim" in HTML and "Banner War" in HTML, "L23-24")
+    must("Summer Crown" in HTML, "L25 finale")
+    must(HTML.count("{ gap:") >= 140, "L1-25 waves")
     must("sepia" not in HTML, "king glow")
     must("dropCoin" in HTML and "tickCoins" in HTML, "coin pickups")
     must("snapCoinPos" in HTML, "reachable coins")
@@ -190,18 +211,21 @@ def main() -> None:
     must("level >= 5) liveN = 3" in HTML, "L6 third pad")
     must("bober.cd = royal ? 0.48 : 0.62" in HTML, "king still slow")
     levels = parse_levels()
-    must(len(levels) == 20, "20 levels")
+    must(len(levels) == 25, "25 levels")
     packed = swarmify(levels)
     for li, (name, waves) in enumerate(packed):
         n = live_n(li)
-        leaks = simulate(waves, ranks_for(li, n))
+        leaks = simulate(waves, ranks_for(li, n), li)
         hearts = 4 if li < 2 else 3
         must(leaks < hearts, "L%s %s leaks %s hearts (cap %s)" % (li + 1, name, leaks, hearts))
         if li == 5:
             must(leaks <= 1, "L6 Knife Guests too leaky: %s" % leaks)
-            must(simulate(waves, [0, 0]) <= 1, "L6 not clearable with 2 T1")
+            must(simulate(waves, [0, 0], li) <= 1, "L6 not clearable with 2 T1")
         if li >= 9:
-            must(simulate(waves, []) >= hearts, "naked king-less L%s still too easy" % (li + 1))
+            must(simulate(waves, [], li) >= hearts, "naked king-less L%s still too easy" % (li + 1))
+        if li == 24:
+            must(leaks <= 1, "L25 finale too leaky: %s" % leaks)
+            must(any("brute" in lst or "wagon" in lst for _g, lst in waves), "L25 siege")
     print("playtest ok")
 
 
