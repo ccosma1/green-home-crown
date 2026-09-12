@@ -137,6 +137,9 @@
     }
     #also a { color: var(--cream); text-decoration: underline; }
     #app.play #also { display: none; }
+    #app.menu { background: #1A2810; }
+    #splash { background: #1A2810; }
+    #boot-load { margin: 0 0 10px; font-size: 12px; font-weight: 800; color: var(--gold); min-height: 16px; }
     .overlay {
       position: absolute; inset: 0; z-index: 12;
       display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
@@ -243,6 +246,7 @@
       <p class="tag">Summer stays.</p>
       <p class="tag">Fan game by a holder.</p>
       <p class="how">Move the King. Hold the Crown. Don’t freeze.</p>
+      <p id="boot-load">Loading…</p>
       <button class="play" id="btn-face" type="button">FACE THE SUMMER</button>
       <button class="play ghost" id="btn-more" type="button">More games · Green Home Games</button>
       <button class="film-link" id="btn-watch" type="button">Watch story</button>
@@ -489,9 +493,15 @@
     });
   }
   function boot() {
-    var keys = ["splash", "cameo", "bober", "king", "crown", "bow", "ballista", "rat", "bandit", "brute", "thief", "goat", "knight", "berry"];
-    var paths = {
-      splash: "assets/splash.jpg", cameo: "assets/cameo-picnic.jpg",
+    var loadEl = document.getElementById("boot-load");
+    muteBtn.textContent = mute ? "🔇" : "🔊";
+    muteBtn.classList.toggle("on", mute);
+    app.classList.remove("boot");
+    show("splash");
+    resize();
+    loop(0);
+    var rest = {
+      cameo: "assets/cameo-picnic.jpg",
       bober: "assets/sprites/bober.png", king: "assets/sprites/king-horse.png",
       crown: "assets/sprites/crown.png",
       bow: "assets/sprites/bow.png", ballista: "assets/sprites/ballista.png",
@@ -500,15 +510,19 @@
       goat: "assets/sprites/goat.png", knight: "assets/sprites/knight.png",
       berry: "assets/sprites/berry.png"
     };
-    Promise.all(keys.map(function (k) { return loadImg(paths[k]).then(function (im) { IM[k] = im; }); }))
-      .then(function () {
-        app.classList.remove("boot");
-        muteBtn.textContent = mute ? "🔇" : "🔊";
-        muteBtn.classList.toggle("on", mute);
-        show("splash");
-        resize();
-        loop(0);
-      });
+    function restDone() {
+      if (loadEl) loadEl.textContent = "";
+    }
+    var to = setTimeout(restDone, 1500);
+    function loadRest() {
+      Promise.all(Object.keys(rest).map(function (k) {
+        return loadImg(rest[k]).then(function (img) { IM[k] = img; });
+      })).then(function () { clearTimeout(to); restDone(); }).catch(restDone);
+    }
+    loadImg("assets/splash.jpg").then(function (im) {
+      IM.splash = im;
+      loadRest();
+    }).catch(loadRest);
   }
 
   function show(name) {
@@ -679,7 +693,7 @@
   function blankPad(d) {
     return {
       id: d.id, slot: d.slot, x: d.x, y: d.y, locked: !!d.locked,
-      kind: null, rank: 0, cd: 0, hp: 0, maxHp: 0,
+      kind: null, rank: 0, cd: 0, hp: 0, maxHp: 0, aim: 0,
       pathD: nearestPathDist(d.x, d.y)
     };
   }
@@ -696,14 +710,14 @@
       bober.facing = Math.PI;
     }
     var plen = pathLen();
-    var mag = 54 * sc;
+    var mag = 50 * sc;
     var specs = [
-      { id: "A", t: 0.20, side: 1 },
-      { id: "B", t: 0.36, side: -1 },
-      { id: "C", t: 0.52, side: 1 },
-      { id: "D", t: 0.66, side: -1 },
-      { id: "E", t: 0.80, side: 1 },
-      { id: "F", t: 0.91, side: -1 }
+      { id: "A", t: 0.88, side: 1 },
+      { id: "B", t: 0.93, side: -1 },
+      { id: "C", t: 0.80, side: 1 },
+      { id: "D", t: 0.84, side: -1 },
+      { id: "E", t: 0.52, side: 1 },
+      { id: "F", t: 0.22, side: -1 }
     ];
     var liveN = 2;
     if (level >= 1) liveN = 3;
@@ -722,6 +736,7 @@
         if (p.id !== o.id) return;
         p.kind = migrateKind(o.kind);
         p.rank = o.rank; p.cd = o.cd; p.hp = o.hp; p.maxHp = o.maxHp;
+        p.aim = o.aim || 0;
         if (p.locked) { p.kind = null; p.hp = 0; }
       });
     });
@@ -898,7 +913,7 @@
     enemies.push({
       id: eid++, kind: kind, hp: m.hp, max: m.hp, spd: m.spd * sc, d: 0,
       x: p0.x, y: p0.y, tele: 0, teleOn: false, slamCd: 0.8, hit: 0,
-      charging: false, chargeCd: 1.2, chargeT: null
+      charging: false, chargeCd: 1.2, chargeT: null, facing: Math.PI / 2, lx: p0.x, ly: p0.y
     });
   }
 
@@ -916,7 +931,7 @@
   function hitCrown(n) {
     hp = Math.max(0, hp - n);
     shake = 0.28;
-    kingFlash = 0.4;
+    kingFlash = 0.12;
     renderHearts();
     beep(110, 0.18, "sawtooth", 0.06);
     if (hp <= 0) loseLevel();
@@ -976,13 +991,17 @@
       if (p.kind !== "bow" || p.locked) continue;
       p.cd -= dt;
       var r = p.rank || 0;
-      if (p.cd <= 0) {
-        var t = nearest(p.x, p.y, BOW.range[r] * sc);
-        if (t) {
-          fireShot(p.x, p.y - 12 * sc, t, BOW.dmg[r], BOW.pierce[r], "tower");
-          p.cd = BOW.rate[r];
-          beep(820, 0.03, "square", 0.03);
-        }
+      var t = nearest(p.x, p.y, BOW.range[r] * sc);
+      if (t) {
+        var want = Math.atan2(t.y - p.y, t.x - p.x);
+        p.aim = turnToward(p.aim || 0, want, 12 * dt);
+      }
+      if (p.cd <= 0 && t) {
+        var ox = p.x + Math.cos(p.aim || 0) * 14 * sc;
+        var oy = p.y - 8 * sc + Math.sin(p.aim || 0) * 10 * sc;
+        fireShot(ox, oy, t, BOW.dmg[r], BOW.pierce[r], "tower");
+        p.cd = BOW.rate[r];
+        beep(820, 0.03, "square", 0.03);
       }
     }
   }
@@ -1046,6 +1065,7 @@
     if (e.charging && e.chargeT) {
       var dx = e.chargeT.x - e.x, dy = e.chargeT.y - e.y, L = Math.hypot(dx, dy);
       var step = 210 * sc * dt;
+      if (L > 0.6) e.facing = turnToward(e.facing || 0, Math.atan2(dy, dx), 14 * dt);
       if (L <= step + 4) {
         e.charging = false;
         e.chargeCd = 2.4;
@@ -1092,7 +1112,12 @@
         continue;
       }
       var pos = posOnPath(e.d);
+      var nxt = posOnPath(e.d + 12);
+      var vx = nxt.x - pos.x, vy = nxt.y - pos.y;
       e.x = pos.x; e.y = pos.y;
+      if (Math.hypot(vx, vy) > 0.35) {
+        e.facing = turnToward(e.facing || 0, Math.atan2(vy, vx), 9 * dt);
+      }
     }
   }
   function angWrap(a) {
@@ -1158,7 +1183,6 @@
     if (n >= 2 && allT3 && !royal) {
       royal = true;
       royalTold = true;
-      kingFlash = 0.8;
       kingCele = 2.8;
       setBanner("All ballistae ready — the King grows stronger.");
       beep(523, 0.12, "square", 0.06);
@@ -1531,10 +1555,19 @@
     ctx.globalAlpha = 1;
     if (p.kind === "bow") {
       var im = (p.rank >= 2 && IM.ballista) ? IM.ballista : IM.bow;
-      if (!drawSpriteChunky(im, p.x, p.y + 10, p.rank >= 2 ? 70 * sc : 58 * sc, p.rank >= 2 ? 62 * sc : 52 * sc)) {
+      var bw = p.rank >= 2 ? 70 * sc : 58 * sc, bh = p.rank >= 2 ? 62 * sc : 52 * sc;
+      var ang = p.aim || 0;
+      var flip = Math.cos(ang) < 0;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(flip ? ang + Math.PI : ang);
+      ctx.scale(flip ? -1 : 1, 1);
+      if (im) ctx.drawImage(im, -bw / 2, -bh + 6, bw, bh);
+      else {
         ctx.fillStyle = "#5C3A1A";
-        ctx.fillRect(p.x - 10 * sc, p.y - 24 * sc, 20 * sc, 8 * sc);
+        ctx.fillRect(-10 * sc, -24 * sc, 20 * sc, 8 * sc);
       }
+      ctx.restore();
     } else if (phase === "build" || canPlaceNow()) {
       ctx.fillStyle = "#1A2810";
       ctx.font = "800 " + Math.round(11 * sc) + "px Trebuchet MS,sans-serif";
@@ -1565,13 +1598,17 @@
       ctx.restore();
     }
     ctx.save();
-    if (e.hit > 0) ctx.filter = "brightness(1.8)";
+    if (e.hit > 0) ctx.filter = "brightness(1.35)";
     if (e.teleOn) ctx.translate(0, Math.sin(tGame * 20) * 2);
     var im = IM[e.kind] || IM.rat;
     var bob = Math.sin(tGame * (e.kind === "rat" ? 14 : 8) + e.d) * 2;
-    if (!drawSprite(im, e.x, e.y + bob, w, h)) {
+    var flip = Math.cos(e.facing || 0) < 0;
+    ctx.translate(e.x, e.y + bob);
+    ctx.scale(flip ? -1 : 1, 1);
+    if (im) ctx.drawImage(im, -w / 2, -h, w, h);
+    else {
       ctx.fillStyle = e.kind === "brute" ? "#4E7C28" : (e.kind === "bandit" ? "#6a6a70" : "#8B5A2B");
-      ctx.beginPath(); ctx.ellipse(e.x, e.y - h * 0.35, w * 0.35, h * 0.4, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(0, -h * 0.35, w * 0.35, h * 0.4, 0, 0, Math.PI * 2); ctx.fill();
     }
     ctx.restore();
     if (e.max > 1) {
@@ -1655,8 +1692,7 @@
       var flip = Math.cos(bober.facing) < 0;
       var tilt = Math.sin(bober.facing) * 0.12 + Math.sin(tGame * (run ? 10 : 3)) * (run ? 0.06 : 0.03);
       ctx.save();
-      if (kingFlash > 0 || bober.atFlash > 0) ctx.filter = "brightness(1.85)";
-      else if (royal) ctx.filter = "sepia(0.35) saturate(1.6)";
+      if (kingFlash > 0) ctx.globalAlpha = 0.78;
       ctx.translate(bober.x, bober.y + bob);
       ctx.rotate(tilt);
       ctx.scale(flip ? -1 : 1, 1 + Math.sin(tGame * (run ? 12 : 4)) * (run ? 0.05 : 0.02));
