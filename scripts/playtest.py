@@ -19,6 +19,7 @@ def main() -> None:
     must("kingshot" not in low, "Kingshot")
     must("Oak Gate" not in HTML and "Feast Drum" not in HTML, "old buildings")
     must("beginClear" in HTML and "finishWin" in HTML, "smooth clear")
+    must("scoop" in HTML and "Scoop coins, then Next" in HTML, "scoop hold")
     must("pushOffLane" in HTML, "pads off path")
     must("reed" in HTML and "wagon" in HTML, "Act III enemies")
     must("live === 1" in HTML or "livePadCount" in HTML, "1-pad Royal Guard")

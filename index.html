@@ -723,7 +723,7 @@
   function tutActive() { return level === 0 && tut.on && !save.tutDone; }
   function canPlaceNow() {
     if (screen !== "play" || paused) return false;
-    if (phase === "clear") return false;
+    if (phase === "clear" || phase === "scoop") return false;
     if (phase === "build") return true;
     if (phase === "wave" && level >= 2 && !tutActive()) return true;
     return false;
@@ -738,27 +738,39 @@
     var L = LEVELS[level];
     var n = L.waves.length;
     var tOn = tutActive();
-    goBtn.classList.toggle("pulse", tOn && tut.step === 2 && phase === "build");
+    goBtn.classList.toggle("pulse", (tOn && tut.step === 2 && phase === "build") || phase === "scoop");
     skipEl.classList.toggle("hidden", !tOn);
     app.classList.toggle("tut", tOn);
-    if (tOn) {
+    if (tOn && phase !== "scoop") {
       if (tut.step === 0) { setBanner("Drag the King."); setHint("Stick or WASD"); }
       else if (tut.step === 1) { setBanner("Tap pad. Place Crossbow."); setHint("One tower by the Crown"); }
       else if (tut.step === 2) { setBanner("START WAVE"); setHint("Press START WAVE"); }
       else { setBanner("King shoots close. Towers hold the path."); setHint("Kite into range"); }
+    } else if (phase === "scoop") {
+      setBanner("Scoop coins, then Next");
+      setHint("Ride to collect wood");
     } else if (royal && royalTold && kingCele > 0) {
       setBanner("All ballistae ready — the King grows stronger.");
       setHint("The King grows stronger");
     } else if (phase === "build") {
       setBanner(waveI === 0 ? (L.tip || "Build · then START WAVE") : "Build · then NEXT WAVE");
       setHint("Tap a pad to place / upgrade");
+    } else if (phase === "clear") {
+      setBanner("Clear.");
+      setHint("");
     } else {
       setBanner("Wave " + (waveI + 1) + " / " + n + " · Hold the Crown");
       setHint(level >= 2 ? "Place during the wave" : "Move the King");
     }
-    if (phase === "build") {
+    if (phase === "scoop") {
+      goBtn.disabled = false;
+      goBtn.textContent = level >= LEVELS.length - 1 ? "Continue" : "Next";
+    } else if (phase === "build") {
       goBtn.disabled = tOn && tut.step < 2;
       goBtn.textContent = waveI === 0 ? "START WAVE" : "NEXT WAVE";
+    } else if (phase === "clear") {
+      goBtn.disabled = true;
+      goBtn.textContent = "Clear";
     } else {
       goBtn.disabled = true;
       goBtn.textContent = "WAVE " + (waveI + 1) + " / " + n;
@@ -1426,7 +1438,12 @@
     tickEnemies(dt);
     if (hp <= 0) return;
     if (spawnI >= w.list.length && enemies.length === 0 && shots.length === 0) {
-      if (waveI + 1 >= L.waves.length) beginClear();
+      if (waveI + 1 >= L.waves.length) {
+        phase = "scoop";
+        kingCele = 0.6;
+        renderHud();
+        beep(490, 0.1, "triangle", 0.05);
+      }
       else {
         waveI++;
         phase = "build";
@@ -2140,7 +2157,11 @@
     muteBtn.classList.toggle("on", mute);
     if (!mute) ensureAudio();
   });
-  goBtn.addEventListener("click", function () { ensureAudio(); startWave(); });
+  goBtn.addEventListener("click", function () {
+    ensureAudio();
+    if (phase === "scoop") { beginClear(); return; }
+    startWave();
+  });
   skipEl.addEventListener("click", function () { ensureAudio(); skipTut(); });
   document.getElementById("card-bow").addEventListener("click", function () {
     if (!canPlaceNow() && !(tutActive() && tut.step === 1)) return;
