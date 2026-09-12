@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#87C6E8" />
+  <meta name="description" content="Green Home Crown — fan game by a holder. Summer stays. Hold the town." />
+  <title>Green Home Crown · Summer stays</title>
+  <link rel="icon" href="assets/icons/green-home-crown.ico" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <style>
+    :root {
+      --sky: #87C6E8;
+      --grass: #6B9E3A;
+      --fur: #8B5A2B;
+      --gold: #F5C400;
+      --cream: #F4E6C3;
+      --banner: #C62828;
+      --ink: #1A2810;
+      --dock: #1E3D24;
+      --ok: #7ED957;
+      --danger: #E85D4C;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0; height: 100%;
+      background: var(--ink); color: var(--cream);
+      font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+      user-select: none; overflow: hidden; touch-action: manipulation;
+      overscroll-behavior: none;
+    }
+    #app {
+      display: flex; flex-direction: column;
+      height: 100dvh; height: 100svh;
+      width: 100%; max-width: 430px; margin: 0 auto;
+      background: var(--sky); position: relative; overflow: hidden;
+      padding: env(safe-area-inset-top) 0 0;
+    }
+    header {
+      flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between;
+      gap: 6px; padding: 6px 8px 5px; background: var(--dock); z-index: 4; min-width: 0;
+    }
+    .chips { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; min-width: 0; }
+    .chip {
+      background: #2A5630; border: 2px solid var(--gold); color: var(--cream);
+      border-radius: 999px; padding: 3px 9px; font-weight: 800; font-size: 13px;
+      line-height: 1.25; white-space: nowrap;
+    }
+    .chip.wood { color: var(--gold); }
+    .chip.flash { animation: shake 0.35s ease; background: #6a2a3a; }
+    #hearts { display: flex; gap: 3px; align-items: center; min-height: 16px; }
+    #hearts i {
+      width: 15px; height: 13px; display: block; background: #4a1820; flex: 0 0 auto;
+      clip-path: path("M7.5 12.5 L1.3 6.8 A3.6 3.6 0 0 1 7.5 2.6 A3.6 3.6 0 0 1 13.7 6.8 Z");
+    }
+    #hearts i.full { background: var(--banner); }
+    .btns { display: flex; gap: 4px; flex: 0 0 auto; }
+    .icon-btn {
+      width: 36px; height: 36px; border: 2px solid var(--cream);
+      background: var(--fur); color: var(--cream);
+      border-radius: 10px; font-size: 15px; font-weight: 800; cursor: pointer; padding: 0;
+    }
+    .icon-btn:active { transform: translateY(1px); filter: brightness(0.85); }
+    .icon-btn.on { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+    #stage {
+      flex: 1 1 auto; min-height: 55dvh; min-width: 0; width: 100%;
+      position: relative; z-index: 1; background: var(--sky);
+    }
+    canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: pointer; }
+    #banner {
+      position: absolute; left: 10px; right: 10px; top: 8px; z-index: 6;
+      background: var(--cream); color: var(--ink); border: 3px solid var(--gold);
+      border-radius: 14px; padding: 7px 10px; font-weight: 800; font-size: 14px;
+      line-height: 1.25; text-align: center; box-shadow: 0 6px 18px #0005;
+      pointer-events: none;
+    }
+    #banner.hidden { display: none; }
+    #dock {
+      flex: 0 0 auto; display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px; padding: 7px 8px 6px; background: var(--dock); z-index: 4;
+      padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+    #app.menu #dock, #app.boot #dock { display: none; }
+    .card {
+      appearance: none; border: 3px solid #5C3A1A; background: var(--fur);
+      color: var(--cream); border-radius: 14px; padding: 5px 3px 6px;
+      cursor: pointer; min-height: 62px; min-width: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+      font-weight: 800;
+    }
+    .card img { width: 30px; height: 24px; object-fit: contain; pointer-events: none; }
+    .card .name { font-size: 10px; letter-spacing: 0.01em; text-align: center; line-height: 1.1; }
+    .card .cost { font-size: 13px; color: var(--gold); }
+    .card.on { border-color: var(--gold); box-shadow: 0 0 0 2px #F5C40088; background: #a06a34; }
+    .card:disabled { opacity: 0.45; }
+    .card.flash { animation: shake 0.35s ease; background: #6a2a3a; }
+    #dock-hint {
+      grid-column: 1 / -1; text-align: center; font-size: 11px; font-weight: 800;
+      color: var(--gold); letter-spacing: 0.02em; min-height: 14px; padding: 0 4px 1px;
+    }
+    #btn-go {
+      grid-column: 1 / -1; min-height: 48px; border: 3px solid var(--gold);
+      background: var(--gold); color: var(--ink); border-radius: 14px;
+      font-weight: 900; font-size: 16px; cursor: pointer; letter-spacing: 0.04em;
+    }
+    #btn-go:disabled { filter: grayscale(0.3) brightness(0.85); cursor: default; }
+    @media (max-height: 560px) {
+      .card { min-height: 52px; padding: 3px 2px 4px; }
+      .card img { width: 24px; height: 20px; }
+      #btn-go { min-height: 42px; font-size: 15px; }
+      header { padding: 4px 8px; }
+      .icon-btn { width: 32px; height: 32px; }
+    }
+    #also {
+      flex: 0 0 auto; text-align: center; font-size: 11px; font-weight: 700;
+      color: #d7c9a4; padding: 4px 8px 8px; background: var(--dock); z-index: 4;
+    }
+    #also a { color: var(--cream); text-decoration: underline; }
+    #app.play #also { display: none; }
+    .overlay {
+      position: absolute; inset: 0; z-index: 12;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+      padding: 18px 16px 24px; text-align: center;
+      background: linear-gradient(to top, #1a2810ee 0%, #1a281088 36%, #87C6E822 100%);
+    }
+    .overlay.hidden { display: none; }
+    .overlay img.hero {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;
+    }
+    .overlay h1 {
+      margin: 0 0 6px; font-size: clamp(26px, 8vw, 40px); line-height: 0.92;
+      color: var(--gold); text-shadow: 0 3px 0 #1A2810, 0 6px 16px #000;
+      letter-spacing: 0.02em;
+    }
+    .overlay h2 {
+      margin: 0 0 8px; font-size: 28px; color: var(--gold);
+      text-shadow: 0 3px 0 #1A2810;
+    }
+    .tag { margin: 0 0 8px; font-size: 16px; font-weight: 800; color: var(--cream); text-shadow: 0 2px 8px #000; }
+    .how { margin: 0 0 14px; max-width: 22em; font-size: 13px; font-weight: 700; line-height: 1.4; color: var(--cream); text-shadow: 0 1px 6px #000; }
+    .play {
+      appearance: none; border: 3px solid #1A2810; background: var(--gold); color: var(--ink);
+      font-weight: 900; font-size: 18px; letter-spacing: 0.06em; padding: 12px 24px;
+      border-radius: 16px; cursor: pointer; box-shadow: 0 4px 0 #8a6a00;
+    }
+    .play:active { transform: translateY(2px); box-shadow: 0 2px 0 #8a6a00; }
+    .play.ghost {
+      background: transparent; color: var(--cream); border-color: var(--cream);
+      box-shadow: none; margin-top: 8px; font-size: 14px; padding: 8px 16px;
+    }
+    .play.tiny { font-size: 12px; padding: 6px 14px; margin-top: 10px; opacity: 0.9; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+    #paused { justify-content: center; background: #1a2810e8; }
+    #levels { justify-content: flex-start; overflow: auto; padding-top: 14px; }
+    #level-grid {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px; width: 100%; max-width: 22em; margin: 8px 0 16px; padding: 10px;
+      background: #1a2810cc; border-radius: 16px;
+    }
+    .lvl {
+      appearance: none; border: 3px solid var(--gold); background: var(--fur); color: var(--cream);
+      border-radius: 14px; min-height: 72px; padding: 6px 4px; font-weight: 800; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    }
+    .lvl .num { font-size: 18px; color: var(--gold); line-height: 1; }
+    .lvl .lbl { font-size: 10px; letter-spacing: 0.02em; }
+    .lvl .stars { font-size: 12px; color: var(--gold); letter-spacing: 0.12em; }
+    .lvl.locked { opacity: 0.5; border-color: #5C3A1A; cursor: default; }
+    .lvl.locked .num { color: var(--cream); }
+    #history { justify-content: center; background: #1a2810f0; }
+    #history .hist-card {
+      background: #2A5630ee; border: 3px solid var(--gold); border-radius: 18px;
+      padding: 28px 20px 20px; max-width: 20em; width: 100%;
+    }
+    #hist-line {
+      margin: 0 0 12px; font-size: 22px; font-weight: 900; color: var(--gold);
+      text-shadow: 0 2px 0 #1A2810; line-height: 1.25; min-height: 2.6em;
+    }
+    #hist-n { margin: 0 0 14px; font-size: 13px; font-weight: 800; color: var(--cream); }
+    .end-stars { margin: 0 0 10px; font-size: 28px; letter-spacing: 0.16em; color: var(--gold); text-shadow: 0 2px 0 #1A2810; }
+    .end-msg { margin: 0 0 14px; font-size: 15px; font-weight: 800; color: var(--cream); text-shadow: 0 2px 6px #000; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      75% { transform: translateX(3px); }
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="boot menu">
+    <header>
+      <div class="chips">
+        <span class="chip" id="chip-lvl">L1</span>
+        <span id="hearts" aria-label="Crown hearts"></span>
+        <span class="chip wood" id="chip-wood">Wood 24</span>
+      </div>
+      <div class="btns">
+        <button class="icon-btn" id="btn-pause" type="button" aria-label="Pause">⏸</button>
+        <button class="icon-btn" id="btn-mute" type="button" aria-label="Mute">🔊</button>
+      </div>
+    </header>
+    <div id="stage">
+      <canvas id="cv"></canvas>
+      <div id="banner" class="hidden"></div>
+    </div>
+    <div id="dock">
+      <button class="card" id="card-fence" type="button" data-kind="fence">
+        <img src="assets/sprites/fence.png" alt="" />
+        <span class="name">Stick Fence</span>
+        <span class="cost" id="cost-fence">8</span>
+      </button>
+      <button class="card" id="card-sling" type="button" data-kind="sling">
+        <img src="assets/sprites/sling.png" alt="" />
+        <span class="name">Sling Nest</span>
+        <span class="cost" id="cost-sling">14</span>
+      </button>
+      <button class="card" id="card-sap" type="button" data-kind="sap">
+        <img src="assets/sprites/sap.png" alt="" />
+        <span class="name">Sap Bowl</span>
+        <span class="cost" id="cost-sap">16</span>
+      </button>
+      <div id="dock-hint">Tap a pad · then START WAVE</div>
+      <button id="btn-go" type="button">START WAVE</button>
+    </div>
+    <div id="also">More games · <a href="https://ccosma1.github.io/green-home-games/">Green Home Games</a></div>
+
+    <div id="splash" class="overlay">
+      <img class="hero" src="assets/splash.jpg" alt="" />
+      <h1>GREEN HOME CROWN</h1>
+      <p class="tag">Summer stays.</p>
+      <p class="tag">Fan game by a holder.</p>
+      <p class="how">Build between waves. Hold the Crown. Don’t freeze.</p>
+      <button class="play" id="btn-face" type="button">FACE THE SUMMER</button>
+      <button class="play ghost" id="btn-more" type="button">More games · Green Home Games</button>
+      <button class="play ghost tiny" id="btn-new" type="button">New game</button>
+    </div>
+
+    <div id="history" class="overlay hidden">
+      <div class="hist-card">
+        <p class="tag">A short history</p>
+        <p id="hist-line">First he yeeted.</p>
+        <p id="hist-n">1 / 6</p>
+        <button class="play" id="btn-hist" type="button">Skip</button>
+      </div>
+    </div>
+
+    <div id="levels" class="overlay hidden">
+      <img class="hero" src="assets/splash.jpg" alt="" />
+      <h2>Summer Dawn</h2>
+      <p class="tag">Act I · L1–5</p>
+      <p class="how">Place on pads. Start the wave. Keep five hearts.</p>
+      <div id="level-grid"></div>
+      <button class="play ghost" id="btn-back" type="button">Back</button>
+    </div>
+
+    <div id="paused" class="overlay hidden">
+      <h2>Paused</h2>
+      <p class="how">Summer can wait a second.</p>
+      <div class="row">
+        <button class="play" id="btn-resume" type="button">Resume</button>
+        <button class="play ghost" id="btn-map" type="button">Map</button>
+      </div>
+    </div>
+
+    <div id="win" class="overlay hidden">
+      <img class="hero" src="assets/splash.jpg" alt="" />
+      <h2>Clear</h2>
+      <p class="end-stars" id="win-stars">★★★</p>
+      <p class="end-msg" id="win-msg">The meadow holds.</p>
+      <div class="row">
+        <button class="play" id="btn-next" type="button">Next</button>
+        <button class="play ghost" id="btn-win-map" type="button">Map</button>
+      </div>
+    </div>
+
+    <div id="lose" class="overlay hidden">
+      <h2>Crown down</h2>
+      <p class="end-msg">Retry the meadow. Soft save kept.</p>
+      <div class="row">
+        <button class="play" id="btn-retry" type="button">Retry</button>
+        <button class="play ghost" id="btn-lose-map" type="button">Map</button>
+      </div>
+    </div>
+
+    <div id="cameo" class="overlay hidden">
+      <img class="hero" src="assets/cameo-picnic.jpg" alt="" />
+      <h2>Picnic rolled in</h2>
+      <p class="end-msg">Summer stays. The truck brought lunch.</p>
+      <button class="play" id="btn-cameo" type="button">Keep the crown</button>
+    </div>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  var SAVE_KEY = "green-home-crown-v1";
+  var HUB = "https://ccosma1.github.io/green-home-games/";
+  var HIST = [
+    "First he yeeted.",
+    "Then he held the dam.",
+    "Then he held the fire.",
+    "Then he took the crown.",
+    "Green-home woke up warm.",
+    "Build. Rule. Don’t freeze."
+  ];
+
+  var KINDS = {
+    fence: { name: "Stick Fence", cost: 8, up: 10, slow: [0.44, 0.30], rad: [78, 92] },
+    sling: { name: "Sling Nest", cost: 14, up: 12, range: [138, 162], rate: [0.68, 0.42], dmg: [1, 1] },
+    sap: { name: "Sap Bowl", cost: 16, up: 12, rad: [82, 102], rate: [1.05, 0.85], slow: [0.55, 0.40], dur: [1.15, 1.4] }
+  };
+  var MOBS = {
+    rat: { hp: 1, spd: 86, wood: 2, dmg: 1, scale: 0.62 },
+    bandit: { hp: 3, spd: 54, wood: 4, dmg: 1, scale: 0.82 },
+    brute: { hp: 10, spd: 28, wood: 12, dmg: 2, scale: 1.18 }
+  };
+  var LEVELS = [
+    { name: "Meadow Gate", berries: 1, tip: "Tap a pad. Place a Sling Nest. START WAVE.",
+      waves: [
+        { gap: 0.52, list: ["rat", "rat", "rat", "rat"] },
+        { gap: 0.46, list: ["rat", "rat", "rat", "rat", "rat", "rat"] }
+      ] },
+    { name: "Picnic Path", berries: 2, tip: "Fence slows a lane. Sap sticks a pack.",
+      waves: [
+        { gap: 0.48, list: ["rat", "rat", "rat", "rat", "rat"] },
+        { gap: 0.55, list: ["rat", "rat", "bandit", "rat", "bandit"] },
+        { gap: 0.62, list: ["bandit", "bandit", "bandit", "bandit"] }
+      ] },
+    { name: "Berry Raid", berries: 2, tip: "Tap a berry bush once. Spend it on a pad.",
+      waves: [
+        { gap: 0.44, list: ["rat", "rat", "rat", "rat", "rat", "rat"] },
+        { gap: 0.5, list: ["rat", "bandit", "rat", "bandit", "rat", "bandit"] },
+        { gap: 0.52, list: ["bandit", "bandit", "rat", "bandit", "bandit", "bandit"] }
+      ] },
+    { name: "Fair Noise", berries: 3, tip: "Upgrade a pad — tap it again in build.",
+      waves: [
+        { gap: 0.4, list: ["rat", "rat", "rat", "rat", "rat", "rat", "rat", "rat"] },
+        { gap: 0.58, list: ["bandit", "bandit", "bandit", "bandit"] },
+        { gap: 0.48, list: ["rat", "rat", "bandit", "rat", "rat", "bandit", "bandit"] },
+        { gap: 0.5, list: ["bandit", "bandit", "bandit", "bandit", "bandit", "bandit"] }
+      ] },
+    { name: "Summer Dawn", berries: 3, tip: "Meadow Brute slams. Watch the red ring.",
+      waves: [
+        { gap: 0.46, list: ["rat", "rat", "bandit", "rat", "rat", "bandit"] },
+        { gap: 0.55, list: ["bandit", "bandit", "bandit", "bandit"] },
+        { gap: 0.48, list: ["rat", "bandit", "rat", "bandit", "rat", "bandit", "bandit"] },
+        { gap: 0.7, list: ["rat", "rat", "brute", "rat", "rat"] },
+        { gap: 0.65, list: ["bandit", "bandit", "brute", "bandit"] }
+      ] }
+  ];
+
+  var app = document.getElementById("app");
+  var cv = document.getElementById("cv");
+  var ctx = cv.getContext("2d");
+  var bannerEl = document.getElementById("banner");
+  var hintEl = document.getElementById("dock-hint");
+  var goBtn = document.getElementById("btn-go");
+  var woodEl = document.getElementById("chip-wood");
+  var lvlEl = document.getElementById("chip-lvl");
+  var heartsEl = document.getElementById("hearts");
+  var muteBtn = document.getElementById("btn-mute");
+
+  var IM = {};
+  var save = loadSave();
+  var screen = "splash";
+  var histI = 0, histT = 0;
+  var selected = null;
+  var paused = false;
+  var mute = !!save.mute;
+  var level = 0;
+  var phase = "build";
+  var waveI = 0, spawnI = 0, spawnT = 0;
+  var hp = 5, wood = 24, snapWood = 24;
+  var pads = [];
+  var berries = [];
+  var enemies = [];
+  var shots = [];
+  var fx = [];
+  var pulses = [];
+  var path = [];
+  var crown = { x: 0, y: 0 };
+  var bober = { x: 0, y: 0 };
+  var W = 360, H = 520, sc = 1;
+  var shake = 0, tGame = 0;
+  var flowers = [];
+  var actx = null;
+  var pendingCameo = false;
+
+  function defaultSave() {
+    return { unlocked: 1, wood: 24, stars: [0, 0, 0, 0, 0], introSeen: false, mute: false };
+  }
+  function loadSave() {
+    try {
+      var raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) return defaultSave();
+      var s = JSON.parse(raw);
+      var d = defaultSave();
+      d.unlocked = Math.max(1, Math.min(5, s.unlocked | 0));
+      d.wood = Math.max(0, s.wood | 0);
+      d.stars = [0, 0, 0, 0, 0];
+      if (s.stars) for (var i = 0; i < 5; i++) d.stars[i] = Math.max(0, Math.min(3, s.stars[i] | 0));
+      d.introSeen = !!s.introSeen;
+      d.mute = !!s.mute;
+      return d;
+    } catch (e) { return defaultSave(); }
+  }
+  function persist() {
+    try {
+      localStorage.setItem(SAVE_KEY, JSON.stringify({
+        unlocked: save.unlocked, wood: save.wood, stars: save.stars,
+        introSeen: !!save.introSeen, mute: !!mute
+      }));
+    } catch (e) {}
+  }
+  function wipeKeepIntro() {
+    var seen = !!save.introSeen;
+    save = defaultSave();
+    save.introSeen = seen;
+    save.mute = mute;
+    persist();
+  }
+
+  function loadImg(src) {
+    return new Promise(function (res) {
+      var im = new Image();
+      im.onload = function () { res(im); };
+      im.onerror = function () { res(null); };
+      im.src = src;
+    });
+  }
+  function boot() {
+    var keys = ["splash", "cameo", "bober", "crown", "fence", "sling", "sap", "rat", "bandit", "brute", "berry"];
+    var paths = {
+      splash: "assets/splash.jpg", cameo: "assets/cameo-picnic.jpg",
+      bober: "assets/sprites/bober.png", crown: "assets/sprites/crown.png",
+      fence: "assets/sprites/fence.png", sling: "assets/sprites/sling.png",
+      sap: "assets/sprites/sap.png", rat: "assets/sprites/rat.png",
+      bandit: "assets/sprites/bandit.png", brute: "assets/sprites/brute.png",
+      berry: "assets/sprites/berry.png"
+    };
+    Promise.all(keys.map(function (k) { return loadImg(paths[k]).then(function (im) { IM[k] = im; }); }))
+      .then(function () {
+        app.classList.remove("boot");
+        muteBtn.textContent = mute ? "🔇" : "🔊";
+        muteBtn.classList.toggle("on", mute);
+        show("splash");
+        resize();
+        loop(0);
+      });
+  }
+
+  function show(name) {
+    screen = name;
+    ["splash", "history", "levels", "paused", "win", "lose", "cameo"].forEach(function (id) {
+      document.getElementById(id).classList.toggle("hidden", id !== name);
+    });
+    var play = name === "play";
+    app.classList.toggle("play", play);
+    app.classList.toggle("menu", !play);
+    if (name !== "paused") paused = false;
+  }
+
+  function ensureAudio() {
+    if (actx || mute) return;
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) actx = new AC();
+  }
+  function beep(freq, dur, type, vol) {
+    if (mute || !actx) return;
+    try {
+      var o = actx.createOscillator();
+      var g = actx.createGain();
+      o.type = type || "square";
+      o.frequency.value = freq;
+      g.gain.value = vol || 0.05;
+      g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + dur);
+      o.connect(g); g.connect(actx.destination);
+      o.start(); o.stop(actx.currentTime + dur);
+    } catch (e) {}
+  }
+
+  function setBanner(t) {
+    bannerEl.textContent = t || "";
+    bannerEl.classList.toggle("hidden", !t);
+  }
+  function setHint(t) { hintEl.textContent = t || ""; }
+  function flashChip() {
+    woodEl.classList.remove("flash");
+    void woodEl.offsetWidth;
+    woodEl.classList.add("flash");
+  }
+  function renderHearts() {
+    var html = "";
+    for (var i = 0; i < 5; i++) html += "<i class=\"" + (i < hp ? "full" : "") + "\"></i>";
+    heartsEl.innerHTML = html;
+  }
+  function renderHud() {
+    lvlEl.textContent = "L" + (level + 1);
+    woodEl.textContent = "Wood " + wood;
+    renderHearts();
+    var L = LEVELS[level];
+    var n = L.waves.length;
+    if (phase === "build") {
+      goBtn.disabled = false;
+      goBtn.textContent = waveI === 0 ? "START WAVE" : "NEXT WAVE";
+      setBanner(waveI === 0 ? (L.tip || "Build · then START WAVE") : "Build · then NEXT WAVE");
+      setHint("Tap a pad to place / upgrade");
+    } else {
+      goBtn.disabled = true;
+      goBtn.textContent = "WAVE " + (waveI + 1) + " / " + n;
+      setBanner("Wave " + (waveI + 1) + " / " + n + " · Hold the Crown");
+      setHint("Build between waves");
+    }
+    ["fence", "sling", "sap"].forEach(function (k) {
+      var card = document.getElementById("card-" + k);
+      card.classList.toggle("on", selected === k);
+      card.disabled = phase !== "build";
+      document.getElementById("cost-" + k).textContent = String(KINDS[k].cost);
+    });
+  }
+
+  function resize() {
+    var st = document.getElementById("stage");
+    var r = st.getBoundingClientRect();
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = Math.max(280, r.width | 0);
+    H = Math.max(300, r.height | 0);
+    cv.width = (W * dpr) | 0;
+    cv.height = (H * dpr) | 0;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    sc = H / 520;
+    layout();
+  }
+  function layout() {
+    path = [
+      { x: W * 0.50, y: H * 0.07 },
+      { x: W * 0.50, y: H * 0.20 },
+      { x: W * 0.50, y: H * 0.36 },
+      { x: W * 0.50, y: H * 0.54 },
+      { x: W * 0.50, y: H * 0.70 },
+      { x: W * 0.50, y: H * 0.82 }
+    ];
+    crown = { x: W * 0.50, y: H * 0.84 };
+    bober = { x: W * 0.68, y: H * 0.86 };
+    var old = pads.slice();
+    pads = [
+      { id: "N", x: W * 0.50, y: H * 0.30, kind: null, rank: 0, cd: 0, stun: 0 },
+      { id: "L", x: W * 0.22, y: H * 0.52, kind: null, rank: 0, cd: 0, stun: 0 },
+      { id: "R", x: W * 0.78, y: H * 0.52, kind: null, rank: 0, cd: 0, stun: 0 }
+    ];
+    if (old.length === 3) {
+      for (var i = 0; i < 3; i++) {
+        pads[i].kind = old[i].kind; pads[i].rank = old[i].rank;
+        pads[i].cd = old[i].cd; pads[i].stun = old[i].stun;
+      }
+    }
+    berries.forEach(function (b) {
+      b.x = W * b.nx; b.y = H * b.ny;
+    });
+    if (!flowers.length) {
+      for (var f = 0; f < 28; f++) {
+        flowers.push({
+          x: 0.18 + Math.random() * 0.64,
+          y: 0.16 + Math.random() * 0.70,
+          c: ["#F5C400", "#E85D4C", "#F4E6C3", "#d46aa0"][f % 4],
+          r: 1.6 + (f % 3)
+        });
+      }
+    }
+  }
+
+  function berrySpots(n) {
+    var spots = [
+      { nx: 0.16, ny: 0.22 }, { nx: 0.84, ny: 0.22 }, { nx: 0.14, ny: 0.68 }
+    ];
+    var out = [];
+    for (var i = 0; i < n; i++) {
+      out.push({ nx: spots[i].nx, ny: spots[i].ny, x: W * spots[i].nx, y: H * spots[i].ny, used: false });
+    }
+    return out;
+  }
+
+  function startLevel(i) {
+    level = i;
+    hp = 5;
+    wood = save.wood;
+    snapWood = save.wood;
+    selected = null;
+    phase = "build";
+    waveI = 0; spawnI = 0; spawnT = 0;
+    enemies = []; shots = []; fx = []; pulses = [];
+    layout();
+    pads.forEach(function (p) { p.kind = null; p.rank = 0; p.cd = 0; p.stun = 0; });
+    berries = berrySpots(LEVELS[i].berries);
+    show("play");
+    renderHud();
+    beep(520, 0.08, "triangle", 0.04);
+  }
+
+  function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+  function pathLen() {
+    var L = 0;
+    for (var i = 0; i < path.length - 1; i++) L += dist(path[i], path[i + 1]);
+    return L;
+  }
+  function posOnPath(d) {
+    var left = d;
+    for (var i = 0; i < path.length - 1; i++) {
+      var seg = dist(path[i], path[i + 1]);
+      if (left <= seg) {
+        var t = seg ? left / seg : 0;
+        return {
+          x: path[i].x + (path[i + 1].x - path[i].x) * t,
+          y: path[i].y + (path[i + 1].y - path[i].y) * t
+        };
+      }
+      left -= seg;
+    }
+    var last = path[path.length - 1];
+    return { x: last.x, y: last.y };
+  }
+
+  function spawn(kind) {
+    var m = MOBS[kind];
+    var p0 = path[0];
+    enemies.push({
+      kind: kind, hp: m.hp, max: m.hp, spd: m.spd * sc, d: 0,
+      x: p0.x, y: p0.y, tele: 0, teleOn: false, slamCd: 0.8, sapT: 0, sapMul: 1, hit: 0
+    });
+  }
+
+  function startWave() {
+    if (phase !== "build") return;
+    phase = "wave";
+    spawnI = 0; spawnT = 0.15;
+    selected = null;
+    renderHud();
+    beep(330, 0.1, "square", 0.05);
+  }
+
+  function hitCrown(n) {
+    hp = Math.max(0, hp - n);
+    shake = 0.28;
+    renderHearts();
+    beep(110, 0.18, "sawtooth", 0.06);
+    if (hp <= 0) loseLevel();
+  }
+
+  function pop(x, y, text, col) {
+    fx.push({ x: x, y: y, text: text, col: col || "#F5C400", t: 0.7 });
+  }
+
+  function kill(e) {
+    e.hp = 0;
+    wood += MOBS[e.kind].wood;
+    pop(e.x, e.y - 12, "+" + MOBS[e.kind].wood, "#F5C400");
+    renderHud();
+    beep(e.kind === "brute" ? 180 : 660, 0.07, "square", 0.04);
+  }
+
+  function nearest(x, y, range) {
+    var best = null, bd = range;
+    for (var i = 0; i < enemies.length; i++) {
+      var e = enemies[i];
+      if (e.hp <= 0) continue;
+      var d = Math.hypot(e.x - x, e.y - y);
+      if (d < bd) { bd = d; best = e; }
+    }
+    return best;
+  }
+
+  function fenceSlow(e) {
+    var mul = 1;
+    for (var i = 0; i < pads.length; i++) {
+      var p = pads[i];
+      if (p.kind !== "fence" || p.stun > 0) continue;
+      var spec = KINDS.fence;
+      var rad = spec.rad[p.rank] * sc;
+      if (Math.hypot(e.x - p.x, e.y - p.y) < rad) {
+        var s = spec.slow[p.rank];
+        if (s < mul) mul = s;
+      }
+    }
+    return mul;
+  }
+
+  function tickBuildings(dt) {
+    for (var i = 0; i < pads.length; i++) {
+      var p = pads[i];
+      if (p.stun > 0) p.stun -= dt;
+      if (!p.kind || p.stun > 0) continue;
+      p.cd -= dt;
+      var spec = KINDS[p.kind];
+      var r = p.rank;
+      if (p.kind === "sling" && p.cd <= 0) {
+        var t = nearest(p.x, p.y, spec.range[r] * sc);
+        if (t) {
+          shots.push({ x: p.x, y: p.y - 10 * sc, tx: t.x, ty: t.y, e: t, spd: 280 * sc, dmg: spec.dmg[r] });
+          p.cd = spec.rate[r];
+          beep(880, 0.03, "square", 0.03);
+        }
+      }
+      if (p.kind === "sap" && p.cd <= 0) {
+        var any = nearest(p.x, p.y, spec.rad[r] * sc + 20);
+        if (any) {
+          pulses.push({ x: p.x, y: p.y, r: 8, max: spec.rad[r] * sc, t: 0.35 });
+          p.cd = spec.rate[r];
+          for (var k = 0; k < enemies.length; k++) {
+            var e = enemies[k];
+            if (e.hp <= 0) continue;
+            if (Math.hypot(e.x - p.x, e.y - p.y) < spec.rad[r] * sc) {
+              e.sapMul = spec.slow[r];
+              e.sapT = spec.dur[r];
+            }
+          }
+          beep(240, 0.08, "sine", 0.04);
+        }
+      }
+    }
+  }
+
+  function tickShots(dt) {
+    for (var i = shots.length - 1; i >= 0; i--) {
+      var s = shots[i];
+      if (s.e && s.e.hp > 0) { s.tx = s.e.x; s.ty = s.e.y; }
+      var dx = s.tx - s.x, dy = s.ty - s.y, L = Math.hypot(dx, dy) || 1;
+      var step = s.spd * dt;
+      if (step >= L) {
+        if (s.e && s.e.hp > 0) {
+          s.e.hp -= s.dmg;
+          s.e.hit = 0.12;
+          if (s.e.hp <= 0) kill(s.e);
+        }
+        shots.splice(i, 1);
+      } else {
+        s.x += dx / L * step;
+        s.y += dy / L * step;
+      }
+    }
+  }
+
+  function bruteThink(e, dt) {
+    if (e.kind !== "brute") return false;
+    if (e.slamCd > 0) e.slamCd -= dt;
+    var fenceHit = null;
+    for (var i = 0; i < pads.length; i++) {
+      var p = pads[i];
+      if (p.kind === "fence" && p.stun <= 0 && Math.hypot(e.x - p.x, e.y - p.y) < 70 * sc) fenceHit = p;
+    }
+    var nearCrown = Math.hypot(e.x - crown.x, e.y - crown.y) < 86 * sc;
+    if (e.teleOn) {
+      e.tele -= dt;
+      if (e.tele <= 0) {
+        e.teleOn = false;
+        e.slamCd = 1.6;
+        shake = 0.22;
+        beep(70, 0.16, "sawtooth", 0.07);
+        if (fenceHit) {
+          fenceHit.stun = 3.2;
+          pop(fenceHit.x, fenceHit.y - 16, "fence down", "#E85D4C");
+        } else if (nearCrown) {
+          hitCrown(2);
+        }
+      }
+      return true;
+    }
+    if (e.slamCd <= 0 && (fenceHit || nearCrown)) {
+      e.teleOn = true;
+      e.tele = 0.55;
+      beep(140, 0.12, "triangle", 0.05);
+      return true;
+    }
+    return false;
+  }
+
+  function tickEnemies(dt) {
+    var plen = pathLen();
+    for (var i = enemies.length - 1; i >= 0; i--) {
+      var e = enemies[i];
+      if (e.hp <= 0) { enemies.splice(i, 1); continue; }
+      if (e.sapT > 0) e.sapT -= dt; else e.sapMul = 1;
+      if (e.hit > 0) e.hit -= dt;
+      if (bruteThink(e, dt)) {
+        var p = posOnPath(e.d);
+        e.x = p.x; e.y = p.y;
+        continue;
+      }
+      var spd = e.spd * fenceSlow(e) * e.sapMul;
+      e.d += spd * dt;
+      if (e.d >= plen - 4) {
+        hitCrown(MOBS[e.kind].dmg);
+        enemies.splice(i, 1);
+        continue;
+      }
+      var pos = posOnPath(e.d);
+      e.x = pos.x; e.y = pos.y;
+    }
+  }
+
+  function tickWave(dt) {
+    var L = LEVELS[level];
+    var w = L.waves[waveI];
+    if (spawnI < w.list.length) {
+      spawnT -= dt;
+      if (spawnT <= 0) {
+        spawn(w.list[spawnI]);
+        spawnI++;
+        spawnT = w.gap;
+      }
+    }
+    tickBuildings(dt);
+    tickShots(dt);
+    tickEnemies(dt);
+    if (hp <= 0) return;
+    if (spawnI >= w.list.length && enemies.length === 0 && shots.length === 0) {
+      if (waveI + 1 >= L.waves.length) winLevel();
+      else {
+        waveI++;
+        phase = "build";
+        spawnI = 0; spawnT = 0;
+        renderHud();
+        beep(490, 0.1, "triangle", 0.05);
+      }
+    }
+  }
+
+  function starCount() {
+    if (hp >= 5) return 3;
+    if (hp >= 3) return 2;
+    return 1;
+  }
+  function winLevel() {
+    var stars = starCount();
+    if (stars > save.stars[level]) save.stars[level] = stars;
+    if (save.unlocked < level + 2) save.unlocked = Math.min(5, level + 2);
+    save.wood = wood;
+    persist();
+    phase = "build";
+    var starStr = "★★★".slice(0, stars) + "☆☆☆".slice(0, 3 - stars);
+    document.getElementById("win-stars").textContent = starStr;
+    document.getElementById("win-msg").textContent = LEVELS[level].name + " holds.";
+    document.getElementById("btn-next").textContent = level < 4 ? "Next" : "Map";
+    if (level === 4) {
+      pendingCameo = true;
+      show("cameo");
+    } else show("win");
+    beep(523, 0.12, "square", 0.05);
+    setTimeout(function () { beep(659, 0.14, "square", 0.05); }, 90);
+  }
+  function loseLevel() {
+    save.wood = snapWood;
+    persist();
+    show("lose");
+  }
+
+  function tryPlace(pad) {
+    if (phase !== "build") return;
+    if (pad.kind) {
+      if (pad.rank >= 1) { setHint("Maxed — summer’s enough"); return; }
+      var up = KINDS[pad.kind].up;
+      if (wood < up) { flashChip(); flashCard(pad.kind); setHint("Need " + up + " wood to upgrade"); return; }
+      wood -= up;
+      pad.rank = 1;
+      pop(pad.x, pad.y - 18, "upgrade", "#F5C400");
+      persistWoodSoft();
+      renderHud();
+      beep(700, 0.08, "square", 0.05);
+      return;
+    }
+    if (!selected) { setHint("Pick Fence, Sling, or Sap below"); return; }
+    var cost = KINDS[selected].cost;
+    if (wood < cost) { flashChip(); flashCard(selected); setHint("Need " + cost + " wood"); return; }
+    wood -= cost;
+    pad.kind = selected;
+    pad.rank = 0; pad.cd = 0.2; pad.stun = 0;
+    persistWoodSoft();
+    renderHud();
+    beep(392, 0.07, "square", 0.05);
+  }
+  function persistWoodSoft() {
+    /* spend is per-attempt; campaign wood writes on win/lose */
+  }
+  function flashCard(kind) {
+    var el = document.getElementById("card-" + kind);
+    el.classList.remove("flash");
+    void el.offsetWidth;
+    el.classList.add("flash");
+  }
+
+  function tapWorld(x, y) {
+    if (screen !== "play" || paused || phase !== "build") return;
+    for (var i = 0; i < berries.length; i++) {
+      var b = berries[i];
+      if (!b.used && Math.hypot(x - b.x, y - b.y) < 36 * sc) {
+        b.used = true;
+        wood += 6;
+        pop(b.x, b.y - 12, "+6", "#E85D4C");
+        renderHud();
+        beep(990, 0.06, "sine", 0.04);
+        return;
+      }
+    }
+    var best = null, bd = 46 * sc;
+    for (var p = 0; p < pads.length; p++) {
+      var d = Math.hypot(x - pads[p].x, y - pads[p].y);
+      if (d < bd) { bd = d; best = pads[p]; }
+    }
+    if (best) tryPlace(best);
+  }
+
+  function tickFx(dt) {
+    for (var i = fx.length - 1; i >= 0; i--) {
+      fx[i].t -= dt; fx[i].y -= 22 * dt;
+      if (fx[i].t <= 0) fx.splice(i, 1);
+    }
+    for (var j = pulses.length - 1; j >= 0; j--) {
+      pulses[j].t -= dt;
+      pulses[j].r += (pulses[j].max * dt) / 0.28;
+      if (pulses[j].t <= 0) pulses.splice(j, 1);
+    }
+    if (shake > 0) shake -= dt;
+  }
+
+  function ellipseShadow(x, y, rx, ry) {
+    ctx.save();
+    ctx.fillStyle = "rgba(26,40,16,0.28)";
+    ctx.beginPath();
+    ctx.ellipse(x, y + 6, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+  function drawSprite(im, x, y, w, h, flip) {
+    if (!im) return false;
+    ctx.save();
+    ctx.translate(x, y);
+    if (flip) ctx.scale(-1, 1);
+    ctx.drawImage(im, -w / 2, -h, w, h);
+    ctx.restore();
+    return true;
+  }
+
+  function drawMeadow() {
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#87C6E8");
+    g.addColorStop(0.28, "#9ED2EE");
+    g.addColorStop(0.28, "#6B9E3A");
+    g.addColorStop(1, "#4E7C28");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "#F5C400";
+    ctx.beginPath();
+    ctx.arc(W * 0.82, H * 0.10, 22 * sc, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#7DB346";
+    ctx.beginPath();
+    ctx.ellipse(W * 0.5, H * 0.55, W * 0.46, H * 0.40, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#3E6A22";
+    ctx.lineWidth = 5 * sc;
+    ctx.stroke();
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(W * 0.5, H * 0.55, W * 0.46, H * 0.40, 0, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.strokeStyle = "rgba(244,230,195,0.35)";
+    ctx.lineWidth = 28 * sc;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(path[0].x, path[0].y);
+    for (var i = 1; i < path.length; i++) ctx.lineTo(path[i].x, path[i].y);
+    ctx.stroke();
+    for (var f = 0; f < flowers.length; f++) {
+      var fl = flowers[f];
+      ctx.fillStyle = fl.c;
+      ctx.beginPath();
+      ctx.arc(fl.x * W, fl.y * H, fl.r * sc, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawPad(p) {
+    ellipseShadow(p.x, p.y, 22 * sc, 10 * sc);
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y, 24 * sc, 12 * sc, 0, 0, Math.PI * 2);
+    ctx.fillStyle = p.kind ? "#8A7A62" : "#C4B48A";
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = selected && !p.kind && phase === "build" ? "#F5C400" : "#5C3A1A";
+    ctx.stroke();
+    if (p.stun > 0) {
+      ctx.globalAlpha = 0.45;
+    }
+    if (p.kind === "fence") {
+      if (!drawSprite(IM.fence, p.x, p.y + 6, 64 * sc, 48 * sc)) {
+        ctx.strokeStyle = "#5C3A1A"; ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.moveTo(p.x - 22 * sc, p.y); ctx.lineTo(p.x + 22 * sc, p.y); ctx.stroke();
+      }
+      ctx.save();
+      ctx.strokeStyle = "rgba(245,196,0,0.28)";
+      ctx.setLineDash([6, 5]);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, KINDS.fence.rad[p.rank] * sc, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    } else if (p.kind === "sling") {
+      drawSprite(IM.sling, p.x, p.y + 8, 52 * sc, 56 * sc);
+    } else if (p.kind === "sap") {
+      drawSprite(IM.sap, p.x, p.y + 8, 54 * sc, 48 * sc);
+    } else if (phase === "build") {
+      ctx.fillStyle = "#1A2810";
+      ctx.font = "800 " + Math.round(13 * sc) + "px Trebuchet MS,sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("PAD", p.x, p.y + 4);
+    }
+    ctx.globalAlpha = 1;
+    if (p.rank === 1 && p.kind) {
+      ctx.fillStyle = "#F5C400";
+      ctx.font = "800 " + Math.round(11 * sc) + "px Trebuchet MS,sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("★", p.x, p.y - 28 * sc);
+    }
+  }
+
+  function drawMob(e) {
+    ellipseShadow(e.x, e.y, 16 * sc * MOBS[e.kind].scale, 7 * sc);
+    var h = 46 * sc * MOBS[e.kind].scale;
+    var w = 50 * sc * MOBS[e.kind].scale;
+    if (e.teleOn) {
+      ctx.save();
+      ctx.strokeStyle = "#E85D4C";
+      ctx.lineWidth = 4;
+      ctx.globalAlpha = 0.55 + 0.45 * Math.sin(tGame * 14);
+      ctx.beginPath();
+      var rr = 28 * sc + (1 - e.tele / 0.55) * 36 * sc;
+      ctx.ellipse(e.x, e.y, rr, rr * 0.55, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+    ctx.save();
+    if (e.hit > 0) ctx.filter = "brightness(1.8)";
+    if (e.teleOn) ctx.translate(0, Math.sin(tGame * 20) * 2);
+    var im = IM[e.kind];
+    var bob = Math.sin(tGame * (e.kind === "rat" ? 14 : 8) + e.d) * 2;
+    if (!drawSprite(im, e.x, e.y + bob, w, h)) {
+      ctx.fillStyle = e.kind === "brute" ? "#4E7C28" : (e.kind === "bandit" ? "#6a6a70" : "#8B5A2B");
+      ctx.beginPath(); ctx.ellipse(e.x, e.y - h * 0.35, w * 0.35, h * 0.4, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+    if (e.max > 1) {
+      var bw = 28 * sc, bh = 4;
+      ctx.fillStyle = "#1A2810";
+      ctx.fillRect(e.x - bw / 2, e.y - h - 8, bw, bh);
+      ctx.fillStyle = "#7ED957";
+      ctx.fillRect(e.x - bw / 2, e.y - h - 8, bw * (e.hp / e.max), bh);
+    }
+  }
+
+  function drawWorld() {
+    var ox = 0, oy = 0;
+    if (shake > 0) { ox = (Math.random() - 0.5) * 8; oy = (Math.random() - 0.5) * 8; }
+    ctx.save();
+    ctx.translate(ox, oy);
+    drawMeadow();
+    var list = [];
+    pads.forEach(function (p) { list.push({ y: p.y, draw: function () { drawPad(p); } }); });
+    berries.forEach(function (b) {
+      list.push({ y: b.y, draw: function () {
+        ellipseShadow(b.x, b.y, 16 * sc, 8 * sc);
+        ctx.globalAlpha = b.used ? 0.4 : 1;
+        if (!drawSprite(IM.berry, b.x, b.y + 6, 44 * sc, 44 * sc)) {
+          ctx.fillStyle = b.used ? "#4E7C28" : "#2d6b28";
+          ctx.beginPath(); ctx.arc(b.x, b.y - 8, 16 * sc, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        if (!b.used && phase === "build") {
+          ctx.fillStyle = "#C62828";
+          ctx.font = "800 " + Math.round(11 * sc) + "px Trebuchet MS,sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("TAP", b.x, b.y + 18 * sc);
+        }
+      }});
+    });
+    enemies.forEach(function (e) { list.push({ y: e.y, draw: function () { drawMob(e); } }); });
+    list.push({ y: crown.y, draw: function () {
+      ellipseShadow(crown.x, crown.y, 20 * sc, 9 * sc);
+      if (!drawSprite(IM.crown, crown.x, crown.y + 4, 58 * sc, 52 * sc)) {
+        ctx.fillStyle = "#F5C400";
+        ctx.beginPath(); ctx.moveTo(crown.x - 20, crown.y); ctx.lineTo(crown.x, crown.y - 28); ctx.lineTo(crown.x + 20, crown.y); ctx.fill();
+      }
+    }});
+    list.push({ y: bober.y, draw: function () {
+      ellipseShadow(bober.x, bober.y, 18 * sc, 8 * sc);
+      var bob = Math.sin(tGame * 2.2) * 2;
+      drawSprite(IM.bober, bober.x, bober.y + bob, 56 * sc, 58 * sc);
+    }});
+    list.sort(function (a, b) { return a.y - b.y; });
+    list.forEach(function (it) { it.draw(); });
+    shots.forEach(function (s) {
+      ctx.fillStyle = "#F4E6C3";
+      ctx.strokeStyle = "#1A2810";
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(s.x, s.y, 5 * sc, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    });
+    pulses.forEach(function (p) {
+      ctx.strokeStyle = "rgba(245,196,0,0.55)";
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.stroke();
+    });
+    fx.forEach(function (f) {
+      ctx.globalAlpha = Math.max(0, f.t / 0.7);
+      ctx.fillStyle = f.col;
+      ctx.font = "800 " + Math.round(13 * sc) + "px Trebuchet MS,sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(f.text, f.x, f.y);
+      ctx.globalAlpha = 1;
+    });
+    ctx.restore();
+  }
+
+  var last = 0;
+  function loop(ts) {
+    requestAnimationFrame(loop);
+    if (!last) last = ts;
+    var dt = Math.min(0.033, (ts - last) / 1000);
+    last = ts;
+    tGame += dt;
+    if (screen === "history") {
+      histT += dt;
+      if (histT > 2.15) { histT = 0; histI++; if (histI >= HIST.length) finishHist(); else paintHist(); }
+    }
+    if (screen === "play" && !paused) {
+      if (phase === "wave") tickWave(dt);
+      tickFx(dt);
+    }
+    if (screen === "play" || screen === "paused") drawWorld();
+  }
+
+  function paintHist() {
+    document.getElementById("hist-line").textContent = HIST[histI];
+    document.getElementById("hist-n").textContent = (histI + 1) + " / " + HIST.length;
+  }
+  function finishHist() {
+    save.introSeen = true;
+    persist();
+    openMap();
+  }
+  function openMap() {
+    var grid = document.getElementById("level-grid");
+    grid.innerHTML = "";
+    LEVELS.forEach(function (L, i) {
+      var b = document.createElement("button");
+      b.className = "lvl" + (i >= save.unlocked ? " locked" : "");
+      b.type = "button";
+      var stars = save.stars[i] || 0;
+      b.innerHTML = "<span class=\"num\">" + (i + 1) + "</span><span class=\"lbl\">" + L.name + "</span><span class=\"stars\">" +
+        (i >= save.unlocked ? "lock" : "★★★".slice(0, stars) + "☆☆☆".slice(0, 3 - stars)) + "</span>";
+      b.addEventListener("click", function () {
+        if (i >= save.unlocked) return;
+        ensureAudio();
+        startLevel(i);
+      });
+      grid.appendChild(b);
+    });
+    show("levels");
+  }
+
+  function onPtr(ev) {
+    if (screen !== "play") return;
+    var r = cv.getBoundingClientRect();
+    var x = (ev.clientX - r.left) * (W / r.width);
+    var y = (ev.clientY - r.top) * (H / r.height);
+    tapWorld(x, y);
+  }
+
+  document.getElementById("btn-face").addEventListener("click", function () {
+    ensureAudio();
+    if (!save.introSeen) { histI = 0; histT = 0; paintHist(); show("history"); }
+    else openMap();
+  });
+  document.getElementById("btn-more").addEventListener("click", function () { location.href = HUB; });
+  document.getElementById("btn-new").addEventListener("click", function () {
+    if (!window.confirm("New game? Unlocks and wood reset. Intro stays seen.")) return;
+    wipeKeepIntro();
+    ensureAudio();
+    if (!save.introSeen) { histI = 0; histT = 0; paintHist(); show("history"); }
+    else openMap();
+  });
+  document.getElementById("btn-hist").addEventListener("click", finishHist);
+  document.getElementById("btn-back").addEventListener("click", function () { show("splash"); });
+  document.getElementById("btn-pause").addEventListener("click", function () {
+    if (screen !== "play") return;
+    paused = true; show("paused");
+  });
+  document.getElementById("btn-resume").addEventListener("click", function () {
+    paused = false; show("play"); renderHud();
+  });
+  document.getElementById("btn-map").addEventListener("click", function () {
+    save.wood = snapWood; persist(); openMap();
+  });
+  document.getElementById("btn-mute").addEventListener("click", function () {
+    mute = !mute; save.mute = mute; persist();
+    muteBtn.textContent = mute ? "🔇" : "🔊";
+    muteBtn.classList.toggle("on", mute);
+    if (!mute) ensureAudio();
+  });
+  goBtn.addEventListener("click", function () { ensureAudio(); startWave(); });
+  ["fence", "sling", "sap"].forEach(function (k) {
+    document.getElementById("card-" + k).addEventListener("click", function () {
+      if (phase !== "build") return;
+      selected = selected === k ? null : k;
+      renderHud();
+      setHint(selected ? ("Tap a pad · " + KINDS[k].name) : "Tap a pad to place / upgrade");
+    });
+  });
+  document.getElementById("btn-next").addEventListener("click", function () {
+    if (level < 4 && level + 1 < save.unlocked) startLevel(level + 1);
+    else openMap();
+  });
+  document.getElementById("btn-win-map").addEventListener("click", openMap);
+  document.getElementById("btn-retry").addEventListener("click", function () { startLevel(level); });
+  document.getElementById("btn-lose-map").addEventListener("click", openMap);
+  document.getElementById("btn-cameo").addEventListener("click", function () {
+    pendingCameo = false; show("win");
+  });
+  cv.addEventListener("pointerdown", onPtr);
+  window.addEventListener("resize", resize);
+  window.addEventListener("orientationchange", function () { setTimeout(resize, 80); });
+
+  boot();
+})();
+</script>
+</body>
+</html>
