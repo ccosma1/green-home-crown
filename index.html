@@ -278,7 +278,7 @@
     <div id="levels" class="overlay hidden">
       <img class="hero" src="assets/splash.jpg" alt="" />
       <h2>Summer Dawn</h2>
-      <p class="tag">Act I–VI · L1–40</p>
+      <p class="tag">Act I–VII · L1–55</p>
       <p class="how">Move the King. Crossbows by the Crown.</p>
       <div id="level-grid"></div>
       <button class="play ghost" id="btn-back" type="button">Back</button>
@@ -747,6 +747,168 @@
         { gap: 0.42, list: ["knight", "wagon"] },
         { gap: 0.26, list: ["reed", "thief", "reed", "goat", "reed"] },
         { gap: 0.38, list: ["wagon", "knight", "brute", "wagon", "knight"] }
+      ] },
+    { name: "Dust Gate", berries: 1, tip: "Dust on the gate again.",
+      waves: [
+        { gap: 0.26, list: ["reed", "goat", "thief", "reed"] },
+        { gap: 0.28, list: ["reed", "bandit", "reed", "goat"] },
+        { gap: 0.42, list: ["knight", "reed", "thief"] },
+        { gap: 0.26, list: ["reed", "goat", "reed", "thief"] },
+        { gap: 0.4, list: ["wagon", "reed", "goat"] },
+        { gap: 0.26, list: ["thief", "reed", "goat", "reed"] },
+        { gap: 0.38, list: ["knight", "wagon", "reed"] },
+        { gap: 0.26, list: ["reed", "thief", "goat", "reed"] }
+      ] },
+    { name: "Meadow Press", berries: 1, tip: "The meadow presses in.",
+      waves: [
+        { gap: 0.26, list: ["thief", "reed", "thief", "goat"] },
+        { gap: 0.26, list: ["reed", "bandit", "reed", "thief"] },
+        { gap: 0.3, list: ["goat", "thief", "reed", "bandit"] },
+        { gap: 0.42, list: ["knight", "thief", "reed"] },
+        { gap: 0.26, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.4, list: ["wagon", "thief", "reed"] },
+        { gap: 0.26, list: ["thief", "reed", "goat", "bandit", "reed"] }
+      ] },
+    { name: "Reed Tide", berries: 1, tip: "Reeds never stop.",
+      waves: [
+        { gap: 0.24, list: ["reed", "reed", "goat", "reed"] },
+        { gap: 0.24, list: ["reed", "thief", "reed", "reed"] },
+        { gap: 0.4, list: ["knight", "reed", "reed"] },
+        { gap: 0.24, list: ["reed", "goat", "reed", "thief"] },
+        { gap: 0.24, list: ["reed", "bandit", "reed", "goat"] },
+        { gap: 0.38, list: ["wagon", "reed", "goat"] },
+        { gap: 0.24, list: ["reed", "thief", "reed", "goat", "reed"] },
+        { gap: 0.36, list: ["knight", "wagon", "reed"] }
+      ] },
+    { name: "Tin Column", berries: 1, tip: "Tin crowns in a column.",
+      waves: [
+        { gap: 0.26, list: ["goat", "reed", "goat", "thief"] },
+        { gap: 0.26, list: ["reed", "goat", "bandit", "reed"] },
+        { gap: 0.42, list: ["knight", "goat", "reed"] },
+        { gap: 0.26, list: ["goat", "thief", "reed", "goat"] },
+        { gap: 0.4, list: ["wagon", "goat", "reed"] },
+        { gap: 0.26, list: ["reed", "goat", "thief", "reed"] },
+        { gap: 0.38, list: ["knight", "wagon", "goat"] }
+      ] },
+    { name: "Wagon Rush", berries: 1, tip: "Wagons rush the bend.",
+      waves: [
+        { gap: 0.28, list: ["reed", "goat", "reed", "bandit"] },
+        { gap: 0.44, list: ["wagon", "reed"] },
+        { gap: 0.26, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.42, list: ["wagon", "goat"] },
+        { gap: 0.26, list: ["reed", "bandit", "reed", "goat"] },
+        { gap: 0.4, list: ["wagon", "knight"] },
+        { gap: 0.28, list: ["reed", "wagon", "goat", "reed"] },
+        { gap: 0.38, list: ["wagon", "knight", "reed"] }
+      ] },
+    { name: "Knife Picnic", berries: 1, tip: "Knives in the picnic.",
+      waves: [
+        { gap: 0.24, list: ["thief", "reed", "thief", "goat"] },
+        { gap: 0.24, list: ["reed", "thief", "reed", "thief"] },
+        { gap: 0.4, list: ["knight", "thief", "reed"] },
+        { gap: 0.24, list: ["thief", "goat", "reed", "thief"] },
+        { gap: 0.38, list: ["wagon", "thief", "goat"] },
+        { gap: 0.24, list: ["reed", "thief", "bandit", "reed"] },
+        { gap: 0.38, list: ["knight", "wagon", "thief"] },
+        { gap: 0.24, list: ["thief", "reed", "goat", "thief"] }
+      ] },
+    { name: "Horn Bend", berries: 1, tip: "Horns on the last bend.",
+      waves: [
+        { gap: 0.26, list: ["goat", "reed", "thief", "reed"] },
+        { gap: 0.26, list: ["reed", "goat", "bandit", "reed"] },
+        { gap: 0.42, list: ["knight", "goat", "reed"] },
+        { gap: 0.26, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.4, list: ["wagon", "reed", "goat"] },
+        { gap: 0.26, list: ["goat", "reed", "thief", "reed"] },
+        { gap: 0.38, list: ["knight", "wagon", "brute"] }
+      ] },
+    { name: "Crown Dust", berries: 1, tip: "Dust on the crown road.",
+      waves: [
+        { gap: 0.24, list: ["reed", "goat", "reed", "thief"] },
+        { gap: 0.24, list: ["reed", "bandit", "reed", "goat"] },
+        { gap: 0.4, list: ["knight", "reed", "goat"] },
+        { gap: 0.24, list: ["thief", "reed", "goat", "reed"] },
+        { gap: 0.38, list: ["wagon", "reed", "thief"] },
+        { gap: 0.24, list: ["reed", "goat", "reed", "bandit"] },
+        { gap: 0.38, list: ["knight", "wagon", "reed"] },
+        { gap: 0.24, list: ["reed", "thief", "goat", "reed"] }
+      ] },
+    { name: "Goat Wall", berries: 1, tip: "Goats wall the lane.",
+      waves: [
+        { gap: 0.26, list: ["goat", "reed", "goat", "thief"] },
+        { gap: 0.26, list: ["goat", "bandit", "reed", "goat"] },
+        { gap: 0.42, list: ["knight", "goat", "reed"] },
+        { gap: 0.26, list: ["goat", "thief", "goat", "reed"] },
+        { gap: 0.4, list: ["wagon", "goat", "thief"] },
+        { gap: 0.26, list: ["reed", "goat", "reed", "goat"] },
+        { gap: 0.38, list: ["knight", "wagon", "goat"] },
+        { gap: 0.26, list: ["goat", "reed", "thief", "goat"] }
+      ] },
+    { name: "Knight Line", berries: 1, tip: "Knights in a line.",
+      waves: [
+        { gap: 0.26, list: ["reed", "goat", "thief", "reed"] },
+        { gap: 0.4, list: ["knight", "reed"] },
+        { gap: 0.24, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.4, list: ["knight", "goat"] },
+        { gap: 0.24, list: ["thief", "reed", "goat", "reed"] },
+        { gap: 0.38, list: ["knight", "wagon"] },
+        { gap: 0.24, list: ["reed", "thief", "reed", "goat"] },
+        { gap: 0.36, list: ["knight", "wagon", "knight"] }
+      ] },
+    { name: "Siege Road", berries: 1, tip: "Siege on the crown road.",
+      waves: [
+        { gap: 0.26, list: ["reed", "goat", "reed", "bandit"] },
+        { gap: 0.42, list: ["wagon", "reed"] },
+        { gap: 0.24, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.4, list: ["wagon", "goat"] },
+        { gap: 0.24, list: ["reed", "bandit", "reed", "goat"] },
+        { gap: 0.4, list: ["wagon", "knight"] },
+        { gap: 0.26, list: ["reed", "wagon", "goat", "reed"] },
+        { gap: 0.36, list: ["wagon", "brute", "wagon"] }
+      ] },
+    { name: "Banner Heat", berries: 1, tip: "Banners in the heat.",
+      waves: [
+        { gap: 0.24, list: ["reed", "thief", "reed", "goat"] },
+        { gap: 0.24, list: ["thief", "reed", "bandit", "reed"] },
+        { gap: 0.4, list: ["knight", "reed", "goat"] },
+        { gap: 0.24, list: ["reed", "goat", "thief", "reed"] },
+        { gap: 0.38, list: ["wagon", "reed", "thief"] },
+        { gap: 0.24, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.36, list: ["knight", "wagon", "reed"] },
+        { gap: 0.24, list: ["thief", "reed", "goat", "bandit", "reed"] }
+      ] },
+    { name: "Summer Pack", berries: 1, tip: "The pack fills the lane.",
+      waves: [
+        { gap: 0.22, list: ["reed", "thief", "reed", "goat"] },
+        { gap: 0.22, list: ["reed", "reed", "thief", "reed"] },
+        { gap: 0.38, list: ["knight", "reed", "thief"] },
+        { gap: 0.22, list: ["reed", "goat", "reed", "thief"] },
+        { gap: 0.36, list: ["wagon", "reed", "goat"] },
+        { gap: 0.22, list: ["thief", "reed", "reed", "goat"] },
+        { gap: 0.36, list: ["knight", "wagon", "brute"] },
+        { gap: 0.22, list: ["reed", "thief", "reed", "goat", "reed"] }
+      ] },
+    { name: "False March", berries: 1, tip: "A false crown marches.",
+      waves: [
+        { gap: 0.24, list: ["goat", "reed", "thief", "reed"] },
+        { gap: 0.4, list: ["knight", "reed", "goat"] },
+        { gap: 0.24, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.4, list: ["wagon", "knight"] },
+        { gap: 0.24, list: ["thief", "reed", "goat", "reed"] },
+        { gap: 0.38, list: ["knight", "wagon", "goat"] },
+        { gap: 0.24, list: ["reed", "thief", "reed", "goat"] },
+        { gap: 0.36, list: ["wagon", "knight", "brute", "knight"] }
+      ] },
+    { name: "Keep Stand", berries: 1, tip: "Hold the keep. Don’t freeze.",
+      waves: [
+        { gap: 0.22, list: ["reed", "goat", "thief", "reed"] },
+        { gap: 0.4, list: ["knight", "reed"] },
+        { gap: 0.22, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.42, list: ["wagon", "brute"] },
+        { gap: 0.22, list: ["thief", "reed", "goat", "reed"] },
+        { gap: 0.38, list: ["knight", "wagon"] },
+        { gap: 0.22, list: ["reed", "thief", "reed", "goat", "reed"] },
+        { gap: 0.34, list: ["wagon", "knight", "brute", "wagon", "knight"] }
       ] }
   ];
   (function swarmify() {
@@ -770,7 +932,9 @@
         else if (li < 20) target = 36 + (li - 15) * 4;
         else if (li < 25) target = 50 + (li - 20) * 2;
         else if (li < 32) target = 60 + (li - 25) * 2;
-        else target = 74 + (li - 32) * 2;
+        else if (li < 40) target = 74 + (li - 32) * 2;
+        else if (li < 47) target = 90 + (li - 40) * 2;
+        else target = 104 + (li - 47) * 2;
         var out = w.list.slice();
         j = 0;
         while (out.length < target) {
@@ -779,7 +943,7 @@
         }
         w.list = out;
         var boss = w.list.indexOf("wagon") >= 0 || w.list.indexOf("knight") >= 0 || w.list.indexOf("brute") >= 0;
-        var base = li < 3 ? 0.30 : (li < 5 ? 0.26 : (li < 7 ? 0.20 : (li < 10 ? 0.16 : (li < 15 ? 0.16 : (li < 20 ? 0.14 : (li < 25 ? 0.13 : (li < 32 ? 0.12 : 0.11)))))));
+        var base = li < 3 ? 0.30 : (li < 5 ? 0.26 : (li < 7 ? 0.20 : (li < 10 ? 0.16 : (li < 15 ? 0.16 : (li < 20 ? 0.14 : (li < 25 ? 0.13 : (li < 32 ? 0.12 : (li < 40 ? 0.11 : (li < 47 ? 0.11 : 0.10)))))))));
         w.gap = boss ? Math.max(0.28, Math.min(0.42, w.gap)) : base;
       });
     });
@@ -887,7 +1051,22 @@
     "Banner trial. Royal Guard if you can.",
     "Summer flood. The lane never empties.",
     "Pretender road. One crown. Bring summer.",
-    "Capital stand. Hold the gate."
+    "Capital stand. Hold the gate.",
+    "Dust gate. Ride and upgrade.",
+    "Meadow press. Towers chew.",
+    "Reed tide. Pierce the pack.",
+    "Tin column. Rear shots on goats.",
+    "Wagon rush. Slow, still deadly.",
+    "Knife picnic. Don’t freeze.",
+    "Horn bend. Ballistae ready.",
+    "Crown dust. Keep scooping.",
+    "Goat wall. Flank the shields.",
+    "Knight line. Sidestep the charge.",
+    "Siege road. Wagons plus flies.",
+    "Banner heat. Royal Guard if you can.",
+    "Summer pack. The lane never empties.",
+    "False march. One crown. Bring summer.",
+    "Keep stand. Hold the gate."
   ];
   var STAR_CAP = 100;
 
@@ -908,6 +1087,7 @@
       d.unlocked = Math.max(1, Math.min(LEVELS.length, s.unlocked | 0));
       if ((s.unlocked | 0) >= 20) d.unlocked = Math.max(d.unlocked, 21);
       if ((s.unlocked | 0) >= 25 || (s.stars && (s.stars[24] | 0) > 0)) d.unlocked = Math.max(d.unlocked, Math.min(LEVELS.length, 26));
+      if ((s.unlocked | 0) >= 40 || (s.stars && (s.stars[39] | 0) > 0)) d.unlocked = Math.max(d.unlocked, Math.min(LEVELS.length, 41));
       d.wood = Math.max(0, s.wood | 0);
       d.stars = blankStars();
       if (s.stars) for (var i = 0; i < STAR_CAP; i++) d.stars[i] = Math.max(0, Math.min(3, s.stars[i] | 0));
@@ -1433,6 +1613,21 @@
       if (kind === "knight") hp += 6;
       if (kind === "goat") hp += 3;
       if (kind === "brute") hp += 8;
+    }
+    if (lv >= 40) {
+      if (kind === "reed") hp += 1;
+      if (kind === "wagon") hp += 6;
+      if (kind === "knight") hp += 4;
+      if (kind === "goat") hp += 2;
+      if (kind === "brute") hp += 6;
+      if (kind === "thief") hp += 1;
+    }
+    if (lv >= 47) {
+      if (kind === "reed") hp += 1;
+      if (kind === "wagon") hp += 6;
+      if (kind === "knight") hp += 4;
+      if (kind === "goat") hp += 2;
+      if (kind === "brute") hp += 6;
     }
     return hp;
   }

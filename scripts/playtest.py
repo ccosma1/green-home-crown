@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static checks plus a 1D fair-player leak sim for L1-40."""
+"""Static checks plus a 1D fair-player leak sim for L1-55."""
 
 from __future__ import annotations
 
@@ -68,8 +68,12 @@ def swarmify(levels: list[tuple[str, list[tuple[float, list[str]]]]]) -> list:
                 target = 50 + (li - 20) * 2
             elif li < 32:
                 target = 60 + (li - 25) * 2
-            else:
+            elif li < 40:
                 target = 74 + (li - 32) * 2
+            elif li < 47:
+                target = 90 + (li - 40) * 2
+            else:
+                target = 104 + (li - 47) * 2
             lst = list(kinds)
             j = 0
             while len(lst) < target:
@@ -84,7 +88,8 @@ def swarmify(levels: list[tuple[str, list[tuple[float, list[str]]]]]) -> list:
                    (0.16 if li < 15 else
                     (0.14 if li < 20 else
                      (0.13 if li < 25 else
-                      (0.12 if li < 32 else 0.11)))))))
+                      (0.12 if li < 32 else
+                       (0.11 if li < 47 else 0.10))))))))
             )
             g = max(0.28, min(0.42, gap)) if boss else base
             nw.append((g, lst))
@@ -195,6 +200,30 @@ def mob_hp(kind: str, li: int) -> int:
             hp += 3
         if kind == "brute":
             hp += 8
+    if li >= 40:
+        if kind == "reed":
+            hp += 1
+        if kind == "wagon":
+            hp += 6
+        if kind == "knight":
+            hp += 4
+        if kind == "goat":
+            hp += 2
+        if kind == "brute":
+            hp += 6
+        if kind == "thief":
+            hp += 1
+    if li >= 47:
+        if kind == "reed":
+            hp += 1
+        if kind == "wagon":
+            hp += 6
+        if kind == "knight":
+            hp += 4
+        if kind == "goat":
+            hp += 2
+        if kind == "brute":
+            hp += 6
     return hp
 
 
@@ -263,10 +292,11 @@ def main() -> None:
     must("Tin Claim" in HTML and "Banner War" in HTML, "L23-24")
     must("Summer Crown" in HTML, "L25")
     must("Gate Dust" in HTML and "Capital Stand" in HTML, "L26 and L40")
+    must("Dust Gate" in HTML and "Keep Stand" in HTML, "L41 and L55")
     must("STAR_CAP" in HTML and "STAR_CAP = 100" in HTML, "stars toward 100")
     must("Feast shop" not in HTML and "btn-shop" not in HTML, "shop UI gone")
     must("COSMETICS" not in HTML and "scarePlace" not in HTML, "shop data gone")
-    must(HTML.count("{ gap:") >= 220, "L1-40 waves")
+    must(HTML.count("{ gap:") >= 320, "L1-55 waves")
     must("sepia" not in HTML, "king glow")
     must("dropCoin" in HTML and "tickCoins" in HTML, "coin pickups")
     must("snapCoinPos" in HTML, "reachable coins")
@@ -297,12 +327,13 @@ def main() -> None:
     must("target = 26 + li" in HTML, "mid-act denser swarm")
     must("li < 7 ? 0.20" in HTML, "L8 gap tighten")
     must("lv >= 25" in HTML, "L26+ HP scale")
+    must("lv >= 40" in HTML and "lv >= 47" in HTML, "L41+ HP scale")
     must("startMagnet" in HTML and "tickMagnet" in HTML and "batchCoins" in HTML, "Next coin magnet")
     must('phase === "magnet"' in HTML, "magnet phase")
     must("c.fly" in HTML and "Gold flies to the King" in HTML, "coins arc to king")
     must("startMagnet" in HTML and "coins = []" not in HTML[HTML.find("function beginClear"):HTML.find("function finishWin")], "Next does not dump coins")
     levels = parse_levels()
-    must(len(levels) == 40, "40 levels")
+    must(len(levels) == 55, "55 levels")
     packed = swarmify(levels)
     for li, (name, waves) in enumerate(packed):
         n = live_n(li)
@@ -321,8 +352,11 @@ def main() -> None:
             must(leaks <= 1, "L25 too leaky: %s" % leaks)
             must(any("brute" in lst or "wagon" in lst for _g, lst in waves), "L25 siege")
         if li == 39:
-            must(leaks <= 1, "L40 finale too leaky: %s" % leaks)
+            must(leaks <= 1, "L40 too leaky: %s" % leaks)
             must(any("brute" in lst or "wagon" in lst for _g, lst in waves), "L40 siege")
+        if li == 54:
+            must(leaks <= 1, "L55 finale too leaky: %s" % leaks)
+            must(any("brute" in lst or "wagon" in lst for _g, lst in waves), "L55 siege")
     print("playtest ok")
 
 
