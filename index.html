@@ -765,6 +765,7 @@
           pop(fenceHit.x, fenceHit.y - 16, "fence down", "#E85D4C");
         } else if (nearCrown) {
           hitCrown(2);
+          e.hp = 0;
         }
       }
       return true;
@@ -793,6 +794,13 @@
       var spd = e.spd * fenceSlow(e) * e.sapMul;
       e.d += spd * dt;
       if (e.d >= plen - 4) {
+        if (e.kind === "brute") {
+          e.d = plen - 4;
+          if (!e.teleOn) { e.teleOn = true; e.tele = 0.55; e.slamCd = 0; }
+          var hold = posOnPath(e.d);
+          e.x = hold.x; e.y = hold.y;
+          continue;
+        }
         hitCrown(MOBS[e.kind].dmg);
         enemies.splice(i, 1);
         continue;
