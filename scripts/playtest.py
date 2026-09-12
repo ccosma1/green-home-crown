@@ -41,6 +41,8 @@ def main() -> None:
     must("armies fire harder" in HTML, "Royal Guard army buff")
     must("COSMETICS" in HTML and "Feast shop" in HTML, "story cosmetics")
     must("stride" in HTML, "walk cycle")
+    must("var rim" not in HTML, "color rims still present")
+    must("drawMobFallback" in HTML, "creature fallbacks")
     must("Ride over gold coins" in HTML, "coin tip")
     must((ROOT / "assets/sprites/reed.png").is_file(), "reed.png")
     must((ROOT / "assets/sprites/wagon.png").is_file(), "wagon.png")

@@ -361,14 +361,14 @@
     pierce: [0, 1, 2]
   };
   var MOBS = {
-    rat: { hp: 1, spd: 68, wood: 2, dmg: 1, scale: 0.58 },
-    bandit: { hp: 4, spd: 58, wood: 4, dmg: 1, scale: 0.78 },
-    brute: { hp: 14, spd: 26, wood: 12, dmg: 2, scale: 1.18 },
-    thief: { hp: 2, spd: 96, wood: 3, dmg: 1, scale: 0.66 },
-    goat: { hp: 6, spd: 42, wood: 6, dmg: 1, scale: 0.9 },
-    knight: { hp: 16, spd: 50, wood: 15, dmg: 2, scale: 1.08 },
-    reed: { hp: 1, spd: 102, wood: 2, dmg: 1, scale: 0.54 },
-    wagon: { hp: 20, spd: 36, wood: 16, dmg: 2, scale: 1.18 }
+    rat: { hp: 1, spd: 68, wood: 2, dmg: 1, scale: 0.52 },
+    bandit: { hp: 4, spd: 58, wood: 4, dmg: 1, scale: 0.8 },
+    brute: { hp: 14, spd: 26, wood: 12, dmg: 2, scale: 1.22 },
+    thief: { hp: 2, spd: 96, wood: 3, dmg: 1, scale: 0.7 },
+    goat: { hp: 6, spd: 42, wood: 6, dmg: 1, scale: 0.96 },
+    knight: { hp: 16, spd: 50, wood: 15, dmg: 2, scale: 1.12 },
+    reed: { hp: 1, spd: 102, wood: 2, dmg: 1, scale: 0.5 },
+    wagon: { hp: 20, spd: 36, wood: 16, dmg: 2, scale: 1.24 }
   };
   var LEVELS = [
     { name: "Meadow Gate", berries: 0, tip: "Move the King.",
@@ -1923,71 +1923,99 @@
     }
   }
 
+  function mobSize(kind) {
+    var t = {
+      rat: [40, 30], reed: [58, 26], thief: [46, 42], bandit: [48, 46],
+      goat: [56, 48], knight: [50, 54], brute: [66, 60], wagon: [72, 44]
+    }[kind] || [46, 40];
+    return { w: t[0] * sc, h: t[1] * sc };
+  }
+  function drawMobFallback(kind, w, h) {
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#1A2810";
+    if (kind === "rat") {
+      ctx.fillStyle = "#8B5A2B";
+      ctx.beginPath(); ctx.ellipse(0, -h * 0.38, w * 0.42, h * 0.32, 0.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#E8A0A0";
+      ctx.beginPath(); ctx.arc(w * 0.28, -h * 0.42, 3 * sc, 0, Math.PI * 2); ctx.fill();
+    } else if (kind === "reed") {
+      ctx.fillStyle = "#C6B84A";
+      ctx.beginPath(); ctx.ellipse(0, -h * 0.4, w * 0.46, h * 0.22, 0.15, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = "#6B9E3A"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(w * 0.2, -h * 0.45); ctx.lineTo(w * 0.48, -h * 0.2); ctx.stroke();
+    } else if (kind === "bandit") {
+      ctx.fillStyle = "#6a6a70";
+      ctx.beginPath(); ctx.ellipse(0, -h * 0.4, w * 0.32, h * 0.38, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#F4E6C3";
+      ctx.fillRect(-w * 0.18, -h * 0.62, w * 0.36, 6 * sc);
+    } else if (kind === "thief") {
+      ctx.fillStyle = "#4A4A50";
+      ctx.beginPath(); ctx.ellipse(0, -h * 0.4, w * 0.3, h * 0.36, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#8B5A2B";
+      ctx.beginPath(); ctx.ellipse(w * 0.12, -h * 0.5, 8 * sc, 10 * sc, 0.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    } else if (kind === "goat") {
+      ctx.fillStyle = "#F4E6C3";
+      ctx.beginPath(); ctx.ellipse(0, -h * 0.38, w * 0.36, h * 0.34, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = "#C4A574"; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(-6 * sc, -h * 0.7); ctx.lineTo(-2 * sc, -h * 0.95); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(6 * sc, -h * 0.7); ctx.lineTo(10 * sc, -h * 0.92); ctx.stroke();
+    } else if (kind === "knight") {
+      ctx.fillStyle = "#E8DCC0";
+      ctx.beginPath(); ctx.ellipse(0, -h * 0.42, w * 0.28, h * 0.4, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#C62828";
+      ctx.fillRect(-5 * sc, -h * 0.5, 10 * sc, 8 * sc);
+      ctx.strokeStyle = "#5C3A1A"; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(w * 0.2, -h * 0.75); ctx.lineTo(w * 0.48, -h * 0.15); ctx.stroke();
+    } else if (kind === "brute") {
+      ctx.fillStyle = "#4E7C28";
+      ctx.beginPath(); ctx.ellipse(0, -h * 0.4, w * 0.4, h * 0.4, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#F4E6C3";
+      ctx.beginPath(); ctx.ellipse(w * 0.22, -h * 0.38, 6 * sc, 4 * sc, 0.4, 0, Math.PI * 2); ctx.fill();
+    } else if (kind === "wagon") {
+      ctx.fillStyle = "#F4E6C3";
+      ctx.fillRect(-w * 0.38, -h * 0.55, w * 0.72, h * 0.38);
+      ctx.strokeRect(-w * 0.38, -h * 0.55, w * 0.72, h * 0.38);
+      ctx.fillStyle = "#1A2810";
+      ctx.beginPath(); ctx.arc(-w * 0.2, -h * 0.12, 6 * sc, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w * 0.22, -h * 0.12, 6 * sc, 0, Math.PI * 2); ctx.fill();
+    } else {
+      ctx.fillStyle = "#8B5A2B";
+      ctx.beginPath(); ctx.ellipse(0, -h * 0.35, w * 0.3, h * 0.35, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    }
+  }
   function drawMob(e) {
-    ellipseShadow(e.x, e.y, 16 * sc * MOBS[e.kind].scale, 7 * sc);
-    var h = 46 * sc * MOBS[e.kind].scale;
-    var w = 50 * sc * MOBS[e.kind].scale;
+    var sz = mobSize(e.kind);
+    var w = sz.w, h = sz.h;
+    ellipseShadow(e.x, e.y, 14 * sc * (MOBS[e.kind] ? MOBS[e.kind].scale : 1), 6 * sc);
     if (e.teleOn) {
       ctx.save();
       ctx.strokeStyle = "#E85D4C";
-      ctx.lineWidth = 4;
-      ctx.globalAlpha = 0.55 + 0.45 * Math.sin(tGame * 14);
+      ctx.lineWidth = 3;
+      ctx.globalAlpha = 0.5 + 0.4 * Math.sin(tGame * 14);
       ctx.beginPath();
-      var rr = 28 * sc + (1 - e.tele / TELE) * 40 * sc;
-      ctx.ellipse(e.x, e.y, rr, rr * 0.55, 0, 0, Math.PI * 2);
+      var rr = 26 * sc + (1 - e.tele / TELE) * 36 * sc;
+      ctx.ellipse(e.x, e.y, rr, rr * 0.5, 0, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
     }
     ctx.save();
-    if (e.hit > 0) ctx.filter = "brightness(1.35)";
-    if (e.teleOn) ctx.translate(0, Math.sin(tGame * 20) * 2);
-    var im = IM[e.kind] || IM.rat;
+    if (e.hit > 0) ctx.filter = "brightness(1.25)";
     var stride = Math.sin(tGame * 9 + e.d * 0.05);
     var bob = stride * 0.55;
     var flip = Math.cos(e.facing || 0) < 0;
-    var rim = { rat: "#8B5A2B", bandit: "#C62828", brute: "#3E6A22", thief: "#C4A574", goat: "#F4E6C3", knight: "#F5C400", reed: "#7ED957", wagon: "#5C3A1A" }[e.kind] || "#1A2810";
     ctx.translate(e.x, e.y + bob);
-    ctx.rotate(stride * 0.045);
+    ctx.rotate(stride * 0.04);
     ctx.scale(flip ? -1 : 1, 1);
-    ctx.strokeStyle = rim;
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.ellipse(0, -h * 0.42, w * 0.42, h * 0.42, 0, 0, Math.PI * 2);
-    ctx.stroke();
+    var im = IM[e.kind];
     if (im) ctx.drawImage(im, -w / 2, -h, w, h);
-    else {
-      ctx.fillStyle = rim;
-      ctx.beginPath(); ctx.ellipse(0, -h * 0.35, w * 0.35, h * 0.4, 0, 0, Math.PI * 2); ctx.fill();
-    }
-    if (e.kind === "thief") {
-      ctx.fillStyle = "#C4A574";
-      ctx.strokeStyle = "#5C3A1A";
-      ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.ellipse(w * 0.22, -h * 0.35, 8 * sc, 10 * sc, 0.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-    } else if (e.kind === "goat") {
-      ctx.fillStyle = "#F4E6C3";
-      ctx.strokeStyle = "#5C3A1A";
-      ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.ellipse(w * 0.18, -h * 0.28, 11 * sc, 12 * sc, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-    } else if (e.kind === "knight") {
-      ctx.strokeStyle = "#F5C400";
-      ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.moveTo(w * 0.35, -h * 0.7); ctx.lineTo(w * 0.55, -h * 0.15); ctx.stroke();
-    } else if (e.kind === "reed") {
-      ctx.strokeStyle = "#6B9E3A";
-      ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.moveTo(-2, -h); ctx.lineTo(-2, -h - 10 * sc); ctx.stroke();
-    } else if (e.kind === "bandit") {
-      ctx.fillStyle = "#C62828";
-      ctx.fillRect(-w * 0.12, -h * 0.72, w * 0.24, 5 * sc);
-    }
+    else drawMobFallback(e.kind, w, h);
     ctx.restore();
     if (e.max > 1) {
-      var bw = 28 * sc, bh = 4;
+      var bw = 26 * sc, bh = 3;
       ctx.fillStyle = "#1A2810";
-      ctx.fillRect(e.x - bw / 2, e.y - h - 8, bw, bh);
+      ctx.fillRect(e.x - bw / 2, e.y - h - 7, bw, bh);
       ctx.fillStyle = "#7ED957";
-      ctx.fillRect(e.x - bw / 2, e.y - h - 8, bw * (e.hp / e.max), bh);
+      ctx.fillRect(e.x - bw / 2, e.y - h - 7, bw * (e.hp / e.max), bh);
     }
   }
 
