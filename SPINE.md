@@ -11,8 +11,10 @@ You ARE the summer king. Crossbows sit on the crown line. Upgrades feed HIS powe
 | V | 21–25 | Crown Trial | Playable. Summer Crown. |
 | VI | 26–40 | Long Summer | Playable. Gate Dust → Capital Stand. |
 | VII | 41–55 | Keep Road | Playable. Dust Gate → Keep Stand. |
+| VIII | 56–70 | Keep Road II | Playable. Sun Gate → Keep Road. |
 
-Mid-act **CONTINUE**. Act VII is the current end; stars array is ready toward 100.
+Mid-act **CONTINUE**. Act VIII is the current end; stars array is ready toward 100.
+Victory reels at L15 / 30 / 45 / 60 / 75 / 90. Assemble finale wired for L100.
 
 ## Implemented enemies (L1–20)
 

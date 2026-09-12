@@ -202,6 +202,12 @@
     }
     #film-tiny { margin: 0 0 8px; font-size: 11px; font-weight: 800; color: var(--cream); opacity: 0.85; }
     #film-n { margin: 0 0 12px; font-size: 12px; font-weight: 800; color: var(--cream); }
+    #history { justify-content: flex-start; overflow: auto; padding-top: 18px; }
+    #history-list {
+      display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 22em;
+      margin: 8px 0 16px;
+    }
+    #history-list button { width: 100%; }
     #paused { justify-content: center; background: #1a2810e8; }
     #levels { justify-content: flex-start; overflow: auto; padding-top: 14px; }
     #level-grid {
@@ -272,16 +278,17 @@
       <p id="boot-load">Loading…</p>
       <button class="play" id="btn-face" type="button">FACE THE SUMMER</button>
       <button class="play ghost" id="btn-more" type="button">More games · Green Home Games</button>
-      <button class="film-link" id="btn-watch" type="button">Watch story</button>
+      <button class="film-link" id="btn-watch" type="button">Victory history</button>
     </div>
 
     <div id="levels" class="overlay hidden">
       <img class="hero" src="assets/splash.jpg" alt="" />
       <h2>Summer Dawn</h2>
-      <p class="tag">Act I–VII · L1–55</p>
+      <p class="tag">Act I–VIII · L1–70</p>
       <p class="how">Move the King. Crossbows by the Crown.</p>
       <div id="level-grid"></div>
       <button class="play ghost" id="btn-back" type="button">Back</button>
+      <button class="play ghost" id="btn-history" type="button">History</button>
       <button class="wipe-link" id="btn-reset" type="button">Reset</button>
     </div>
 
@@ -319,11 +326,18 @@
     </div>
 
     <div id="film" class="overlay hidden">
-      <img class="hero" id="film-img" src="assets/film/f1.jpg" alt="" />
-      <p id="film-cap">First he yeeted.</p>
-      <p id="film-tiny">a fan game tale · not official</p>
-      <p id="film-n">1 / 10</p>
+      <img class="hero" id="film-img" src="assets/film/reels/r15-1.jpg" alt="" />
+      <p id="film-cap">The path.</p>
+      <p id="film-tiny">fan game by a holder</p>
+      <p id="film-n">1 / 3</p>
       <button class="play ghost" id="btn-film-skip" type="button">Skip</button>
+    </div>
+
+    <div id="history" class="overlay hidden">
+      <h2>Victory</h2>
+      <p class="how">Every fifteen levels. Summer stays.</p>
+      <div id="history-list"></div>
+      <button class="play ghost" id="btn-history-back" type="button">Back</button>
     </div>
   </div>
 
@@ -909,6 +923,168 @@
         { gap: 0.38, list: ["knight", "wagon"] },
         { gap: 0.22, list: ["reed", "thief", "reed", "goat", "reed"] },
         { gap: 0.34, list: ["wagon", "knight", "brute", "wagon", "knight"] }
+      ] },
+    { name: "Sun Gate", berries: 1, tip: "Sun on the gate road.",
+      waves: [
+        { gap: 0.22, list: ["reed", "goat", "thief", "reed"] },
+        { gap: 0.24, list: ["reed", "bandit", "reed", "goat"] },
+        { gap: 0.38, list: ["knight", "reed", "thief"] },
+        { gap: 0.22, list: ["reed", "goat", "reed", "thief"] },
+        { gap: 0.36, list: ["wagon", "reed", "goat"] },
+        { gap: 0.22, list: ["thief", "reed", "goat", "reed"] },
+        { gap: 0.34, list: ["knight", "wagon", "reed"] },
+        { gap: 0.22, list: ["reed", "thief", "goat", "reed"] }
+      ] },
+    { name: "Picnic Heat", berries: 1, tip: "The picnic won’t quit.",
+      waves: [
+        { gap: 0.22, list: ["thief", "reed", "thief", "goat"] },
+        { gap: 0.22, list: ["reed", "bandit", "reed", "thief"] },
+        { gap: 0.26, list: ["goat", "thief", "reed", "bandit"] },
+        { gap: 0.38, list: ["knight", "thief", "reed"] },
+        { gap: 0.22, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.36, list: ["wagon", "thief", "reed"] },
+        { gap: 0.22, list: ["thief", "reed", "goat", "bandit", "reed"] }
+      ] },
+    { name: "Reed Charge", berries: 1, tip: "Reeds charge the lane.",
+      waves: [
+        { gap: 0.2, list: ["reed", "reed", "goat", "reed"] },
+        { gap: 0.2, list: ["reed", "thief", "reed", "reed"] },
+        { gap: 0.36, list: ["knight", "reed", "reed"] },
+        { gap: 0.2, list: ["reed", "goat", "reed", "thief"] },
+        { gap: 0.2, list: ["reed", "bandit", "reed", "goat"] },
+        { gap: 0.34, list: ["wagon", "reed", "goat"] },
+        { gap: 0.2, list: ["reed", "thief", "reed", "goat", "reed"] },
+        { gap: 0.34, list: ["knight", "wagon", "reed"] }
+      ] },
+    { name: "Tin Flood", berries: 1, tip: "Tin crowns flood in.",
+      waves: [
+        { gap: 0.22, list: ["goat", "reed", "goat", "thief"] },
+        { gap: 0.22, list: ["reed", "goat", "bandit", "reed"] },
+        { gap: 0.38, list: ["knight", "goat", "reed"] },
+        { gap: 0.22, list: ["goat", "thief", "reed", "goat"] },
+        { gap: 0.36, list: ["wagon", "goat", "reed"] },
+        { gap: 0.22, list: ["reed", "goat", "thief", "reed"] },
+        { gap: 0.34, list: ["knight", "wagon", "goat"] }
+      ] },
+    { name: "Wagon Crown", berries: 1, tip: "Wagons want the crown.",
+      waves: [
+        { gap: 0.24, list: ["reed", "goat", "reed", "bandit"] },
+        { gap: 0.4, list: ["wagon", "reed"] },
+        { gap: 0.22, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.38, list: ["wagon", "goat"] },
+        { gap: 0.22, list: ["reed", "bandit", "reed", "goat"] },
+        { gap: 0.36, list: ["wagon", "knight"] },
+        { gap: 0.24, list: ["reed", "wagon", "goat", "reed"] },
+        { gap: 0.34, list: ["wagon", "knight", "reed"] }
+      ] },
+    { name: "Knife Road", berries: 1, tip: "Knives on the crown road.",
+      waves: [
+        { gap: 0.2, list: ["thief", "reed", "thief", "goat"] },
+        { gap: 0.2, list: ["reed", "thief", "reed", "thief"] },
+        { gap: 0.36, list: ["knight", "thief", "reed"] },
+        { gap: 0.2, list: ["thief", "goat", "reed", "thief"] },
+        { gap: 0.34, list: ["wagon", "thief", "goat"] },
+        { gap: 0.2, list: ["reed", "thief", "bandit", "reed"] },
+        { gap: 0.34, list: ["knight", "wagon", "thief"] },
+        { gap: 0.2, list: ["thief", "reed", "goat", "thief"] }
+      ] },
+    { name: "Horn Tide", berries: 1, tip: "Horns in a tide.",
+      waves: [
+        { gap: 0.22, list: ["goat", "reed", "thief", "reed"] },
+        { gap: 0.22, list: ["reed", "goat", "bandit", "reed"] },
+        { gap: 0.38, list: ["knight", "goat", "reed"] },
+        { gap: 0.22, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.36, list: ["wagon", "reed", "goat"] },
+        { gap: 0.22, list: ["goat", "reed", "thief", "reed"] },
+        { gap: 0.34, list: ["knight", "wagon", "brute"] }
+      ] },
+    { name: "Dust Bend", berries: 1, tip: "Dust on the last bend.",
+      waves: [
+        { gap: 0.2, list: ["reed", "goat", "reed", "thief"] },
+        { gap: 0.2, list: ["reed", "bandit", "reed", "goat"] },
+        { gap: 0.36, list: ["knight", "reed", "goat"] },
+        { gap: 0.2, list: ["thief", "reed", "goat", "reed"] },
+        { gap: 0.34, list: ["wagon", "reed", "thief"] },
+        { gap: 0.2, list: ["reed", "goat", "reed", "bandit"] },
+        { gap: 0.34, list: ["knight", "wagon", "reed"] },
+        { gap: 0.2, list: ["reed", "thief", "goat", "reed"] }
+      ] },
+    { name: "Shield Pack", berries: 1, tip: "Shields pack the lane.",
+      waves: [
+        { gap: 0.22, list: ["goat", "reed", "goat", "thief"] },
+        { gap: 0.22, list: ["goat", "bandit", "reed", "goat"] },
+        { gap: 0.38, list: ["knight", "goat", "reed"] },
+        { gap: 0.22, list: ["goat", "thief", "goat", "reed"] },
+        { gap: 0.36, list: ["wagon", "goat", "thief"] },
+        { gap: 0.22, list: ["reed", "goat", "reed", "goat"] },
+        { gap: 0.34, list: ["knight", "wagon", "goat"] },
+        { gap: 0.22, list: ["goat", "reed", "thief", "goat"] }
+      ] },
+    { name: "Knight Dust", berries: 1, tip: "Knights in the dust.",
+      waves: [
+        { gap: 0.22, list: ["reed", "goat", "thief", "reed"] },
+        { gap: 0.36, list: ["knight", "reed"] },
+        { gap: 0.2, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.36, list: ["knight", "goat"] },
+        { gap: 0.2, list: ["thief", "reed", "goat", "reed"] },
+        { gap: 0.34, list: ["knight", "wagon"] },
+        { gap: 0.2, list: ["reed", "thief", "reed", "goat"] },
+        { gap: 0.32, list: ["knight", "wagon", "knight"] }
+      ] },
+    { name: "Siege Heat", berries: 1, tip: "Siege in the heat.",
+      waves: [
+        { gap: 0.22, list: ["reed", "goat", "reed", "bandit"] },
+        { gap: 0.38, list: ["wagon", "reed"] },
+        { gap: 0.2, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.36, list: ["wagon", "goat"] },
+        { gap: 0.2, list: ["reed", "bandit", "reed", "goat"] },
+        { gap: 0.36, list: ["wagon", "knight"] },
+        { gap: 0.22, list: ["reed", "wagon", "goat", "reed"] },
+        { gap: 0.32, list: ["wagon", "brute", "wagon"] }
+      ] },
+    { name: "Banner Rise", berries: 1, tip: "Banners rise on the road.",
+      waves: [
+        { gap: 0.2, list: ["reed", "thief", "reed", "goat"] },
+        { gap: 0.2, list: ["thief", "reed", "bandit", "reed"] },
+        { gap: 0.36, list: ["knight", "reed", "goat"] },
+        { gap: 0.2, list: ["reed", "goat", "thief", "reed"] },
+        { gap: 0.34, list: ["wagon", "reed", "thief"] },
+        { gap: 0.2, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.32, list: ["knight", "wagon", "reed"] },
+        { gap: 0.2, list: ["thief", "reed", "goat", "bandit", "reed"] }
+      ] },
+    { name: "Summer Wall", berries: 1, tip: "A wall of summer foes.",
+      waves: [
+        { gap: 0.18, list: ["reed", "thief", "reed", "goat"] },
+        { gap: 0.18, list: ["reed", "reed", "thief", "reed"] },
+        { gap: 0.34, list: ["knight", "reed", "thief"] },
+        { gap: 0.18, list: ["reed", "goat", "reed", "thief"] },
+        { gap: 0.32, list: ["wagon", "reed", "goat"] },
+        { gap: 0.18, list: ["thief", "reed", "reed", "goat"] },
+        { gap: 0.32, list: ["knight", "wagon", "brute"] },
+        { gap: 0.18, list: ["reed", "thief", "reed", "goat", "reed"] }
+      ] },
+    { name: "Pretender Gate", berries: 1, tip: "A false crown at the gate.",
+      waves: [
+        { gap: 0.2, list: ["goat", "reed", "thief", "reed"] },
+        { gap: 0.36, list: ["knight", "reed", "goat"] },
+        { gap: 0.2, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.36, list: ["wagon", "knight"] },
+        { gap: 0.2, list: ["thief", "reed", "goat", "reed"] },
+        { gap: 0.34, list: ["knight", "wagon", "goat"] },
+        { gap: 0.2, list: ["reed", "thief", "reed", "goat"] },
+        { gap: 0.32, list: ["wagon", "knight", "brute", "knight"] }
+      ] },
+    { name: "Keep Road", berries: 1, tip: "The road to the keep.",
+      waves: [
+        { gap: 0.18, list: ["reed", "goat", "thief", "reed"] },
+        { gap: 0.36, list: ["knight", "reed"] },
+        { gap: 0.18, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.38, list: ["wagon", "brute"] },
+        { gap: 0.18, list: ["thief", "reed", "goat", "reed"] },
+        { gap: 0.34, list: ["knight", "wagon"] },
+        { gap: 0.18, list: ["reed", "thief", "reed", "goat", "reed"] },
+        { gap: 0.3, list: ["wagon", "knight", "brute", "wagon", "knight"] }
       ] }
   ];
   (function swarmify() {
@@ -934,7 +1110,9 @@
         else if (li < 32) target = 60 + (li - 25) * 2;
         else if (li < 40) target = 74 + (li - 32) * 2;
         else if (li < 47) target = 90 + (li - 40) * 2;
-        else target = 104 + (li - 47) * 2;
+        else if (li < 55) target = 104 + (li - 47) * 2;
+        else if (li < 62) target = 120 + (li - 55) * 2;
+        else target = 134 + (li - 62) * 2;
         var out = w.list.slice();
         j = 0;
         while (out.length < target) {
@@ -943,7 +1121,7 @@
         }
         w.list = out;
         var boss = w.list.indexOf("wagon") >= 0 || w.list.indexOf("knight") >= 0 || w.list.indexOf("brute") >= 0;
-        var base = li < 3 ? 0.30 : (li < 5 ? 0.26 : (li < 7 ? 0.20 : (li < 10 ? 0.16 : (li < 15 ? 0.16 : (li < 20 ? 0.14 : (li < 25 ? 0.13 : (li < 32 ? 0.12 : (li < 40 ? 0.11 : (li < 47 ? 0.11 : 0.10)))))))));
+        var base = li < 3 ? 0.30 : (li < 5 ? 0.26 : (li < 7 ? 0.20 : (li < 10 ? 0.16 : (li < 15 ? 0.16 : (li < 20 ? 0.14 : (li < 25 ? 0.13 : (li < 32 ? 0.12 : (li < 40 ? 0.11 : (li < 47 ? 0.11 : (li < 55 ? 0.10 : (li < 62 ? 0.10 : 0.09)))))))))));
         w.gap = boss ? Math.max(0.28, Math.min(0.42, w.gap)) : base;
       });
     });
@@ -997,19 +1175,47 @@
   var eid = 1;
   var skipEl = document.getElementById("btn-skip");
   var kingFlash = 0, kingCele = 0;
-  var FILM = [
-    { src: "assets/film/f1.jpg", cap: "First he yeeted." },
-    { src: "assets/film/f2.jpg", cap: "Then held the dam." },
-    { src: "assets/film/f3.jpg", cap: "Then held the fire." },
-    { src: "assets/film/f4.jpg", cap: "Frost King fell." },
-    { src: "assets/film/f5.jpg", cap: "Summer came back." },
-    { src: "assets/film/f6.jpg", cap: "Green Home Crown." },
-    { src: "assets/film/f7.jpg", cap: "The town woke up." },
-    { src: "assets/film/f8.jpg", cap: "King rides out." },
-    { src: "assets/film/f9.jpg", cap: "Then he married." },
-    { src: "assets/film/f10.jpg", cap: "A Bober family." }
+  var REELS = [
+    { id: "r15", lvl: 15, name: "Dawn Ride", frames: [
+      { src: "assets/film/reels/r15-1.jpg", cap: "The path." },
+      { src: "assets/film/reels/r15-2.jpg", cap: "The strike." },
+      { src: "assets/film/reels/r15-3.jpg", cap: "The gate." }
+    ] },
+    { id: "r30", lvl: 30, name: "Feast Held", frames: [
+      { src: "assets/film/reels/r30-1.jpg", cap: "The reeds." },
+      { src: "assets/film/reels/r30-2.jpg", cap: "The wagon." },
+      { src: "assets/film/reels/r30-3.jpg", cap: "The feast." }
+    ] },
+    { id: "r45", lvl: 45, name: "False Crowns", frames: [
+      { src: "assets/film/reels/r45-1.jpg", cap: "Tin crowns." },
+      { src: "assets/film/reels/r45-2.jpg", cap: "Ballistae." },
+      { src: "assets/film/reels/r45-3.jpg", cap: "The sun." }
+    ] },
+    { id: "r60", lvl: 60, name: "Long Summer", frames: [
+      { src: "assets/film/reels/r60-1.jpg", cap: "The goats." },
+      { src: "assets/film/reels/r60-2.jpg", cap: "The sun." },
+      { src: "assets/film/reels/r60-3.jpg", cap: "Gold home." }
+    ] },
+    { id: "r75", lvl: 75, name: "Banner War", frames: [
+      { src: "assets/film/reels/r75-1.jpg", cap: "Banners." },
+      { src: "assets/film/reels/r75-2.jpg", cap: "The pack." },
+      { src: "assets/film/reels/r75-3.jpg", cap: "The wall." }
+    ] },
+    { id: "r90", lvl: 90, name: "Summer Claim", frames: [
+      { src: "assets/film/reels/r90-1.jpg", cap: "The swarm." },
+      { src: "assets/film/reels/r90-2.jpg", cap: "The sun." },
+      { src: "assets/film/reels/r90-3.jpg", cap: "The town." }
+    ] },
+    { id: "r100", lvl: 100, name: "Assemble", frames: [
+      { src: "assets/film/reels/r100-1.jpg", cap: "Chapters." },
+      { src: "assets/film/reels/r100-2.jpg", cap: "The line." },
+      { src: "assets/film/reels/r100-3.jpg", cap: "The charge." },
+      { src: "assets/film/reels/r100-4.jpg", cap: "Summer stays." }
+    ] }
   ];
   var filmI = 0, filmT = 0, filmFrom = "splash";
+  var filmReel = null;
+  var histFrom = "levels";
   var tipT = 0;
   var TIPS = [
     "Drag the king. Plant a crossbow. Hold the capital.",
@@ -1066,7 +1272,22 @@
     "Banner heat. Royal Guard if you can.",
     "Summer pack. The lane never empties.",
     "False march. One crown. Bring summer.",
-    "Keep stand. Hold the gate."
+    "Keep stand. Hold the gate.",
+    "Sun gate. Ride and upgrade.",
+    "Picnic heat. Towers chew.",
+    "Reed charge. Pierce the pack.",
+    "Tin flood. Rear shots on goats.",
+    "Wagon crown. Slow, still deadly.",
+    "Knife road. Don’t freeze.",
+    "Horn tide. Ballistae ready.",
+    "Dust bend. Keep scooping.",
+    "Shield pack. Flank the wall.",
+    "Knight dust. Sidestep the charge.",
+    "Siege heat. Wagons plus flies.",
+    "Banner rise. Royal Guard if you can.",
+    "Summer wall. The lane never empties.",
+    "Pretender gate. One crown. Bring summer.",
+    "Keep road. Hold the gate."
   ];
   var STAR_CAP = 100;
 
@@ -1076,7 +1297,7 @@
     return a;
   }
   function defaultSave() {
-    return { unlocked: 1, wood: 50, stars: blankStars(), tutDone: false, tutMidBuild: false, filmSeen: false, mute: false };
+    return { unlocked: 1, wood: 50, stars: blankStars(), tutDone: false, tutMidBuild: false, filmSeen: false, mute: false, reels: {}, reelSeen: {} };
   }
   function loadSave() {
     try {
@@ -1088,6 +1309,7 @@
       if ((s.unlocked | 0) >= 20) d.unlocked = Math.max(d.unlocked, 21);
       if ((s.unlocked | 0) >= 25 || (s.stars && (s.stars[24] | 0) > 0)) d.unlocked = Math.max(d.unlocked, Math.min(LEVELS.length, 26));
       if ((s.unlocked | 0) >= 40 || (s.stars && (s.stars[39] | 0) > 0)) d.unlocked = Math.max(d.unlocked, Math.min(LEVELS.length, 41));
+      if ((s.unlocked | 0) >= 55 || (s.stars && (s.stars[54] | 0) > 0)) d.unlocked = Math.max(d.unlocked, Math.min(LEVELS.length, 56));
       d.wood = Math.max(0, s.wood | 0);
       d.stars = blankStars();
       if (s.stars) for (var i = 0; i < STAR_CAP; i++) d.stars[i] = Math.max(0, Math.min(3, s.stars[i] | 0));
@@ -1095,6 +1317,15 @@
       d.tutMidBuild = !!s.tutMidBuild;
       d.filmSeen = !!s.filmSeen;
       d.mute = !!s.mute;
+      d.reels = {};
+      d.reelSeen = {};
+      if (s.reels && typeof s.reels === "object") {
+        Object.keys(s.reels).forEach(function (k) { if (s.reels[k]) d.reels[k] = true; });
+      }
+      if (s.reelSeen && typeof s.reelSeen === "object") {
+        Object.keys(s.reelSeen).forEach(function (k) { if (s.reelSeen[k]) d.reelSeen[k] = true; });
+      }
+      syncReelsFromProgress(d);
       return d;
     } catch (e) { return defaultSave(); }
   }
@@ -1103,7 +1334,8 @@
       localStorage.setItem(SAVE_KEY, JSON.stringify({
         unlocked: save.unlocked, wood: save.wood, stars: save.stars,
         tutDone: !!save.tutDone, tutMidBuild: !!save.tutMidBuild,
-        filmSeen: !!save.filmSeen, mute: !!mute
+        filmSeen: !!save.filmSeen, mute: !!mute,
+        reels: save.reels || {}, reelSeen: save.reelSeen || {}
       }));
     } catch (e) {}
   }
@@ -1158,7 +1390,7 @@
 
   function show(name) {
     screen = name;
-    ["splash", "levels", "paused", "win", "lose", "cameo", "film"].forEach(function (id) {
+    ["splash", "levels", "paused", "win", "lose", "cameo", "film", "history"].forEach(function (id) {
       document.getElementById(id).classList.toggle("hidden", id !== name);
     });
     var play = name === "play";
@@ -1623,6 +1855,21 @@
       if (kind === "thief") hp += 1;
     }
     if (lv >= 47) {
+      if (kind === "reed") hp += 1;
+      if (kind === "wagon") hp += 6;
+      if (kind === "knight") hp += 4;
+      if (kind === "goat") hp += 2;
+      if (kind === "brute") hp += 6;
+    }
+    if (lv >= 55) {
+      if (kind === "reed") hp += 1;
+      if (kind === "wagon") hp += 6;
+      if (kind === "knight") hp += 4;
+      if (kind === "goat") hp += 2;
+      if (kind === "brute") hp += 6;
+      if (kind === "thief") hp += 1;
+    }
+    if (lv >= 62) {
       if (kind === "reed") hp += 1;
       if (kind === "wagon") hp += 6;
       if (kind === "knight") hp += 4;
@@ -2138,9 +2385,17 @@
     document.getElementById("win-stars").textContent = starStr;
     document.getElementById("win-msg").textContent = level === last ? "Summer stays. The crown holds." : (level === 0 ? "L1 held." : (LEVELS[level].name + " holds."));
     document.getElementById("btn-next").textContent = level < last ? "Next" : "Map";
-    var playFilmNow = (!save.filmSeen && level === 4) || level === last;
-    if (playFilmNow) playFilm("win");
-    else show("win");
+    var rid = reelIdForClear(level);
+    if (rid) {
+      if (!save.reels) save.reels = {};
+      save.reels[rid] = true;
+      persist();
+      if (!(save.reelSeen && save.reelSeen[rid]) && reelById(rid)) {
+        playReel(rid, "win");
+        return;
+      }
+    }
+    show("win");
   }
   function loseLevel() {
     coins = [];
@@ -2859,11 +3114,9 @@
     tGame += dt;
     if (screen === "film") {
       filmT += dt;
-      if (filmT >= 3.2) {
+      if (filmT >= 2.8) {
         filmT = 0;
-        filmI++;
-        if (filmI >= FILM.length) endFilm();
-        else paintFilm();
+        nextFilmFrame();
       }
     }
     if (tipT > 0) {
@@ -2884,12 +3137,55 @@
     if (screen === "play" || screen === "paused") drawWorld();
   }
 
-  function paintFilm() {
-    document.getElementById("film-img").src = FILM[filmI].src;
-    document.getElementById("film-cap").textContent = FILM[filmI].cap;
-    document.getElementById("film-n").textContent = (filmI + 1) + " / " + FILM.length;
+  function reelById(id) {
+    var i;
+    for (i = 0; i < REELS.length; i++) if (REELS[i].id === id) return REELS[i];
+    return null;
   }
-  function playFilm(from) {
+  function reelIdForClear(li) {
+    var n = li + 1;
+    if (n === 100) return "r100";
+    if (n === 15 || n === 30 || n === 45 || n === 60 || n === 75 || n === 90) return "r" + n;
+    return null;
+  }
+  function syncReelsFromProgress(d) {
+    if (!d.reels) d.reels = {};
+    REELS.forEach(function (r) {
+      if (r.lvl === 100) {
+        if ((d.unlocked | 0) >= 100 || (d.stars && (d.stars[99] | 0) > 0)) d.reels.r100 = true;
+      } else if ((d.unlocked | 0) > r.lvl || (d.stars && (d.stars[r.lvl - 1] | 0) > 0)) {
+        d.reels[r.id] = true;
+      }
+    });
+  }
+  function currentFrames() {
+    return (filmReel && filmReel.frames && filmReel.frames.length) ? filmReel.frames : [];
+  }
+  function paintFilm() {
+    var frames = currentFrames();
+    if (!frames.length) { endFilm(); return; }
+    if (filmI >= frames.length) { endFilm(); return; }
+    var f = frames[filmI];
+    var img = document.getElementById("film-img");
+    img.onerror = function () { nextFilmFrame(); };
+    img.src = f.src;
+    document.getElementById("film-cap").textContent = f.cap || "";
+    document.getElementById("film-n").textContent = (filmI + 1) + " / " + frames.length;
+  }
+  function nextFilmFrame() {
+    filmI++;
+    if (filmI >= currentFrames().length) endFilm();
+    else { filmT = 0; paintFilm(); }
+  }
+  function playReel(id, from) {
+    var r = reelById(id);
+    if (!r || !r.frames || !r.frames.length) {
+      if (from === "win") show("win");
+      else if (from === "history") openHistory();
+      else show("splash");
+      return;
+    }
+    filmReel = r;
     filmFrom = from || "splash";
     filmI = 0;
     filmT = 0;
@@ -2898,10 +3194,37 @@
     beep(392, 0.1, "triangle", 0.04);
   }
   function endFilm() {
-    save.filmSeen = true;
-    persist();
+    if (filmReel) {
+      if (!save.reelSeen) save.reelSeen = {};
+      save.reelSeen[filmReel.id] = true;
+      if (!save.reels) save.reels = {};
+      save.reels[filmReel.id] = true;
+      save.filmSeen = true;
+      persist();
+    }
     if (filmFrom === "win") show("win");
+    else if (filmFrom === "history") openHistory();
     else show("splash");
+  }
+  function openHistory(from) {
+    if (from) histFrom = from;
+    var list = document.getElementById("history-list");
+    list.innerHTML = "";
+    REELS.forEach(function (r) {
+      var on = !!(save.reels && save.reels[r.id]);
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = on ? "play" : "play ghost";
+      b.disabled = !on;
+      b.textContent = on ? ("L" + r.lvl + " · " + r.name) : ("L" + r.lvl + " · locked");
+      b.addEventListener("click", function () {
+        if (!on) return;
+        ensureAudio();
+        playReel(r.id, "history");
+      });
+      list.appendChild(b);
+    });
+    show("history");
   }
 
   function openMap() {
@@ -2981,17 +3304,28 @@
   document.getElementById("btn-more").addEventListener("click", function () { location.href = HUB; });
   document.getElementById("btn-watch").addEventListener("click", function () {
     ensureAudio();
-    playFilm("splash");
+    openHistory("splash");
+  });
+  document.getElementById("btn-history").addEventListener("click", function () {
+    ensureAudio();
+    openHistory("levels");
+  });
+  document.getElementById("btn-history-back").addEventListener("click", function () {
+    if (histFrom === "splash") show("splash");
+    else openMap();
   });
   document.getElementById("btn-reset").addEventListener("click", function () {
     if (!window.confirm("Reset progress? New run from L1.")) return;
     wipeKeepIntro();
     show("splash");
   });
-  document.getElementById("btn-film-skip").addEventListener("click", function () { endFilm(); });
+  document.getElementById("btn-film-skip").addEventListener("click", function (ev) {
+    ev.stopPropagation();
+    endFilm();
+  });
   document.getElementById("film").addEventListener("click", function (ev) {
     if (ev.target && ev.target.id === "btn-film-skip") return;
-    endFilm();
+    nextFilmFrame();
   });
   document.getElementById("btn-back").addEventListener("click", function () { show("splash"); });
   document.getElementById("btn-pause").addEventListener("click", function () {
