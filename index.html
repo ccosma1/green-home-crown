@@ -139,17 +139,45 @@
       width: 46px; height: 46px; border-radius: 50%; object-fit: cover;
       border: 2px solid var(--gold); flex: 0 0 auto; background: #6B9E3A;
     }
-    #shop-list { width: 100%; max-width: 22em; margin: 8px 0 12px; }
+    #app.shopping header { visibility: hidden; pointer-events: none; }
+    #shop.overlay {
+      justify-content: flex-start; align-items: center; overflow: hidden;
+      padding: max(10px, env(safe-area-inset-top)) 10px max(12px, env(safe-area-inset-bottom));
+      background: #1a2810f5;
+    }
+    #shop .shop-panel {
+      display: flex; flex-direction: column; align-items: stretch;
+      width: 100%; max-width: 24em; min-height: 0; max-height: 100%;
+      margin: 0 auto; padding: 12px 12px 10px; text-align: center;
+      background: #1a2810ee; border: 3px solid var(--gold); border-radius: 16px;
+      box-shadow: 0 8px 24px #0008;
+    }
+    #shop .shop-panel h2 { flex: 0 0 auto; margin: 0 0 6px; }
+    #shop .shop-panel .how { flex: 0 0 auto; margin: 0 0 8px; max-width: none; }
+    #shop-wood {
+      flex: 0 0 auto; align-self: center; margin: 0 0 8px;
+      font-size: 15px; padding: 5px 14px;
+    }
+    #shop-list {
+      flex: 1 1 auto; min-height: 0; width: 100%;
+      max-height: min(52dvh, 380px); overflow-y: auto; overflow-x: hidden;
+      -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+      margin: 0 0 10px; padding: 2px 4px 6px;
+    }
     .shop-row {
       display: flex; align-items: center; justify-content: space-between; gap: 8px;
       background: #2A5630; border: 2px solid var(--gold); border-radius: 12px;
       padding: 8px 10px; margin: 6px 0; color: var(--cream); font-weight: 800; font-size: 13px;
+      flex-shrink: 0; text-align: left;
     }
+    .shop-row .lab { min-width: 0; flex: 1 1 auto; line-height: 1.25; }
     .shop-row button {
       appearance: none; border: 2px solid var(--gold); background: var(--gold); color: var(--ink);
-      font-weight: 900; border-radius: 10px; padding: 6px 10px; cursor: pointer;
+      font-weight: 900; border-radius: 10px; padding: 7px 10px; cursor: pointer;
+      flex: 0 0 auto; max-width: 48%; min-height: 36px; font-size: 12px; line-height: 1.15;
     }
     .shop-row button:disabled { filter: grayscale(0.4); opacity: 0.7; }
+    #shop .shop-panel .play { flex: 0 0 auto; align-self: center; }
     @media (max-height: 560px) {
       .card { min-height: 44px; padding: 6px 12px; gap: 8px; }
       .card img { width: 28px; height: 24px; }
@@ -157,6 +185,7 @@
       .card .cost { font-size: 14px; }
       #btn-go { min-height: 42px; font-size: 15px; }
       header { padding: 4px 8px; }
+      #shop-list { max-height: min(40dvh, 240px); }
       .icon-btn { width: 32px; height: 32px; }
     }
     #also {
@@ -308,11 +337,13 @@
     </div>
 
     <div id="shop" class="overlay hidden">
-      <h2>Feast shop</h2>
-      <p class="how">Spend coins on the capital and king’s kit. Armor is the only fight help. Cosmetics are story only.</p>
-      <p class="chip wood" id="shop-wood">Wood 0</p>
-      <div id="shop-list"></div>
-      <button class="play" id="btn-shop-close" type="button">Close</button>
+      <div class="shop-panel">
+        <h2>Feast shop</h2>
+        <p class="how">Spend wood on the capital and king’s kit. Armor is the only fight help. Cosmetics are story only.</p>
+        <p class="chip wood" id="shop-wood">Wood 0</p>
+        <div id="shop-list"></div>
+        <button class="play" id="btn-shop-close" type="button">Close</button>
+      </div>
     </div>
 
     <div id="win" class="overlay hidden">
@@ -361,18 +392,18 @@
     name: ["Crossbow", "Heavy Crossbow", "Royal Ballista"],
     cost: [50, 90, 160],
     dmg: [1, 2, 3],
-    rate: [0.38, 0.32, 0.24],
-    range: [118, 132, 148],
+    rate: [0.32, 0.28, 0.22],
+    range: [136, 148, 162],
     pierce: [0, 1, 2]
   };
   var MOBS = {
     rat: { hp: 1, spd: 68, wood: 1, dmg: 1, scale: 0.52 },
     bandit: { hp: 4, spd: 58, wood: 2, dmg: 1, scale: 0.8 },
     brute: { hp: 14, spd: 26, wood: 8, dmg: 2, scale: 1.22 },
-    thief: { hp: 2, spd: 96, wood: 1, dmg: 1, scale: 0.7 },
+    thief: { hp: 2, spd: 80, wood: 1, dmg: 1, scale: 0.7 },
     goat: { hp: 6, spd: 42, wood: 3, dmg: 1, scale: 0.96 },
     knight: { hp: 16, spd: 50, wood: 10, dmg: 2, scale: 1.12 },
-    reed: { hp: 1, spd: 102, wood: 2, dmg: 1, scale: 0.5 },
+    reed: { hp: 1, spd: 94, wood: 2, dmg: 1, scale: 0.5 },
     wagon: { hp: 20, spd: 36, wood: 12, dmg: 2, scale: 1.24 }
   };
   var LEVELS = [
@@ -424,21 +455,21 @@
       ] },
     { name: "Knife Guests", berries: 1, tip: "Guests with knives.",
       waves: [
-        { gap: 0.36, list: ["thief", "rat", "thief", "thief"] },
-        { gap: 0.34, list: ["thief", "thief", "rat", "thief"] },
-        { gap: 0.36, list: ["bandit", "thief", "thief", "bandit"] },
-        { gap: 0.34, list: ["thief", "bandit", "thief", "thief"] },
-        { gap: 0.34, list: ["thief", "thief", "bandit", "thief"] },
-        { gap: 0.32, list: ["bandit", "thief", "thief", "bandit", "thief"] }
+        { gap: 0.42, list: ["thief", "rat", "thief"] },
+        { gap: 0.4, list: ["rat", "thief", "bandit"] },
+        { gap: 0.38, list: ["bandit", "thief", "rat"] },
+        { gap: 0.38, list: ["thief", "bandit", "thief"] },
+        { gap: 0.36, list: ["bandit", "thief", "bandit"] },
+        { gap: 0.36, list: ["thief", "bandit", "thief", "rat"] }
       ] },
     { name: "Flies at Feast", berries: 1, tip: "Feast draws flies.",
       waves: [
-        { gap: 0.36, list: ["thief", "bandit", "thief", "thief"] },
-        { gap: 0.34, list: ["bandit", "thief", "rat", "thief"] },
-        { gap: 0.34, list: ["bandit", "thief", "thief", "bandit"] },
-        { gap: 0.34, list: ["thief", "bandit", "thief", "thief"] },
-        { gap: 0.32, list: ["thief", "bandit", "thief", "bandit"] },
-        { gap: 0.32, list: ["bandit", "thief", "bandit", "thief", "thief"] }
+        { gap: 0.4, list: ["thief", "bandit", "rat"] },
+        { gap: 0.38, list: ["bandit", "thief", "rat"] },
+        { gap: 0.38, list: ["bandit", "thief", "bandit"] },
+        { gap: 0.36, list: ["thief", "bandit", "thief"] },
+        { gap: 0.36, list: ["thief", "bandit", "rat"] },
+        { gap: 0.34, list: ["bandit", "thief", "bandit", "rat"] }
       ] },
     { name: "Tin Crowns", berries: 1, tip: "Tin crowns. Real horse.",
       waves: [
@@ -566,10 +597,18 @@
         var fodder = [];
         var j;
         for (j = 0; j < w.list.length; j++) {
-          if (w.list[j] === "rat" || w.list[j] === "reed" || w.list[j] === "thief") fodder.push(w.list[j]);
+          var k = w.list[j];
+          if (k === "rat" || k === "reed") fodder.push(k);
+          if (li >= 10 && k === "thief") fodder.push("thief");
         }
-        if (!fodder.length) fodder = li < 10 ? ["rat"] : ["reed", "thief"];
-        var target = li === 0 && wi === 0 ? 12 : (22 + Math.min(36, li * 2));
+        if (!fodder.length) fodder = li < 10 ? ["rat"] : ["reed"];
+        var target;
+        if (li === 0 && wi === 0) target = 8;
+        else if (li < 3) target = 10 + li;
+        else if (li < 5) target = 12 + li;
+        else if (li < 10) target = 16 + li;
+        else if (li < 15) target = 24 + (li - 10) * 3;
+        else target = 36 + (li - 15) * 4;
         var out = w.list.slice();
         j = 0;
         while (out.length < target) {
@@ -578,7 +617,8 @@
         }
         w.list = out;
         var boss = w.list.indexOf("wagon") >= 0 || w.list.indexOf("knight") >= 0 || w.list.indexOf("brute") >= 0;
-        w.gap = boss ? Math.max(0.22, Math.min(0.32, w.gap)) : 0.14;
+        var base = li < 3 ? 0.30 : (li < 5 ? 0.26 : (li < 10 ? 0.20 : (li < 15 ? 0.16 : 0.14)));
+        w.gap = boss ? Math.max(0.28, Math.min(0.42, w.gap)) : base;
       });
     });
   })();
@@ -772,6 +812,7 @@
     var play = name === "play";
     app.classList.toggle("play", play);
     app.classList.toggle("menu", !play);
+    app.classList.toggle("shopping", name === "shop");
     if (!play) {
       skipEl.classList.add("hidden");
       app.classList.remove("tut");
@@ -982,23 +1023,22 @@
     var mag = Math.max(44, 52 * sc);
     var specs = [
       { id: "A", t: 0.80, side: 1 },
-      { id: "B", t: 0.72, side: -1 },
+      { id: "B", t: 0.76, side: -1 },
       { id: "C", t: 0.56, side: 1 },
       { id: "E", t: 0.70, side: -1 },
       { id: "D", t: 0.20, side: -1 }
     ];
     var liveN = 1;
-    if (level >= 3) liveN = 2;
-    if (level >= 6) liveN = 3;
-    if (level >= 15) liveN = 4;
+    if (level >= 2) liveN = 2;
+    if (level >= 5) liveN = 3;
+    if (level >= 14) liveN = 4;
     var defs = specs.map(function (s, i) {
       var pos = sideOfPath(plen * s.t, mag * s.side);
       pos = pushOffLane(pos, 42, Math.min(80, BOW.range[0] * sc - 12));
       var cd = Math.hypot(pos.x - city.x, pos.y - city.y);
-      if (cd < 72 * sc && cd > 1) {
-        pos.x = city.x + (pos.x - city.x) / cd * 72 * sc;
-        pos.y = city.y + (pos.y - city.y) / cd * 72 * sc;
-        pos = pushOffLane(pos, 42, Math.min(80, BOW.range[0] * sc - 12));
+      if (cd < 88 * sc && cd > 1) {
+        pos.x = city.x + (pos.x - city.x) / cd * 88 * sc;
+        pos.y = city.y + (pos.y - city.y) / cd * 88 * sc;
       }
       var locked = i >= liveN || s.id === "D";
       return { id: s.id, slot: "build", x: pos.x, y: pos.y, locked: locked };
@@ -2135,6 +2175,14 @@
       ctx.fill();
     }
   }
+  function gearReqText(item) {
+    if (item.req === "leather") return "Need Leather first";
+    if (item.req === "mail") return "Need Mail barding";
+    if (!item.req) return "";
+    var i, nm = item.req;
+    for (i = 0; i < COSMETICS.length; i++) if (COSMETICS[i].id === item.req) nm = COSMETICS[i].name;
+    return "Need " + nm;
+  }
   function fillShop() {
     var bank = shopFrom === "play" ? wood : save.wood;
     document.getElementById("shop-wood").textContent = "Wood " + bank;
@@ -2145,6 +2193,7 @@
       var row = document.createElement("div");
       row.className = "shop-row";
       var lab = document.createElement("span");
+      lab.className = "lab";
       var tag = item.kind === "gear" ? "gear" : (item.kind || "story");
       lab.textContent = item.name + " · " + item.cost + " · " + tag;
       var btn = document.createElement("button");
@@ -2152,7 +2201,7 @@
       btn.textContent = owned ? "Owned" : "Buy";
       var locked = item.req && !hasCosmetic(item.req);
       btn.disabled = owned || locked || bank < item.cost;
-      if (locked) btn.textContent = "Need " + item.req;
+      if (locked) btn.textContent = gearReqText(item);
       btn.addEventListener("click", function () { buyCosmetic(item.id); });
       row.appendChild(lab);
       row.appendChild(btn);
@@ -2182,6 +2231,7 @@
   function openShop() {
     if (screen === "play" && phase === "wave") return;
     shopFrom = screen;
+    hideBuddyTip();
     fillShop();
     show("shop");
     if (!save.shopTip) {
