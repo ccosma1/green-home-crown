@@ -4,28 +4,34 @@ You ARE the summer king. Crossbows sit on the crown line. Upgrades feed HIS powe
 
 | Act | Levels | Title | Status |
 |---|---|---|---|
-| I | 1–5 | Summer Dawn | Playable. Harden + king move. |
-| II | 6–10 | Feast Draws Flies | Playable. Barrel Thief, Shield Goat, Fair Knight. |
-| III | 11–15 | False Crowns | Later. |
-| IV | 16–20 | Usurper Banner | Later. |
+| I | 1–5 | Summer Dawn | Playable. 1–2 crown pads. |
+| II | 6–10 | Feast Draws Flies | Playable. 2–3 pads. Thief, Goat, Fair Knight. |
+| III | 11–15 | False Crowns / River Feast | Playable. Reed Runner, Siege Wagon. |
+| IV | 16–20 | Usurper Banner | Later (SPINE only). |
 | V | 21–25 | Crown Trial | True end. **The False Summer** / Pretender — not the Frost King. |
 
 Mid-act **CONTINUE**. Act V is the true ending.
 
-## Implemented enemies (L1–10)
+## Implemented enemies (L1–15)
 
 | Unit | Debut | Role |
 |---|---|---|
 | Field Rat | L1 | HP 2, fast trash |
-| Picnic Bandit | L2 | HP 5, medium |
-| Meadow Brute | L5 | HP 16, slam telegraph |
+| Picnic Bandit | L2 | HP 6, medium |
+| Meadow Brute | L5 | HP 18, slam telegraph |
 | Barrel Thief | L6 | Fast, low HP, rushes crown |
 | Shield Goat | L8 | Tower DR from the front; king rear shots full |
 | Fair Knight | L10 | Mini-boss, charges the king |
+| Reed Runner | L11 | Fast fodder |
+| Siege Wagon | L15 | Slow armored picnic wagon |
 
-## Names for later (not in this slice)
+**Royal Guard:** all *placed* towers T3, and either ≥2 towers **or** the only live pad is 1×T3.
 
-**Bosses:** Reed Runner, Siege Wagon, Pretender / The False Summer.
+## Names for later (L16–25, not in this slice)
+
+**Bosses:** Pretender / The False Summer.
+
+**Pads:** L1–3 one crown pad; L4–6 two approach pads; L7–15 three (approach + one mid). Spawn-mouth pads stay locked.
 
 **Trash:** Pie Snatchers, Toll Hogs, Fork Bandits.
 

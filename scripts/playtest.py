@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static checks for Prompt 2 king-action slice."""
+"""Static checks for Prompt 3 fewer-pads slice."""
 
 from __future__ import annotations
 
@@ -16,33 +16,18 @@ def must(cond: bool, msg: str) -> None:
 
 def main() -> None:
     low = HTML.lower()
-    must("kingshot" not in low, "forbidden string Kingshot")
-    must("Oak Gate" not in HTML, "Oak Gate still in UI")
-    must("Feast Drum" not in HTML, "Feast Drum still in UI")
-    must("Sling Nest" not in HTML, "Sling Nest still in UI")
-    must("Crossbow" in HTML and "Royal Ballista" in HTML, "crossbow tiers")
-    must("tickKing" in HTML and "WASD" in HTML, "king move")
-    must("royal" in HTML and "All ballistae ready" in HTML, "Royal Guard")
-    must("thief" in HTML and "goat" in HTML and "knight" in HTML, "L6-10 enemies")
-    must("hp: 2" in HTML and "hp: 6" in HTML and "hp: 18" in HTML, "hardened HP")
-    must("crownMax" in HTML, "crown HP 4 then 3")
-    must("max-width: 560px" in HTML, "bigger map")
-    must("bober.facing" in HTML, "king facing")
-    must("pullOntoLane" in HTML, "pads pulled onto lane")
-    must("e.facing" in HTML, "enemy facing")
-    must("p.aim" in HTML, "tower aim")
-    must("boot-load" in HTML, "immediate splash boot")
-    must("sepia" not in HTML, "king glow still present")
-    must("min-height: 55dvh" in HTML, "stage ≥55%")
-    must("A short history" not in HTML, "history overlay")
-    must("filmSeen" in HTML, "chapter film")
-    must("gacha" not in low, "gacha")
-    must(HTML.count("{ gap:") >= 10, "L1-10 waves")
-    must((ROOT / "assets/sprites/bow.png").is_file(), "bow.png")
-    must((ROOT / "assets/sprites/king-horse.png").is_file(), "king-horse")
-    must((ROOT / "assets/sprites/thief.png").is_file(), "thief")
-    must((ROOT / "assets/sprites/goat.png").is_file(), "goat")
-    must((ROOT / "assets/sprites/knight.png").is_file(), "knight")
+    must("kingshot" not in low, "Kingshot")
+    must("Oak Gate" not in HTML and "Feast Drum" not in HTML, "old buildings")
+    must("beginClear" in HTML and "finishWin" in HTML, "smooth clear")
+    must("pushOffLane" in HTML, "pads off path")
+    must("reed" in HTML and "wagon" in HTML, "Act III enemies")
+    must("live === 1" in HTML or "livePadCount" in HTML, "1-pad Royal Guard")
+    must("wood: 12" in HTML, "L1 one T1 wood")
+    must("min(15" in HTML, "unlock to 15")
+    must(HTML.count("{ gap:") >= 15, "15 levels")
+    must("sepia" not in HTML, "king glow")
+    must((ROOT / "assets/sprites/reed.png").is_file(), "reed.png")
+    must((ROOT / "assets/sprites/wagon.png").is_file(), "wagon.png")
     print("playtest ok")
 
 

@@ -217,7 +217,7 @@
       <div class="chips">
         <span class="chip" id="chip-lvl">L1</span>
         <span id="hearts" aria-label="Crown hearts"></span>
-        <span class="chip wood" id="chip-wood">Wood 24</span>
+        <span class="chip wood" id="chip-wood">Wood 12</span>
       </div>
       <div class="btns">
         <button class="icon-btn" id="btn-pause" type="button" aria-label="Pause">⏸</button>
@@ -255,7 +255,7 @@
     <div id="levels" class="overlay hidden">
       <img class="hero" src="assets/splash.jpg" alt="" />
       <h2>Summer Dawn</h2>
-      <p class="tag">Act I–II · L1–10</p>
+      <p class="tag">Act I–III · L1–15</p>
       <p class="how">Move the King. Crossbows by the Crown.</p>
       <div id="level-grid"></div>
       <button class="play ghost" id="btn-back" type="button">Back</button>
@@ -326,68 +326,100 @@
     brute: { hp: 18, spd: 28, wood: 12, dmg: 2, scale: 1.18 },
     thief: { hp: 3, spd: 118, wood: 3, dmg: 1, scale: 0.7 },
     goat: { hp: 8, spd: 42, wood: 6, dmg: 1, scale: 0.95 },
-    knight: { hp: 22, spd: 50, wood: 15, dmg: 2, scale: 1.12 }
+    knight: { hp: 22, spd: 50, wood: 15, dmg: 2, scale: 1.12 },
+    reed: { hp: 2, spd: 128, wood: 2, dmg: 1, scale: 0.58 },
+    wagon: { hp: 28, spd: 36, wood: 16, dmg: 2, scale: 1.22 }
   };
   var LEVELS = [
     { name: "Meadow Gate", berries: 0, tip: "Move the King.",
       waves: [
-        { gap: 0.52, list: ["rat", "rat", "rat"] },
-        { gap: 0.44, list: ["rat", "rat", "rat", "rat"] }
+        { gap: 0.7, list: ["rat", "rat"] },
+        { gap: 0.58, list: ["rat", "rat", "rat"] }
       ] },
     { name: "Picnic Path", berries: 1, tip: "Kite into tower range.",
       waves: [
-        { gap: 0.48, list: ["rat", "bandit", "rat", "rat", "rat"] },
-        { gap: 0.5, list: ["bandit", "rat", "bandit", "rat"] },
-        { gap: 0.48, list: ["bandit", "bandit", "rat", "bandit"] }
+        { gap: 0.58, list: ["rat", "rat", "bandit", "rat"] },
+        { gap: 0.55, list: ["bandit", "rat", "bandit"] },
+        { gap: 0.52, list: ["bandit", "rat", "bandit"] }
       ] },
     { name: "Berry Raid", berries: 1, tip: "Place during the wave.",
       waves: [
-        { gap: 0.4, list: ["rat", "bandit", "rat", "bandit", "rat", "rat"] },
-        { gap: 0.42, list: ["bandit", "rat", "bandit", "rat", "bandit"] },
-        { gap: 0.4, list: ["bandit", "bandit", "rat", "bandit", "bandit"] }
+        { gap: 0.5, list: ["rat", "bandit", "rat", "rat"] },
+        { gap: 0.48, list: ["bandit", "rat", "bandit"] },
+        { gap: 0.48, list: ["bandit", "bandit", "rat", "bandit"] }
       ] },
     { name: "Fair Noise", berries: 1, tip: "Upgrade the Crossbow.",
       waves: [
-        { gap: 0.38, list: ["rat", "bandit", "rat", "bandit", "rat"] },
-        { gap: 0.4, list: ["bandit", "bandit", "bandit", "rat", "bandit"] },
-        { gap: 0.38, list: ["rat", "bandit", "bandit", "rat", "bandit", "bandit"] }
+        { gap: 0.46, list: ["rat", "bandit", "rat", "bandit"] },
+        { gap: 0.44, list: ["bandit", "bandit", "rat"] },
+        { gap: 0.44, list: ["bandit", "rat", "bandit", "bandit"] }
       ] },
     { name: "Summer Dawn", berries: 1, tip: "Brute slams. Watch the ring.",
       waves: [
-        { gap: 0.42, list: ["rat", "bandit", "rat", "bandit"] },
-        { gap: 0.4, list: ["bandit", "bandit", "bandit", "bandit"] },
-        { gap: 0.48, list: ["rat", "bandit", "brute", "rat"] },
-        { gap: 0.52, list: ["bandit", "brute", "bandit"] }
+        { gap: 0.5, list: ["rat", "bandit", "rat"] },
+        { gap: 0.46, list: ["bandit", "bandit", "bandit"] },
+        { gap: 0.52, list: ["rat", "bandit", "brute"] },
+        { gap: 0.55, list: ["bandit", "brute"] }
       ] },
     { name: "Knife Guests", berries: 1, tip: "Guests with knives.",
       waves: [
-        { gap: 0.4, list: ["thief", "thief", "rat", "thief"] },
-        { gap: 0.45, list: ["bandit", "thief", "thief", "bandit"] },
-        { gap: 0.4, list: ["thief", "thief", "thief", "bandit", "thief"] }
+        { gap: 0.48, list: ["thief", "rat", "thief"] },
+        { gap: 0.5, list: ["bandit", "thief", "bandit"] },
+        { gap: 0.46, list: ["thief", "thief", "bandit", "thief"] }
       ] },
     { name: "Flies at Feast", berries: 1, tip: "Feast draws flies.",
       waves: [
-        { gap: 0.42, list: ["thief", "bandit", "thief", "rat", "thief"] },
-        { gap: 0.48, list: ["bandit", "bandit", "thief", "bandit"] },
-        { gap: 0.42, list: ["thief", "bandit", "thief", "bandit", "thief"] }
+        { gap: 0.48, list: ["thief", "bandit", "thief"] },
+        { gap: 0.5, list: ["bandit", "thief", "bandit"] },
+        { gap: 0.46, list: ["thief", "bandit", "thief", "bandit"] }
       ] },
     { name: "Tin Crowns", berries: 1, tip: "Tin crowns. Real horse.",
       waves: [
-        { gap: 0.55, list: ["goat", "rat", "rat"] },
-        { gap: 0.5, list: ["thief", "goat", "bandit", "thief"] },
-        { gap: 0.52, list: ["goat", "bandit", "goat", "thief"] }
+        { gap: 0.58, list: ["goat", "rat"] },
+        { gap: 0.52, list: ["thief", "goat", "bandit"] },
+        { gap: 0.52, list: ["goat", "bandit", "thief"] }
       ] },
     { name: "Banner Edge", berries: 1, tip: "Banner at the edge.",
       waves: [
-        { gap: 0.45, list: ["thief", "goat", "thief", "bandit"] },
-        { gap: 0.48, list: ["goat", "bandit", "thief", "goat"] },
-        { gap: 0.5, list: ["thief", "goat", "bandit", "goat", "thief"] }
+        { gap: 0.5, list: ["thief", "goat", "bandit"] },
+        { gap: 0.5, list: ["goat", "bandit", "thief"] },
+        { gap: 0.48, list: ["thief", "goat", "bandit"] }
       ] },
     { name: "Fair Knight", berries: 1, tip: "One crown. Bring summer.",
       waves: [
-        { gap: 0.5, list: ["goat", "thief", "bandit"] },
-        { gap: 0.55, list: ["knight"] },
-        { gap: 0.48, list: ["thief", "goat", "knight", "thief"] }
+        { gap: 0.52, list: ["goat", "thief"] },
+        { gap: 0.6, list: ["knight"] },
+        { gap: 0.5, list: ["thief", "knight"] }
+      ] },
+    { name: "False Crowns", berries: 1, tip: "False crowns. Real horse.",
+      waves: [
+        { gap: 0.42, list: ["reed", "reed", "bandit", "reed"] },
+        { gap: 0.45, list: ["reed", "goat", "reed"] },
+        { gap: 0.42, list: ["reed", "bandit", "reed", "goat"] }
+      ] },
+    { name: "River Feast", berries: 1, tip: "Guests at the river.",
+      waves: [
+        { gap: 0.4, list: ["reed", "bandit", "reed", "thief"] },
+        { gap: 0.44, list: ["goat", "reed", "bandit"] },
+        { gap: 0.4, list: ["reed", "reed", "goat", "bandit"] }
+      ] },
+    { name: "Reed Road", berries: 1, tip: "Reeds in the lane.",
+      waves: [
+        { gap: 0.38, list: ["reed", "reed", "goat", "reed"] },
+        { gap: 0.42, list: ["bandit", "reed", "goat", "reed"] },
+        { gap: 0.4, list: ["reed", "goat", "bandit", "reed"] }
+      ] },
+    { name: "Tin River", berries: 1, tip: "Tin crowns. Keep riding.",
+      waves: [
+        { gap: 0.4, list: ["goat", "reed", "bandit", "reed"] },
+        { gap: 0.42, list: ["reed", "goat", "knight"] },
+        { gap: 0.4, list: ["reed", "goat", "bandit", "reed"] }
+      ] },
+    { name: "Siege Picnic", berries: 1, tip: "The wagon rolls in.",
+      waves: [
+        { gap: 0.45, list: ["reed", "goat", "bandit"] },
+        { gap: 0.7, list: ["wagon"] },
+        { gap: 0.42, list: ["reed", "wagon", "goat"] }
       ] }
   ];
 
@@ -450,7 +482,7 @@
   var filmI = 0, filmT = 0, filmFrom = "splash";
 
   function defaultSave() {
-    return { unlocked: 1, wood: 24, stars: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], tutDone: false, tutMidBuild: false, filmSeen: false, mute: false };
+    return { unlocked: 1, wood: 12, stars: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], tutDone: false, tutMidBuild: false, filmSeen: false, mute: false };
   }
   function loadSave() {
     try {
@@ -458,10 +490,10 @@
       if (!raw) return defaultSave();
       var s = JSON.parse(raw);
       var d = defaultSave();
-      d.unlocked = Math.max(1, Math.min(10, s.unlocked | 0));
+      d.unlocked = Math.max(1, Math.min(15, s.unlocked | 0));
       d.wood = Math.max(0, s.wood | 0);
-      d.stars = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-      if (s.stars) for (var i = 0; i < 10; i++) d.stars[i] = Math.max(0, Math.min(3, s.stars[i] | 0));
+      d.stars = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      if (s.stars) for (var i = 0; i < 15; i++) d.stars[i] = Math.max(0, Math.min(3, s.stars[i] | 0));
       d.tutDone = !!s.tutDone;
       d.tutMidBuild = !!s.tutMidBuild;
       d.filmSeen = !!s.filmSeen;
@@ -508,6 +540,7 @@
       rat: "assets/sprites/rat.png", bandit: "assets/sprites/bandit.png",
       brute: "assets/sprites/brute.png", thief: "assets/sprites/thief.png",
       goat: "assets/sprites/goat.png", knight: "assets/sprites/knight.png",
+      reed: "assets/sprites/reed.png", wagon: "assets/sprites/wagon.png",
       berry: "assets/sprites/berry.png"
     };
     function restDone() {
@@ -579,6 +612,7 @@
   function tutActive() { return level === 0 && tut.on && !save.tutDone; }
   function canPlaceNow() {
     if (screen !== "play" || paused) return false;
+    if (phase === "clear") return false;
     if (phase === "build") return true;
     if (phase === "wave" && level >= 2 && !tutActive()) return true;
     return false;
@@ -710,24 +744,21 @@
       bober.facing = Math.PI;
     }
     var plen = pathLen();
-    var mag = 50 * sc;
+    var mag = Math.max(44, 52 * sc);
     var specs = [
-      { id: "A", t: 0.88, side: 1 },
-      { id: "B", t: 0.93, side: -1 },
-      { id: "C", t: 0.80, side: 1 },
-      { id: "D", t: 0.84, side: -1 },
-      { id: "E", t: 0.52, side: 1 },
-      { id: "F", t: 0.22, side: -1 }
+      { id: "A", t: 0.90, side: 1 },
+      { id: "B", t: 0.82, side: -1 },
+      { id: "C", t: 0.56, side: 1 },
+      { id: "D", t: 0.20, side: -1 }
     ];
-    var liveN = 2;
-    if (level >= 1) liveN = 3;
-    if (level >= 3) liveN = 4;
-    if (level >= 5) liveN = 5;
-    if (level >= 7) liveN = 6;
+    var liveN = 1;
+    if (level >= 3) liveN = 2;
+    if (level >= 6) liveN = 3;
     var defs = specs.map(function (s, i) {
       var pos = sideOfPath(plen * s.t, mag * s.side);
-      pos = pullOntoLane(pos, BOW.range[0] * sc * 0.82);
-      return { id: s.id, slot: "build", x: pos.x, y: pos.y, locked: i >= liveN };
+      pos = pushOffLane(pos, 42, Math.min(80, BOW.range[0] * sc - 12));
+      var locked = i >= liveN || s.id === "D";
+      return { id: s.id, slot: "build", x: pos.x, y: pos.y, locked: locked };
     });
     var old = pads.slice();
     pads = defs.map(blankPad);
@@ -757,15 +788,18 @@
     }
     return best;
   }
-  function pullOntoLane(pos, maxDist) {
-    if (distToPath(pos.x, pos.y) <= maxDist) return pos;
-    var d = nearestPathDist(pos.x, pos.y);
-    var p = posOnPath(d);
-    var a = posOnPath(Math.max(0, d - 12));
-    var b = posOnPath(d + 12);
+  function pushOffLane(pos, minDist, maxDist) {
+    var along = nearestPathDist(pos.x, pos.y);
+    var p = posOnPath(along);
+    var a = posOnPath(Math.max(0, along - 12));
+    var b = posOnPath(along + 12);
     var ang = Math.atan2(b.y - a.y, b.x - a.x) + Math.PI / 2;
     var side = ((pos.x - p.x) * Math.cos(ang) + (pos.y - p.y) * Math.sin(ang)) >= 0 ? 1 : -1;
-    return { x: p.x + Math.cos(ang) * maxDist * 0.72 * side, y: p.y + Math.sin(ang) * maxDist * 0.72 * side };
+    var d = distToPath(pos.x, pos.y);
+    var want = d;
+    if (want < minDist) want = minDist;
+    if (want > maxDist) want = maxDist;
+    return { x: p.x + Math.cos(ang) * want * side, y: p.y + Math.sin(ang) * want * side };
   }
   function clampKing() {
     var ox = W * 0.5, oy = H * 0.56, rx = W * 0.46, ry = H * 0.42;
@@ -1173,6 +1207,11 @@
       beep(640, 0.03, "square", 0.035);
     }
   }
+  function livePadCount() {
+    var n = 0;
+    for (var i = 0; i < pads.length; i++) if (!pads[i].locked) n++;
+    return n;
+  }
   function checkRoyal() {
     var n = 0, allT3 = true;
     for (var i = 0; i < pads.length; i++) {
@@ -1180,7 +1219,9 @@
       n++;
       if ((pads[i].rank || 0) < 2) allT3 = false;
     }
-    if (n >= 2 && allT3 && !royal) {
+    var live = livePadCount();
+    var ok = allT3 && n >= 1 && (n >= 2 || live === 1);
+    if (ok && !royal) {
       royal = true;
       royalTold = true;
       kingCele = 2.8;
@@ -1205,12 +1246,12 @@
     tickEnemies(dt);
     if (hp <= 0) return;
     if (spawnI >= w.list.length && enemies.length === 0 && shots.length === 0) {
-      kingCele = 1.15;
-      if (waveI + 1 >= L.waves.length) winLevel();
+      if (waveI + 1 >= L.waves.length) beginClear();
       else {
         waveI++;
         phase = "build";
         spawnI = 0; spawnT = 0;
+        kingCele = 0.8;
         renderHud();
         beep(490, 0.1, "triangle", 0.05);
       }
@@ -1222,26 +1263,37 @@
     if (hp >= Math.ceil(hpMax / 2)) return 2;
     return 1;
   }
-  function winLevel() {
+  var winHold = 0;
+  function beginClear() {
+    if (phase === "clear") return;
+    phase = "clear";
+    winHold = 1.45;
+    kingCele = 1.5;
+    setBanner("Clear.");
+    setHint("");
+    goBtn.disabled = true;
+    beep(523, 0.12, "square", 0.05);
+    setTimeout(function () { beep(659, 0.14, "square", 0.05); }, 90);
+  }
+  function finishWin() {
     var stars = starCount();
     if (stars > save.stars[level]) save.stars[level] = stars;
-    if (save.unlocked < level + 2) save.unlocked = Math.min(10, level + 2);
+    if (save.unlocked < level + 2) save.unlocked = Math.min(15, level + 2);
     save.wood = wood;
     persist();
-    phase = "build";
     if (level === 0) {
       save.tutDone = true;
       tut.on = false;
       persist();
     }
+    var last = LEVELS.length - 1;
     var starStr = "★★★".slice(0, stars) + "☆☆☆".slice(0, 3 - stars);
     document.getElementById("win-stars").textContent = starStr;
-    document.getElementById("win-msg").textContent = level === 0 ? "L1 held." : (LEVELS[level].name + " holds.");
-    document.getElementById("btn-next").textContent = level < 9 ? "Next" : "Map";
-    if (level === 4 && !save.filmSeen) playFilm("win");
+    document.getElementById("win-msg").textContent = level === last ? (LEVELS[level].name + " holds.") : (level === 0 ? "L1 held." : (LEVELS[level].name + " holds."));
+    document.getElementById("btn-next").textContent = level < last ? "Next" : "Map";
+    var playFilmNow = !save.filmSeen && (level === 4 || level === last);
+    if (playFilmNow) playFilm("win");
     else show("win");
-    beep(523, 0.12, "square", 0.05);
-    setTimeout(function () { beep(659, 0.14, "square", 0.05); }, 90);
   }
   function loseLevel() {
     save.wood = snapWood;
@@ -1752,6 +1804,10 @@
     if (screen === "play" && !paused) {
       tickKing(dt);
       if (phase === "wave") tickWave(dt);
+      if (phase === "clear") {
+        winHold -= dt;
+        if (winHold <= 0) finishWin();
+      }
       tickFx(dt);
     }
     if (screen === "play" || screen === "paused") drawWorld();
@@ -1876,7 +1932,7 @@
     setHint(selected ? "Tap a pad · Crossbow" : "Tap a pad to place / upgrade");
   });
   document.getElementById("btn-next").addEventListener("click", function () {
-    if (level < 9 && level + 1 < save.unlocked) startLevel(level + 1);
+    if (level < LEVELS.length - 1 && level + 1 < save.unlocked) startLevel(level + 1);
     else openMap();
   });
   document.getElementById("btn-retry").addEventListener("click", function () { startLevel(level); });

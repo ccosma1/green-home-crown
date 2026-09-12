@@ -25,6 +25,8 @@ SPRITES = (
     "thief.jpg",
     "goat.jpg",
     "knight.jpg",
+    "reed.jpg",
+    "wagon.jpg",
     "rat.jpg",
     "bandit.jpg",
     "brute.jpg",
