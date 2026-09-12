@@ -138,6 +138,17 @@
       width: 46px; height: 46px; border-radius: 50%; object-fit: cover;
       border: 2px solid var(--gold); flex: 0 0 auto; background: #6B9E3A;
     }
+    #shop-list { width: 100%; max-width: 22em; margin: 8px 0 12px; }
+    .shop-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      background: #2A5630; border: 2px solid var(--gold); border-radius: 12px;
+      padding: 8px 10px; margin: 6px 0; color: var(--cream); font-weight: 800; font-size: 13px;
+    }
+    .shop-row button {
+      appearance: none; border: 2px solid var(--gold); background: var(--gold); color: var(--ink);
+      font-weight: 900; border-radius: 10px; padding: 6px 10px; cursor: pointer;
+    }
+    .shop-row button:disabled { filter: grayscale(0.4); opacity: 0.7; }
     @media (max-height: 560px) {
       .card { min-height: 52px; padding: 3px 2px 4px; }
       .card img { width: 24px; height: 20px; }
@@ -234,6 +245,7 @@
         <span class="chip wood" id="chip-wood">Wood 12</span>
       </div>
       <div class="btns">
+        <button class="icon-btn" id="btn-shop" type="button" aria-label="Shop">🏵</button>
         <button class="icon-btn" id="btn-pause" type="button" aria-label="Pause">⏸</button>
         <button class="icon-btn" id="btn-mute" type="button" aria-label="Mute">🔊</button>
       </div>
@@ -277,6 +289,7 @@
       <p class="how">Move the King. Crossbows by the Crown.</p>
       <div id="level-grid"></div>
       <button class="play ghost" id="btn-back" type="button">Back</button>
+      <button class="play ghost" id="btn-map-shop" type="button">Feast shop</button>
       <button class="wipe-link" id="btn-reset" type="button">Reset</button>
     </div>
 
@@ -287,6 +300,14 @@
         <button class="play" id="btn-resume" type="button">Resume</button>
         <button class="play ghost" id="btn-map" type="button">Map</button>
       </div>
+    </div>
+
+    <div id="shop" class="overlay hidden">
+      <h2>Feast shop</h2>
+      <p class="how">Pretty the capital. Story only — no extra fight power.</p>
+      <p class="chip wood" id="shop-wood">Wood 0</p>
+      <div id="shop-list"></div>
+      <button class="play" id="btn-shop-close" type="button">Close</button>
     </div>
 
     <div id="win" class="overlay hidden">
@@ -640,9 +661,18 @@
     "Banner flood. Wow that’s a lot to kill.",
     "Claim summer. Scoop, then tap Next."
   ];
+  var COSMETICS = [
+    { id: "banners", name: "Feast banners", cost: 30 },
+    { id: "flowers", name: "Flower boxes", cost: 22 },
+    { id: "fountain", name: "Fountain", cost: 45 },
+    { id: "lanterns", name: "Lantern string", cost: 28 },
+    { id: "blanket", name: "Horse blanket", cost: 26 },
+    { id: "bunting", name: "Wedding bunting", cost: 36 }
+  ];
+  var shopFrom = "levels";
 
   function defaultSave() {
-    return { unlocked: 1, wood: 12, stars: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], tutDone: false, tutMidBuild: false, filmSeen: false, mute: false };
+    return { unlocked: 1, wood: 12, stars: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], tutDone: false, tutMidBuild: false, filmSeen: false, mute: false, shopTip: false, cosmetics: {} };
   }
   function loadSave() {
     try {
@@ -658,6 +688,8 @@
       d.tutMidBuild = !!s.tutMidBuild;
       d.filmSeen = !!s.filmSeen;
       d.mute = !!s.mute;
+      d.shopTip = !!s.shopTip;
+      d.cosmetics = s.cosmetics && typeof s.cosmetics === "object" ? s.cosmetics : {};
       return d;
     } catch (e) { return defaultSave(); }
   }
@@ -666,7 +698,8 @@
       localStorage.setItem(SAVE_KEY, JSON.stringify({
         unlocked: save.unlocked, wood: save.wood, stars: save.stars,
         tutDone: !!save.tutDone, tutMidBuild: !!save.tutMidBuild,
-        filmSeen: !!save.filmSeen, mute: !!mute
+        filmSeen: !!save.filmSeen, mute: !!mute, shopTip: !!save.shopTip,
+        cosmetics: save.cosmetics || {}
       }));
     } catch (e) {}
   }
@@ -721,7 +754,7 @@
 
   function show(name) {
     screen = name;
-    ["splash", "levels", "paused", "win", "lose", "cameo", "film"].forEach(function (id) {
+    ["splash", "levels", "paused", "win", "lose", "cameo", "film", "shop"].forEach(function (id) {
       document.getElementById(id).classList.toggle("hidden", id !== name);
     });
     var play = name === "play";
@@ -831,6 +864,7 @@
     if (tOn && tut.step !== 1) lock = true;
     if (tOn && tut.step === 1) lock = false;
     card.disabled = lock;
+    document.getElementById("btn-shop").disabled = phase === "wave" || phase === "clear";
     document.getElementById("cost-bow").textContent = String(BOW.cost[0]);
     document.getElementById("bow-name").textContent = BOW.name[0];
   }
@@ -1908,14 +1942,44 @@
     if (e.hit > 0) ctx.filter = "brightness(1.35)";
     if (e.teleOn) ctx.translate(0, Math.sin(tGame * 20) * 2);
     var im = IM[e.kind] || IM.rat;
-    var bob = Math.sin(tGame * (e.kind === "rat" ? 14 : 8) + e.d) * 2;
+    var stride = Math.sin(tGame * 9 + e.d * 0.05);
+    var bob = stride * 0.55;
     var flip = Math.cos(e.facing || 0) < 0;
+    var rim = { rat: "#8B5A2B", bandit: "#C62828", brute: "#3E6A22", thief: "#C4A574", goat: "#F4E6C3", knight: "#F5C400", reed: "#7ED957", wagon: "#5C3A1A" }[e.kind] || "#1A2810";
     ctx.translate(e.x, e.y + bob);
+    ctx.rotate(stride * 0.045);
     ctx.scale(flip ? -1 : 1, 1);
+    ctx.strokeStyle = rim;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.ellipse(0, -h * 0.42, w * 0.42, h * 0.42, 0, 0, Math.PI * 2);
+    ctx.stroke();
     if (im) ctx.drawImage(im, -w / 2, -h, w, h);
     else {
-      ctx.fillStyle = e.kind === "brute" ? "#4E7C28" : (e.kind === "bandit" ? "#6a6a70" : "#8B5A2B");
+      ctx.fillStyle = rim;
       ctx.beginPath(); ctx.ellipse(0, -h * 0.35, w * 0.35, h * 0.4, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    if (e.kind === "thief") {
+      ctx.fillStyle = "#C4A574";
+      ctx.strokeStyle = "#5C3A1A";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.ellipse(w * 0.22, -h * 0.35, 8 * sc, 10 * sc, 0.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    } else if (e.kind === "goat") {
+      ctx.fillStyle = "#F4E6C3";
+      ctx.strokeStyle = "#5C3A1A";
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.ellipse(w * 0.18, -h * 0.28, 11 * sc, 12 * sc, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    } else if (e.kind === "knight") {
+      ctx.strokeStyle = "#F5C400";
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(w * 0.35, -h * 0.7); ctx.lineTo(w * 0.55, -h * 0.15); ctx.stroke();
+    } else if (e.kind === "reed") {
+      ctx.strokeStyle = "#6B9E3A";
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(-2, -h); ctx.lineTo(-2, -h - 10 * sc); ctx.stroke();
+    } else if (e.kind === "bandit") {
+      ctx.fillStyle = "#C62828";
+      ctx.fillRect(-w * 0.12, -h * 0.72, w * 0.24, 5 * sc);
     }
     ctx.restore();
     if (e.max > 1) {
@@ -1925,6 +1989,116 @@
       ctx.fillStyle = "#7ED957";
       ctx.fillRect(e.x - bw / 2, e.y - h - 8, bw * (e.hp / e.max), bh);
     }
+  }
+
+  function hasCosmetic(id) { return !!(save.cosmetics && save.cosmetics[id]); }
+  function drawCityCosmetics() {
+    var x = city.x, y = city.y;
+    if (hasCosmetic("flowers")) {
+      ctx.fillStyle = "#6B9E3A";
+      ctx.fillRect(x - 52 * sc, y - 4 * sc, 16 * sc, 10 * sc);
+      ctx.fillRect(x + 36 * sc, y - 2 * sc, 16 * sc, 10 * sc);
+      ctx.fillStyle = "#C62828";
+      ctx.beginPath(); ctx.arc(x - 44 * sc, y - 8 * sc, 3 * sc, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#F5C400";
+      ctx.beginPath(); ctx.arc(x + 44 * sc, y - 6 * sc, 3 * sc, 0, Math.PI * 2); ctx.fill();
+    }
+    if (hasCosmetic("fountain")) {
+      ctx.fillStyle = "#87C6E8";
+      ctx.strokeStyle = "#F4E6C3";
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.ellipse(x - 8 * sc, y + 12 * sc, 12 * sc, 6 * sc, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    }
+    if (hasCosmetic("banners")) {
+      ctx.fillStyle = "#C62828";
+      ctx.fillRect(x - 40 * sc, y - 70 * sc, 8 * sc, 22 * sc);
+      ctx.fillStyle = "#F5C400";
+      ctx.fillRect(x + 28 * sc, y - 66 * sc, 8 * sc, 20 * sc);
+    }
+    if (hasCosmetic("lanterns")) {
+      ctx.strokeStyle = "#5C3A1A";
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x - 48 * sc, y - 58 * sc); ctx.lineTo(x + 48 * sc, y - 52 * sc); ctx.stroke();
+      ctx.fillStyle = "#F5C400";
+      var li;
+      for (li = 0; li < 5; li++) {
+        ctx.beginPath();
+        ctx.arc(x - 40 * sc + li * 20 * sc, y - 54 * sc + li * 1.2 * sc, 4 * sc, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    if (hasCosmetic("bunting")) {
+      ctx.strokeStyle = "#C62828";
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x - 50 * sc, y - 62 * sc); ctx.lineTo(x + 50 * sc, y - 58 * sc); ctx.stroke();
+      var bi, cols = ["#F5C400", "#C62828", "#F4E6C3"];
+      for (bi = 0; bi < 6; bi++) {
+        var bx = x - 45 * sc + bi * 16 * sc;
+        ctx.fillStyle = cols[bi % 3];
+        ctx.beginPath();
+        ctx.moveTo(bx, y - 60 * sc);
+        ctx.lineTo(bx + 7 * sc, y - 48 * sc);
+        ctx.lineTo(bx + 14 * sc, y - 59 * sc);
+        ctx.fill();
+      }
+    }
+  }
+  function fillShop() {
+    var bank = shopFrom === "play" ? wood : save.wood;
+    document.getElementById("shop-wood").textContent = "Wood " + bank;
+    var list = document.getElementById("shop-list");
+    list.innerHTML = "";
+    COSMETICS.forEach(function (item) {
+      var owned = hasCosmetic(item.id);
+      var row = document.createElement("div");
+      row.className = "shop-row";
+      var lab = document.createElement("span");
+      lab.textContent = item.name + " · " + item.cost;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = owned ? "Owned" : "Buy";
+      btn.disabled = owned || bank < item.cost;
+      btn.addEventListener("click", function () { buyCosmetic(item.id); });
+      row.appendChild(lab);
+      row.appendChild(btn);
+      list.appendChild(row);
+    });
+  }
+  function buyCosmetic(id) {
+    var item = null, i;
+    for (i = 0; i < COSMETICS.length; i++) if (COSMETICS[i].id === id) item = COSMETICS[i];
+    if (!item || hasCosmetic(id)) return;
+    var bank = shopFrom === "play" ? wood : save.wood;
+    if (bank < item.cost) { flashChip(); return; }
+    if (shopFrom === "play") {
+      wood -= item.cost;
+      snapWood = Math.min(snapWood, wood);
+      save.wood = wood;
+    } else {
+      save.wood -= item.cost;
+      wood = save.wood;
+    }
+    save.cosmetics[id] = true;
+    persist();
+    fillShop();
+    renderHud();
+    beep(520, 0.08, "triangle", 0.05);
+  }
+  function openShop() {
+    if (screen === "play" && phase === "wave") return;
+    shopFrom = screen;
+    fillShop();
+    show("shop");
+    if (!save.shopTip) {
+      save.shopTip = true;
+      persist();
+    }
+  }
+  function closeShop() {
+    if (shopFrom === "play") { show("play"); renderHud(); }
+    else if (shopFrom === "paused") show("paused");
+    else if (shopFrom === "levels") openMap();
+    else show("splash");
   }
 
   function drawWorld() {
@@ -2001,6 +2175,7 @@
         ctx.fillRect(city.x - 36 * sc, city.y - 44 * sc, 72 * sc, 50 * sc);
         ctx.strokeRect(city.x - 36 * sc, city.y - 44 * sc, 72 * sc, 50 * sc);
       }
+      drawCityCosmetics();
     }});
     dust.forEach(function (du) {
       ctx.globalAlpha = Math.max(0, du.t / 0.35) * 0.35;
@@ -2013,17 +2188,24 @@
     list.push({ y: bober.y, draw: function () {
       ellipseShadow(bober.x, bober.y, 28 * sc, 11 * sc);
       var run = bober.moving;
-      var bob = Math.sin(tGame * (run ? 11 : 2.6)) * (run ? 3.4 : 2.2);
-      if (kingCele > 0) bob -= Math.sin((1.15 - kingCele) * 10) * 8;
+      var trot = Math.sin(tGame * (run ? 8.2 : 2.1));
+      var bob = (run ? trot * 1.35 : trot * 0.7);
+      if (kingCele > 0) bob -= 2;
       var flip = Math.cos(bober.facing) < 0;
-      var tilt = Math.sin(bober.facing) * 0.12 + Math.sin(tGame * (run ? 10 : 3)) * (run ? 0.06 : 0.03);
+      var tilt = (run ? trot * 0.03 : 0.008);
       ctx.save();
       if (kingFlash > 0) ctx.globalAlpha = 0.78;
       ctx.translate(bober.x, bober.y + bob);
       ctx.rotate(tilt);
-      ctx.scale(flip ? -1 : 1, 1 + Math.sin(tGame * (run ? 12 : 4)) * (run ? 0.05 : 0.02));
+      ctx.scale(flip ? -1 : 1, 1);
       if (IM.king) ctx.drawImage(IM.king, -48 * sc, -78 * sc, 96 * sc, 80 * sc);
       else drawSpriteChunky(IM.bober, 0, 0, 62 * sc, 64 * sc);
+      if (save.cosmetics && save.cosmetics.blanket) {
+        ctx.fillStyle = "#C62828";
+        ctx.beginPath();
+        ctx.ellipse(4 * sc, -22 * sc, 18 * sc, 8 * sc, 0.1, 0, Math.PI * 2);
+        ctx.fill();
+      }
       ctx.restore();
     }});
     list.sort(function (a, b) { return a.y - b.y; });
@@ -2191,6 +2373,9 @@
     ensureAudio();
     playFilm("splash");
   });
+  document.getElementById("btn-shop").addEventListener("click", function () { openShop(); });
+  document.getElementById("btn-map-shop").addEventListener("click", function () { openShop(); });
+  document.getElementById("btn-shop-close").addEventListener("click", function () { closeShop(); });
   document.getElementById("btn-reset").addEventListener("click", function () {
     if (!window.confirm("Reset progress? New run from L1.")) return;
     wipeKeepIntro();

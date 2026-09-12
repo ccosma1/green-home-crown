@@ -39,6 +39,8 @@ def main() -> None:
     must("LIVE_CAP" in HTML and "swarmify" in HTML, "hundreds swarm")
     must("startStick" in HTML, "king drag")
     must("armies fire harder" in HTML, "Royal Guard army buff")
+    must("COSMETICS" in HTML and "Feast shop" in HTML, "story cosmetics")
+    must("stride" in HTML, "walk cycle")
     must("Ride over gold coins" in HTML, "coin tip")
     must((ROOT / "assets/sprites/reed.png").is_file(), "reed.png")
     must((ROOT / "assets/sprites/wagon.png").is_file(), "wagon.png")

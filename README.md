@@ -53,7 +53,7 @@ First L5 clear plays the chapter film. Splash **Watch story** replays it.
 
 Key `green-home-crown-v1`: unlocked (1–10), wood, stars, tutDone, tutMidBuild, filmSeen, mute.
 
-**Reset** on the Map (confirm). Mute stays.
+**Reset** on the Map (confirm). Mute stays. Extra coins buy **Feast shop** cosmetics (banners, flowers, fountain, lanterns, horse blanket, bunting) — visual only.
 
 ## GitHub Pages
 
