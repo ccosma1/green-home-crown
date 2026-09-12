@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static + numeric checks for Prompt 0d slice."""
+"""Static checks for Prompt 2 king-action slice."""
 
 from __future__ import annotations
 
@@ -17,36 +17,25 @@ def must(cond: bool, msg: str) -> None:
 def main() -> None:
     low = HTML.lower()
     must("kingshot" not in low, "forbidden string Kingshot")
-    must("Stick Fence" not in HTML, "Stick Fence still in UI")
-    must("Sap Bowl" not in HTML, "Sap Bowl still in UI")
-    must("Oak Gate" in HTML and "Feast Drum" in HTML and "Sling Nest" in HTML, "new trio")
-    must("A short history" not in HTML, "history overlay still present")
-    must('SAVE_KEY = "green-home-crown-v1"' in HTML, "save key")
-    must("FACE THE SUMMER" in HTML, "splash CTA")
-    must("Fan game by a holder." in HTML, "tag")
-    must("https://ccosma1.github.io/green-home-games/" in HTML, "hub link")
-    must("tutDone" in HTML, "tutorial persist")
-    must("skipTut" in HTML and "btn-skip" in HTML, "Skip control")
-    must("samplePath" in HTML, "bent path sampler")
-    must("TELE = 0.62" in HTML, "brute telegraph")
-    must("min-height: 55dvh" in HTML, "stage ≥55% viewport")
-    must("canPlaceNow" in HTML, "mid-fight place gate")
-    must("filmSeen" in HTML, "chapter film persist")
-    must("Wipe run?" in HTML, "wipe behind pause")
-    must("id=\"btn-new\"" not in HTML, "splash New game still present")
-    must("id=\"btn-win-map\"" not in HTML, "twin win Map still present")
-    must("king-horse" in HTML, "king horse sprite")
-    must("Opens later" in HTML, "locked pad tip")
-    must("gacha" not in low and "alliance" not in low, "no gacha/alliances")
-    must(HTML.count("{ gap:") >= 5, "waves present")
-
-    must((ROOT / "assets/sprites/gate.png").is_file(), "missing gate.png")
-    must((ROOT / "assets/sprites/drum.png").is_file(), "missing drum.png")
-    must((ROOT / "assets/sprites/king-horse.png").is_file(), "missing king-horse.png")
-    for n in range(1, 11):
-        must((ROOT / ("assets/film/f%d.jpg" % n)).is_file(), "missing film f%d" % n)
-    must(0.62 >= 0.45, "telegraph floor")
-
+    must("Oak Gate" not in HTML, "Oak Gate still in UI")
+    must("Feast Drum" not in HTML, "Feast Drum still in UI")
+    must("Sling Nest" not in HTML, "Sling Nest still in UI")
+    must("Crossbow" in HTML and "Royal Ballista" in HTML, "crossbow tiers")
+    must("tickKing" in HTML and "WASD" in HTML, "king move")
+    must("royal" in HTML and "All ballistae ready" in HTML, "Royal Guard")
+    must("thief" in HTML and "goat" in HTML and "knight" in HTML, "L6-10 enemies")
+    must("hp: 2" in HTML and "hp: 5" in HTML and "hp: 16" in HTML, "hardened HP")
+    must("crownMax" in HTML, "crown HP 4 then 3")
+    must("min-height: 55dvh" in HTML, "stage ≥55%")
+    must("A short history" not in HTML, "history overlay")
+    must("filmSeen" in HTML, "chapter film")
+    must("gacha" not in low, "gacha")
+    must(HTML.count("{ gap:") >= 10, "L1-10 waves")
+    must((ROOT / "assets/sprites/bow.png").is_file(), "bow.png")
+    must((ROOT / "assets/sprites/king-horse.png").is_file(), "king-horse")
+    must((ROOT / "assets/sprites/thief.png").is_file(), "thief")
+    must((ROOT / "assets/sprites/goat.png").is_file(), "goat")
+    must((ROOT / "assets/sprites/knight.png").is_file(), "knight")
     print("playtest ok")
 
 

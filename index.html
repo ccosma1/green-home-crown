@@ -80,7 +80,7 @@
     }
     #banner.hidden { display: none; }
     #dock {
-      flex: 0 0 auto; display: grid; grid-template-columns: 1fr 1fr 1fr;
+      flex: 0 0 auto; display: grid; grid-template-columns: 1fr;
       gap: 6px; padding: 7px 8px 6px; background: var(--dock); z-index: 4;
       padding-bottom: max(8px, env(safe-area-inset-bottom));
     }
@@ -88,7 +88,8 @@
     .card {
       appearance: none; border: 3px solid #5C3A1A; background: var(--fur);
       color: var(--cream); border-radius: 14px; padding: 5px 3px 6px;
-      cursor: pointer; min-height: 62px; min-width: 0;
+      cursor: pointer; min-height: 62px; min-width: 140px; max-width: 200px;
+      justify-self: center;
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
       font-weight: 800;
     }
@@ -184,13 +185,13 @@
     #paused { justify-content: center; background: #1a2810e8; }
     #levels { justify-content: flex-start; overflow: auto; padding-top: 14px; }
     #level-grid {
-      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px; width: 100%; max-width: 22em; margin: 8px 0 16px; padding: 10px;
+      display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 6px; width: 100%; max-width: 24em; margin: 8px 0 16px; padding: 10px;
       background: #1a2810cc; border-radius: 16px;
     }
     .lvl {
       appearance: none; border: 3px solid var(--gold); background: var(--fur); color: var(--cream);
-      border-radius: 14px; min-height: 72px; padding: 6px 4px; font-weight: 800; cursor: pointer;
+      border-radius: 14px; min-height: 62px; padding: 5px 2px; font-weight: 800; cursor: pointer;
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
     }
     .lvl .num { font-size: 18px; color: var(--gold); line-height: 1; }
@@ -226,22 +227,12 @@
       <button id="btn-skip" class="hidden" type="button">Skip</button>
     </div>
     <div id="dock">
-      <button class="card" id="card-sling" type="button" data-kind="sling">
-        <img src="assets/sprites/sling.png" alt="" />
-        <span class="name">Sling Nest</span>
-        <span class="cost" id="cost-sling">14</span>
+      <button class="card" id="card-bow" type="button" data-kind="bow">
+        <img src="assets/sprites/bow.png" alt="" />
+        <span class="name" id="bow-name">Crossbow</span>
+        <span class="cost" id="cost-bow">12</span>
       </button>
-      <button class="card" id="card-gate" type="button" data-kind="gate">
-        <img src="assets/sprites/gate.png" alt="" />
-        <span class="name">Oak Gate</span>
-        <span class="cost" id="cost-gate">10</span>
-      </button>
-      <button class="card" id="card-drum" type="button" data-kind="drum">
-        <img src="assets/sprites/drum.png" alt="" />
-        <span class="name">Feast Drum</span>
-        <span class="cost" id="cost-drum">16</span>
-      </button>
-      <div id="dock-hint">Tap a pad · then START WAVE</div>
+      <div id="dock-hint">Tap a pad · place a Crossbow</div>
       <button id="btn-go" type="button">START WAVE</button>
     </div>
     <div id="also">More games · <a href="https://ccosma1.github.io/green-home-games/">Green Home Games</a></div>
@@ -251,7 +242,7 @@
       <h1>GREEN HOME CROWN</h1>
       <p class="tag">Summer stays.</p>
       <p class="tag">Fan game by a holder.</p>
-      <p class="how">Build between waves. Hold the Crown. Don’t freeze.</p>
+      <p class="how">Move the King. Hold the Crown. Don’t freeze.</p>
       <button class="play" id="btn-face" type="button">FACE THE SUMMER</button>
       <button class="play ghost" id="btn-more" type="button">More games · Green Home Games</button>
       <button class="film-link" id="btn-watch" type="button">Watch story</button>
@@ -260,8 +251,8 @@
     <div id="levels" class="overlay hidden">
       <img class="hero" src="assets/splash.jpg" alt="" />
       <h2>Summer Dawn</h2>
-      <p class="tag">Act I · L1–5</p>
-      <p class="how">Place on pads. Start the wave. Keep five hearts.</p>
+      <p class="tag">Act I–II · L1–10</p>
+      <p class="how">Move the King. Crossbows by the Crown.</p>
       <div id="level-grid"></div>
       <button class="play ghost" id="btn-back" type="button">Back</button>
     </div>
@@ -317,48 +308,82 @@
   var HUB = "https://ccosma1.github.io/green-home-games/";
 
   var TELE = 0.62;
-  var KINDS = {
-    sling: { name: "Sling Nest", cost: 14, up: 12, range: [138, 162], rate: [0.68, 0.42], dmg: [1, 1] },
-    gate: { name: "Oak Gate", cost: 10, up: 12, hp: [12, 20] },
-    drum: { name: "Feast Drum", cost: 16, up: 12, rad: [90, 112], rate: [1.15, 0.9], dmg: [1, 1], stag: 0.35 }
+  var BOW = {
+    name: ["Crossbow", "Heavy Crossbow", "Royal Ballista"],
+    cost: [12, 20, 30],
+    dmg: [1, 2, 3],
+    rate: [0.7, 0.65, 0.55],
+    range: [90, 105, 120],
+    pierce: [0, 0, 1]
   };
   var MOBS = {
-    rat: { hp: 1, spd: 86, wood: 2, dmg: 1, scale: 0.62 },
-    bandit: { hp: 3, spd: 54, wood: 4, dmg: 1, scale: 0.82 },
-    brute: { hp: 10, spd: 28, wood: 12, dmg: 2, scale: 1.18 }
+    rat: { hp: 2, spd: 82, wood: 2, dmg: 1, scale: 0.62 },
+    bandit: { hp: 5, spd: 64, wood: 4, dmg: 1, scale: 0.82 },
+    brute: { hp: 16, spd: 28, wood: 12, dmg: 2, scale: 1.18 },
+    thief: { hp: 3, spd: 118, wood: 3, dmg: 1, scale: 0.7 },
+    goat: { hp: 8, spd: 42, wood: 6, dmg: 1, scale: 0.95 },
+    knight: { hp: 22, spd: 50, wood: 15, dmg: 2, scale: 1.12 }
   };
   var LEVELS = [
-    { name: "Meadow Gate", berries: 1, tip: "Hold the Crown.",
+    { name: "Meadow Gate", berries: 1, tip: "Move the King.",
       waves: [
-        { gap: 0.55, list: ["rat", "rat", "rat"] },
-        { gap: 0.48, list: ["rat", "rat", "rat", "rat", "rat"] }
+        { gap: 0.7, list: ["rat", "rat"] },
+        { gap: 0.55, list: ["rat", "rat", "rat"] }
       ] },
-    { name: "Picnic Path", berries: 2, tip: "Gates soak. Drums thump.",
+    { name: "Picnic Path", berries: 2, tip: "Kite into tower range.",
       waves: [
-        { gap: 0.48, list: ["rat", "rat", "rat", "rat", "rat"] },
-        { gap: 0.55, list: ["rat", "rat", "bandit", "rat", "bandit"] },
-        { gap: 0.62, list: ["bandit", "bandit", "bandit", "bandit"] }
+        { gap: 0.55, list: ["rat", "rat", "rat", "rat"] },
+        { gap: 0.6, list: ["rat", "bandit", "rat", "bandit"] },
+        { gap: 0.58, list: ["bandit", "bandit", "rat", "bandit"] }
       ] },
-    { name: "Berry Raid", berries: 2, tip: "Tap a berry bush once.",
+    { name: "Berry Raid", berries: 2, tip: "Place during the wave.",
       waves: [
-        { gap: 0.44, list: ["rat", "rat", "rat", "rat", "rat", "rat"] },
-        { gap: 0.5, list: ["rat", "bandit", "rat", "bandit", "rat", "bandit"] },
-        { gap: 0.52, list: ["bandit", "bandit", "rat", "bandit", "bandit", "bandit"] }
+        { gap: 0.48, list: ["rat", "rat", "bandit", "rat", "rat"] },
+        { gap: 0.52, list: ["bandit", "rat", "bandit", "rat", "bandit"] },
+        { gap: 0.5, list: ["bandit", "bandit", "rat", "bandit", "bandit"] }
       ] },
-    { name: "Fair Noise", berries: 3, tip: "Upgrade a pad — tap again.",
+    { name: "Fair Noise", berries: 2, tip: "Upgrade the Crossbow.",
       waves: [
-        { gap: 0.4, list: ["rat", "rat", "rat", "rat", "rat", "rat", "rat", "rat"] },
-        { gap: 0.58, list: ["bandit", "bandit", "bandit", "bandit"] },
-        { gap: 0.48, list: ["rat", "rat", "bandit", "rat", "rat", "bandit", "bandit"] },
-        { gap: 0.5, list: ["bandit", "bandit", "bandit", "bandit", "bandit", "bandit"] }
+        { gap: 0.45, list: ["rat", "rat", "bandit", "rat", "bandit"] },
+        { gap: 0.5, list: ["bandit", "bandit", "bandit", "rat"] },
+        { gap: 0.48, list: ["rat", "bandit", "bandit", "rat", "bandit", "bandit"] }
       ] },
-    { name: "Summer Dawn", berries: 3, tip: "Brute slams. Watch the ring.",
+    { name: "Summer Dawn", berries: 2, tip: "Brute slams. Watch the ring.",
       waves: [
-        { gap: 0.46, list: ["rat", "rat", "bandit", "rat", "rat", "bandit"] },
-        { gap: 0.55, list: ["bandit", "bandit", "bandit", "bandit"] },
-        { gap: 0.48, list: ["rat", "bandit", "rat", "bandit", "rat", "bandit", "bandit"] },
-        { gap: 0.7, list: ["rat", "rat", "brute", "rat", "rat"] },
-        { gap: 0.65, list: ["bandit", "bandit", "brute", "bandit"] }
+        { gap: 0.5, list: ["rat", "bandit", "rat", "bandit"] },
+        { gap: 0.52, list: ["bandit", "bandit", "bandit"] },
+        { gap: 0.55, list: ["rat", "bandit", "brute", "rat"] },
+        { gap: 0.6, list: ["bandit", "brute", "bandit"] }
+      ] },
+    { name: "Knife Guests", berries: 2, tip: "Guests with knives.",
+      waves: [
+        { gap: 0.4, list: ["thief", "thief", "rat", "thief"] },
+        { gap: 0.45, list: ["bandit", "thief", "thief", "bandit"] },
+        { gap: 0.4, list: ["thief", "thief", "thief", "bandit", "thief"] }
+      ] },
+    { name: "Flies at Feast", berries: 2, tip: "Feast draws flies.",
+      waves: [
+        { gap: 0.42, list: ["thief", "bandit", "thief", "rat", "thief"] },
+        { gap: 0.48, list: ["bandit", "bandit", "thief", "bandit"] },
+        { gap: 0.42, list: ["thief", "bandit", "thief", "bandit", "thief"] }
+      ] },
+    { name: "Tin Crowns", berries: 2, tip: "Tin crowns. Real horse.",
+      waves: [
+        { gap: 0.55, list: ["goat", "rat", "rat"] },
+        { gap: 0.5, list: ["thief", "goat", "bandit", "thief"] },
+        { gap: 0.52, list: ["goat", "bandit", "goat", "thief"] }
+      ] },
+    { name: "Banner Edge", berries: 2, tip: "Banner at the edge.",
+      waves: [
+        { gap: 0.45, list: ["thief", "goat", "thief", "bandit"] },
+        { gap: 0.48, list: ["goat", "bandit", "thief", "goat"] },
+        { gap: 0.5, list: ["thief", "goat", "bandit", "goat", "thief"] }
+      ] },
+    { name: "Fair Knight", berries: 2, tip: "One crown. Bring summer.",
+      waves: [
+        { gap: 0.5, list: ["goat", "thief", "bandit"] },
+        { gap: 0.55, list: ["knight"] },
+        { gap: 0.48, list: ["thief", "goat", "knight", "thief"] }
       ] }
   ];
 
@@ -382,7 +407,7 @@
   var level = 0;
   var phase = "build";
   var waveI = 0, spawnI = 0, spawnT = 0;
-  var hp = 5, wood = 24, snapWood = 24;
+  var hp = 4, hpMax = 4, wood = 24, snapWood = 24;
   var pads = [];
   var berries = [];
   var enemies = [];
@@ -391,13 +416,18 @@
   var pulses = [];
   var path = [];
   var crown = { x: 0, y: 0 };
-  var bober = { x: 0, y: 0 };
+  var bober = { x: 0, y: 0, cd: 0 };
   var W = 360, H = 520, sc = 1;
   var shake = 0, tGame = 0;
   var scenery = [];
   var actx = null;
   var pendingCameo = false;
   var tut = { on: false, step: 0 };
+  var royal = false, royalTold = false;
+  var keys = { l: 0, r: 0, u: 0, d: 0 };
+  var stick = { on: false, x: 0, y: 0 };
+  var kingHome = { x: 0, y: 0 };
+  var eid = 1;
   var skipEl = document.getElementById("btn-skip");
   var kingFlash = 0, kingCele = 0;
   var FILM = [
@@ -415,7 +445,7 @@
   var filmI = 0, filmT = 0, filmFrom = "splash";
 
   function defaultSave() {
-    return { unlocked: 1, wood: 24, stars: [0, 0, 0, 0, 0], tutDone: false, tutMidBuild: false, filmSeen: false, mute: false };
+    return { unlocked: 1, wood: 24, stars: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], tutDone: false, tutMidBuild: false, filmSeen: false, mute: false };
   }
   function loadSave() {
     try {
@@ -423,10 +453,10 @@
       if (!raw) return defaultSave();
       var s = JSON.parse(raw);
       var d = defaultSave();
-      d.unlocked = Math.max(1, Math.min(5, s.unlocked | 0));
+      d.unlocked = Math.max(1, Math.min(10, s.unlocked | 0));
       d.wood = Math.max(0, s.wood | 0);
-      d.stars = [0, 0, 0, 0, 0];
-      if (s.stars) for (var i = 0; i < 5; i++) d.stars[i] = Math.max(0, Math.min(3, s.stars[i] | 0));
+      d.stars = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      if (s.stars) for (var i = 0; i < 10; i++) d.stars[i] = Math.max(0, Math.min(3, s.stars[i] | 0));
       d.tutDone = !!s.tutDone;
       d.tutMidBuild = !!s.tutMidBuild;
       d.filmSeen = !!s.filmSeen;
@@ -458,14 +488,15 @@
     });
   }
   function boot() {
-    var keys = ["splash", "cameo", "bober", "king", "crown", "sling", "gate", "drum", "rat", "bandit", "brute", "berry"];
+    var keys = ["splash", "cameo", "bober", "king", "crown", "bow", "ballista", "rat", "bandit", "brute", "thief", "goat", "knight", "berry"];
     var paths = {
       splash: "assets/splash.jpg", cameo: "assets/cameo-picnic.jpg",
       bober: "assets/sprites/bober.png", king: "assets/sprites/king-horse.png",
       crown: "assets/sprites/crown.png",
-      sling: "assets/sprites/sling.png", gate: "assets/sprites/gate.png",
-      drum: "assets/sprites/drum.png", rat: "assets/sprites/rat.png",
-      bandit: "assets/sprites/bandit.png", brute: "assets/sprites/brute.png",
+      bow: "assets/sprites/bow.png", ballista: "assets/sprites/ballista.png",
+      rat: "assets/sprites/rat.png", bandit: "assets/sprites/bandit.png",
+      brute: "assets/sprites/brute.png", thief: "assets/sprites/thief.png",
+      goat: "assets/sprites/goat.png", knight: "assets/sprites/knight.png",
       berry: "assets/sprites/berry.png"
     };
     Promise.all(keys.map(function (k) { return loadImg(paths[k]).then(function (im) { IM[k] = im; }); }))
@@ -524,9 +555,10 @@
     void woodEl.offsetWidth;
     woodEl.classList.add("flash");
   }
+  function crownMax() { return level >= 3 ? 3 : 4; }
   function renderHearts() {
     var html = "";
-    for (var i = 0; i < 5; i++) html += "<i class=\"" + (i < hp ? "full" : "") + "\"></i>";
+    for (var i = 0; i < hpMax; i++) html += "<i class=\"" + (i < hp ? "full" : "") + "\"></i>";
     heartsEl.innerHTML = html;
   }
   function tutActive() { return level === 0 && tut.on && !save.tutDone; }
@@ -537,12 +569,7 @@
     return false;
   }
   function firstBuildPad() {
-    for (var i = 0; i < pads.length; i++) if (pads[i].slot === "build") return pads[i];
-    return pads[0];
-  }
-  function firstGatePad() {
-    for (var i = 0; i < pads.length; i++) if (pads[i].slot === "gate") return pads[i];
-    return null;
+    return firstLivePad();
   }
   function renderHud() {
     lvlEl.textContent = "L" + (level + 1);
@@ -551,40 +578,39 @@
     var L = LEVELS[level];
     var n = L.waves.length;
     var tOn = tutActive();
-    goBtn.classList.toggle("pulse", tOn && (tut.step === 1 || tut.step === 4) && phase === "build");
+    goBtn.classList.toggle("pulse", tOn && tut.step === 2 && phase === "build");
     skipEl.classList.toggle("hidden", !tOn);
     app.classList.toggle("tut", tOn);
     if (tOn) {
-      if (tut.step === 0) { setBanner("Hold the Crown."); setHint("Tap pad. Build Sling Nest."); }
-      else if (tut.step === 1) { setBanner("START WAVE"); setHint("Press START WAVE"); }
-      else if (tut.step === 2) { setBanner("They walk the path."); setHint("Crown loses hearts."); }
-      else if (tut.step === 3) { setBanner("Gates soak hits."); setHint("Build Oak Gate on blue pad"); }
-      else if (tut.step === 4) { setBanner("START WAVE"); setHint("Press START WAVE"); }
-      else { setBanner("Drum thumps clumps."); setHint("Optional · then hold"); }
+      if (tut.step === 0) { setBanner("Drag the King."); setHint("Stick or WASD"); }
+      else if (tut.step === 1) { setBanner("Tap pad. Place Crossbow."); setHint("One tower by the Crown"); }
+      else if (tut.step === 2) { setBanner("START WAVE"); setHint("Press START WAVE"); }
+      else { setBanner("King shoots close. Towers hold the path."); setHint("Kite into range"); }
+    } else if (royal && royalTold && kingCele > 0) {
+      setBanner("All ballistae ready — the King grows stronger.");
+      setHint("The King grows stronger");
     } else if (phase === "build") {
       setBanner(waveI === 0 ? (L.tip || "Build · then START WAVE") : "Build · then NEXT WAVE");
       setHint("Tap a pad to place / upgrade");
     } else {
       setBanner("Wave " + (waveI + 1) + " / " + n + " · Hold the Crown");
-      setHint(level >= 2 ? "Tap pads during the wave" : "Build between waves");
+      setHint(level >= 2 ? "Place during the wave" : "Move the King");
     }
     if (phase === "build") {
-      goBtn.disabled = tOn && (tut.step === 0 || tut.step === 3);
+      goBtn.disabled = tOn && tut.step < 2;
       goBtn.textContent = waveI === 0 ? "START WAVE" : "NEXT WAVE";
     } else {
       goBtn.disabled = true;
       goBtn.textContent = "WAVE " + (waveI + 1) + " / " + n;
     }
-    ["sling", "gate", "drum"].forEach(function (k) {
-      var card = document.getElementById("card-" + k);
-      card.classList.toggle("on", selected === k);
-      var lock = !canPlaceNow();
-      if (tOn && tut.step === 0) lock = k !== "sling";
-      if (tOn && tut.step === 3) lock = k !== "gate";
-      if (tOn && (tut.step === 1 || tut.step === 4)) lock = true;
-      card.disabled = lock;
-      document.getElementById("cost-" + k).textContent = String(KINDS[k].cost);
-    });
+    var card = document.getElementById("card-bow");
+    card.classList.toggle("on", selected === "bow");
+    var lock = !canPlaceNow();
+    if (tOn && tut.step !== 1) lock = true;
+    if (tOn && tut.step === 1) lock = false;
+    card.disabled = lock;
+    document.getElementById("cost-bow").textContent = String(BOW.cost[0]);
+    document.getElementById("bow-name").textContent = BOW.name[0];
   }
 
   function resize() {
@@ -655,39 +681,34 @@
     };
   }
   function migrateKind(k) {
-    if (k === "fence" || k === "sap") return null;
-    if (k === "sling" || k === "gate" || k === "drum") return k;
-    return null;
+    return k === "bow" ? "bow" : null;
   }
   function layout() {
     path = samplePath();
     var last = path[path.length - 1];
     crown = { x: last.x, y: last.y };
-    bober = { x: Math.min(W - 44, last.x + 72 * sc), y: last.y + 16 * sc };
-    var plen = pathLen();
-    var d1 = plen * 0.22, dc = plen * 0.48, d2 = plen * 0.74;
-    var nest1 = sideOfPath(d1, 44 * sc);
-    var nest2 = sideOfPath(d2, -44 * sc);
-    var nest3 = sideOfPath(d2, 44 * sc);
-    var gate1 = sideOfPath(dc, 42 * sc);
-    var gate2 = sideOfPath(dc, -42 * sc);
-    var A = { id: "A", slot: "build", x: nest1.x, y: nest1.y, locked: false };
-    var B = { id: "B", slot: "build", x: nest2.x, y: nest2.y, locked: false };
-    var C = { id: "C", slot: "build", x: nest3.x, y: nest3.y, locked: false };
-    var G = { id: "G", slot: "gate", x: gate1.x, y: gate1.y, locked: false };
-    var H = { id: "H", slot: "gate", x: gate2.x, y: gate2.y, locked: false };
-    var defs;
-    if (level <= 0) {
-      B.locked = true; C.locked = true;
-      defs = [A, B, G, C];
-    } else if (level <= 2) {
-      C.locked = true;
-      defs = [A, B, G, C];
-    } else if (level === 3) {
-      defs = [A, B, C, G];
+    if (!bober.x) {
+      bober.x = Math.min(W - 40, last.x + 48 * sc);
+      bober.y = last.y - 8 * sc;
     } else {
-      defs = [A, B, G, H];
+      /* keep king; clamp after */
     }
+    var spots = [
+      { id: "A", nx: 0.28, ny: 0.91 },
+      { id: "B", nx: 0.72, ny: 0.91 },
+      { id: "C", nx: 0.16, ny: 0.82 },
+      { id: "D", nx: 0.84, ny: 0.82 },
+      { id: "E", nx: 0.12, ny: 0.88 },
+      { id: "F", nx: 0.88, ny: 0.88 }
+    ];
+    var liveN = 2;
+    if (level >= 1) liveN = 3;
+    if (level >= 3) liveN = 4;
+    if (level >= 5) liveN = 5;
+    if (level >= 7) liveN = 6;
+    var defs = spots.map(function (s, i) {
+      return { id: s.id, slot: "build", x: s.nx * W, y: s.ny * H, locked: i >= liveN };
+    });
     var old = pads.slice();
     pads = defs.map(blankPad);
     old.forEach(function (o) {
@@ -702,6 +723,27 @@
       b.x = W * b.nx; b.y = H * b.ny;
     });
     seedScenery();
+    clampKing();
+  }
+  function clampKing() {
+    var ox = W * 0.5, oy = H * 0.55, rx = W * 0.42, ry = H * 0.36;
+    var dx = (bober.x - ox) / rx, dy = (bober.y - oy) / ry;
+    var m = dx * dx + dy * dy;
+    if (m > 1) {
+      var k = 1 / Math.sqrt(m);
+      bober.x = ox + dx * rx * k;
+      bober.y = oy + dy * ry * k;
+    }
+    bober.x = Math.max(24, Math.min(W - 24, bober.x));
+    bober.y = Math.max(40, Math.min(H - 18, bober.y));
+    pads.forEach(function (p) {
+      var d = Math.hypot(bober.x - p.x, bober.y - p.y);
+      if (d < 34 * sc && d > 0.1) {
+        var u = 34 * sc / d;
+        bober.x = p.x + (bober.x - p.x) * u;
+        bober.y = p.y + (bober.y - p.y) * u;
+      }
+    });
   }
   function seedScenery() {
     if (scenery.length) return;
@@ -742,18 +784,26 @@
 
   function startLevel(i) {
     level = i;
-    hp = 5;
+    hpMax = crownMax();
+    hp = hpMax;
     wood = save.wood;
     snapWood = save.wood;
     selected = null;
     phase = "build";
     waveI = 0; spawnI = 0; spawnT = 0;
     enemies = []; shots = []; fx = []; pulses = [];
+    royal = false; royalTold = false;
+    kingFlash = 0; kingCele = 0;
     layout();
+    var last = path[path.length - 1];
+    bober.x = Math.min(W - 40, last.x + 52 * sc);
+    bober.y = last.y - 10 * sc;
+    bober.cd = 0;
+    kingHome = { x: bober.x, y: bober.y };
+    clampKing();
     pads.forEach(function (p) {
       p.kind = null; p.rank = 0; p.cd = 0; p.hp = 0; p.maxHp = 0;
     });
-    kingFlash = 0; kingCele = 0;
     berries = berrySpots(LEVELS[i].berries);
     beginTut();
     show("play");
@@ -763,23 +813,28 @@
   function beginTut() {
     tut.on = (level === 0 && !save.tutDone);
     tut.step = 0;
-    if (tut.on) selected = "sling";
+    if (tut.on) selected = null;
     skipEl.classList.toggle("hidden", !tut.on);
   }
   function skipTut() {
-    var nest = firstBuildPad();
-    if (nest && !nest.kind) {
-      nest.kind = "sling"; nest.rank = 0; nest.cd = 0.2;
+    var pad = firstLivePad();
+    if (pad && !pad.kind) {
+      pad.kind = "bow"; pad.rank = 0; pad.cd = 0.2;
+      if (wood >= 12) wood -= 12;
     }
     save.tutDone = true;
     persist();
     tut.on = false;
-    tut.step = 5;
+    tut.step = 3;
     selected = null;
     skipEl.classList.add("hidden");
     app.classList.remove("tut");
     renderHud();
     beep(520, 0.08, "triangle", 0.05);
+  }
+  function firstLivePad() {
+    for (var i = 0; i < pads.length; i++) if (!pads[i].locked) return pads[i];
+    return pads[0];
   }
 
   function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
@@ -807,22 +862,22 @@
 
   function spawn(kind) {
     var m = MOBS[kind];
+    if (!m) return;
     var p0 = path[0];
     enemies.push({
-      kind: kind, hp: m.hp, max: m.hp, spd: m.spd * sc, d: 0,
-      x: p0.x, y: p0.y, tele: 0, teleOn: false, slamCd: 0.8, stag: 0, atkT: 0, hit: 0
+      id: eid++, kind: kind, hp: m.hp, max: m.hp, spd: m.spd * sc, d: 0,
+      x: p0.x, y: p0.y, tele: 0, teleOn: false, slamCd: 0.8, hit: 0,
+      charging: false, chargeCd: 1.2, chargeT: null
     });
   }
 
   function startWave() {
     if (phase !== "build") return;
-    if (tutActive() && tut.step === 0) { setHint("Build a Sling Nest first"); return; }
-    if (tutActive() && tut.step === 3) { setHint("Place the Oak Gate first"); return; }
+    if (tutActive() && tut.step < 2) { setHint("Place a Crossbow first"); return; }
     phase = "wave";
     spawnI = 0; spawnT = 0.15;
     selected = null;
-    if (tutActive() && tut.step === 1) tut.step = 2;
-    if (tutActive() && tut.step === 4) tut.step = 5;
+    if (tutActive() && tut.step === 2) tut.step = 3;
     renderHud();
     beep(330, 0.1, "square", 0.05);
   }
@@ -859,83 +914,73 @@
     return best;
   }
 
-  function liveGateFor(e) {
-    var best = null, bestD = 28 * sc;
-    for (var i = 0; i < pads.length; i++) {
-      var p = pads[i];
-      if (p.kind !== "gate" || p.hp <= 0) continue;
-      if (e.d + 12 * sc >= p.pathD && e.d < p.pathD + 16 * sc) {
-        var dd = Math.abs(e.d - p.pathD);
-        if (dd < bestD) { bestD = dd; best = p; }
-      }
-    }
-    return best;
+  function fireShot(x, y, target, dmg, pierce, from) {
+    var dx = target.x - x, dy = target.y - y, L = Math.hypot(dx, dy) || 1;
+    var spd = from === "king" ? 340 * sc : 300 * sc;
+    shots.push({
+      x: x, y: y, vx: dx / L * spd, vy: dy / L * spd, spd: spd,
+      dmg: dmg, pierce: pierce || 0, ignore: {}, from: from, life: 0.85, e: target
+    });
   }
-
+  function goatFront(e, sx, sy) {
+    var a = posOnPath(Math.max(0, e.d - 6));
+    var b = posOnPath(e.d + 10);
+    var fang = Math.atan2(b.y - a.y, b.x - a.x);
+    var incoming = Math.atan2(e.y - sy, e.x - sx);
+    var dlt = incoming - fang;
+    while (dlt > Math.PI) dlt -= Math.PI * 2;
+    while (dlt < -Math.PI) dlt += Math.PI * 2;
+    return Math.abs(dlt) < 1.05;
+  }
+  function applyHit(e, dmg, sx, sy, from) {
+    if (e.kind === "goat" && from !== "king" && goatFront(e, sx, sy)) dmg = Math.max(1, Math.floor(dmg * 0.4));
+    if (dmg < 1) dmg = 1;
+    e.hp -= dmg;
+    e.hit = 0.12;
+    if (e.hp <= 0) kill(e);
+  }
   function tickBuildings(dt) {
     for (var i = 0; i < pads.length; i++) {
       var p = pads[i];
-      if (!p.kind) continue;
+      if (p.kind !== "bow" || p.locked) continue;
       p.cd -= dt;
-      var spec = KINDS[p.kind];
       var r = p.rank || 0;
-      if (p.kind === "sling" && p.cd <= 0) {
-        var t = nearest(p.x, p.y, spec.range[r] * sc);
+      if (p.cd <= 0) {
+        var t = nearest(p.x, p.y, BOW.range[r] * sc);
         if (t) {
-          shots.push({ x: p.x, y: p.y - 10 * sc, tx: t.x, ty: t.y, e: t, spd: 280 * sc, dmg: spec.dmg[r] });
-          p.cd = spec.rate[r];
-          beep(880, 0.03, "square", 0.03);
-        }
-      }
-      if (p.kind === "drum" && p.cd <= 0) {
-        var any = nearest(p.x, p.y, spec.rad[r] * sc);
-        if (any) {
-          pulses.push({ x: p.x, y: p.y, r: 8, max: spec.rad[r] * sc, t: 0.32 });
-          p.cd = spec.rate[r];
-          for (var k = 0; k < enemies.length; k++) {
-            var e = enemies[k];
-            if (e.hp <= 0) continue;
-            if (Math.hypot(e.x - p.x, e.y - p.y) < spec.rad[r] * sc) {
-              e.hp -= spec.dmg[r];
-              e.stag = spec.stag;
-              e.hit = 0.12;
-              if (e.hp <= 0) kill(e);
-            }
-          }
-          beep(140, 0.09, "sine", 0.06);
+          fireShot(p.x, p.y - 12 * sc, t, BOW.dmg[r], BOW.pierce[r], "tower");
+          p.cd = BOW.rate[r];
+          beep(820, 0.03, "square", 0.03);
         }
       }
     }
   }
-
   function tickShots(dt) {
     for (var i = shots.length - 1; i >= 0; i--) {
       var s = shots[i];
-      if (s.e && s.e.hp > 0) { s.tx = s.e.x; s.ty = s.e.y; }
-      var dx = s.tx - s.x, dy = s.ty - s.y, L = Math.hypot(dx, dy) || 1;
-      var step = s.spd * dt;
-      if (step >= L) {
-        if (s.e && s.e.hp > 0) {
-          s.e.hp -= s.dmg;
-          s.e.hit = 0.12;
-          if (s.e.hp <= 0) kill(s.e);
+      s.life -= dt;
+      s.x += s.vx * dt;
+      s.y += s.vy * dt;
+      var hit = false;
+      for (var k = 0; k < enemies.length; k++) {
+        var e = enemies[k];
+        if (e.hp <= 0 || s.ignore[e.id]) continue;
+        if (Math.hypot(e.x - s.x, e.y - s.y) < 16 * sc) {
+          applyHit(e, s.dmg, s.x - s.vx * 0.02, s.y - s.vy * 0.02, s.from);
+          s.ignore[e.id] = 1;
+          s.pierce -= 1;
+          hit = true;
+          if (s.pierce < 0) break;
         }
+      }
+      if (s.life <= 0 || s.x < -20 || s.x > W + 20 || s.y < -20 || s.y > H + 20 || (hit && s.pierce < 0)) {
         shots.splice(i, 1);
-      } else {
-        s.x += dx / L * step;
-        s.y += dy / L * step;
       }
     }
   }
-
   function bruteThink(e, dt) {
     if (e.kind !== "brute") return false;
     if (e.slamCd > 0) e.slamCd -= dt;
-    var gateHit = null;
-    for (var i = 0; i < pads.length; i++) {
-      var p = pads[i];
-      if (p.kind === "gate" && p.hp > 0 && Math.hypot(e.x - p.x, e.y - p.y) < 72 * sc) gateHit = p;
-    }
     var nearCrown = Math.hypot(e.x - crown.x, e.y - crown.y) < 86 * sc;
     if (e.teleOn) {
       e.tele -= dt;
@@ -944,17 +989,11 @@
         e.slamCd = 1.6;
         shake = 0.22;
         beep(70, 0.16, "sawtooth", 0.07);
-        if (gateHit && gateHit.hp > 0) {
-          gateHit.hp = Math.max(0, gateHit.hp - 4);
-          pop(gateHit.x, gateHit.y - 16, gateHit.hp > 0 ? "slam" : "gate down", "#E85D4C");
-        } else if (nearCrown) {
-          hitCrown(2);
-          e.hp = 0;
-        }
+        if (nearCrown) { hitCrown(2); e.hp = 0; }
       }
       return true;
     }
-    if (e.slamCd <= 0 && (gateHit || nearCrown)) {
+    if (e.slamCd <= 0 && nearCrown) {
       e.teleOn = true;
       e.tele = TELE;
       beep(140, 0.12, "triangle", 0.05);
@@ -962,39 +1001,50 @@
     }
     return false;
   }
-
+  function knightThink(e, dt) {
+    if (e.kind !== "knight") return false;
+    if (e.chargeCd > 0 && !e.charging) e.chargeCd -= dt;
+    if (e.teleOn && !e.charging) {
+      e.tele -= dt;
+      if (e.tele <= 0) {
+        e.teleOn = false;
+        e.charging = true;
+      }
+      return true;
+    }
+    if (e.charging && e.chargeT) {
+      var dx = e.chargeT.x - e.x, dy = e.chargeT.y - e.y, L = Math.hypot(dx, dy);
+      var step = 210 * sc * dt;
+      if (L <= step + 4) {
+        e.charging = false;
+        e.chargeCd = 2.4;
+        e.d = nearestPathDist(e.x, e.y);
+      } else {
+        e.x += dx / L * step;
+        e.y += dy / L * step;
+      }
+      return true;
+    }
+    if (e.chargeCd <= 0 && Math.hypot(e.x - bober.x, e.y - bober.y) < 128 * sc) {
+      e.teleOn = true;
+      e.tele = 0.4;
+      e.chargeT = { x: bober.x, y: bober.y };
+      beep(160, 0.1, "triangle", 0.05);
+      return true;
+    }
+    return false;
+  }
   function tickEnemies(dt) {
     var plen = pathLen();
     for (var i = enemies.length - 1; i >= 0; i--) {
       var e = enemies[i];
       if (e.hp <= 0) { enemies.splice(i, 1); continue; }
       if (e.hit > 0) e.hit -= dt;
-      if (bruteThink(e, dt)) {
-        var bp = posOnPath(e.d);
-        e.x = bp.x; e.y = bp.y;
-        continue;
-      }
-      if (e.stag > 0) {
-        e.stag -= dt;
-        var sp = posOnPath(e.d);
-        e.x = sp.x; e.y = sp.y;
-        continue;
-      }
-      var g = liveGateFor(e);
-      if (g) {
-        e.d = Math.min(e.d, g.pathD - 6 * sc);
-        e.atkT -= dt;
-        if (e.atkT <= 0) {
-          g.hp -= 1;
-          e.atkT = 0.62;
-          if (g.hp <= 0) {
-            g.hp = 0;
-            pop(g.x, g.y - 16, "gate down", "#E85D4C");
-            beep(90, 0.12, "sawtooth", 0.05);
-          }
+      if (bruteThink(e, dt) || knightThink(e, dt)) {
+        if (!e.charging) {
+          var bp = posOnPath(e.d);
+          e.x = bp.x; e.y = bp.y;
         }
-        var gp = posOnPath(e.d);
-        e.x = gp.x; e.y = gp.y;
         continue;
       }
       e.d += e.spd * dt;
@@ -1012,6 +1062,47 @@
       }
       var pos = posOnPath(e.d);
       e.x = pos.x; e.y = pos.y;
+    }
+  }
+  function tickKing(dt) {
+    var mx = (keys.r - keys.l) + stick.x;
+    var my = (keys.d - keys.u) + stick.y;
+    var mag = Math.hypot(mx, my);
+    if (mag > 1) { mx /= mag; my /= mag; }
+    if (mag > 0.08) {
+      bober.x += mx * 140 * sc * dt;
+      bober.y += my * 140 * sc * dt;
+      clampKing();
+      if (tutActive() && tut.step === 0 && Math.hypot(bober.x - kingHome.x, bober.y - kingHome.y) > 36) {
+        tut.step = 1;
+        selected = "bow";
+        renderHud();
+      }
+    }
+    if (phase !== "wave") return;
+    bober.cd -= dt;
+    var rng = (royal ? 85 : 70) * sc;
+    var t = nearest(bober.x, bober.y - 18 * sc, rng);
+    if (t && bober.cd <= 0) {
+      fireShot(bober.x, bober.y - 22 * sc, t, royal ? 2 : 1, 0, "king");
+      bober.cd = 0.45;
+      beep(640, 0.03, "square", 0.035);
+    }
+  }
+  function checkRoyal() {
+    var n = 0, allT3 = true;
+    for (var i = 0; i < pads.length; i++) {
+      if (pads[i].kind !== "bow") continue;
+      n++;
+      if ((pads[i].rank || 0) < 2) allT3 = false;
+    }
+    if (n >= 2 && allT3 && !royal) {
+      royal = true;
+      royalTold = true;
+      kingFlash = 0.8;
+      kingCele = 2.8;
+      setBanner("All ballistae ready — the King grows stronger.");
+      beep(523, 0.12, "square", 0.06);
     }
   }
 
@@ -1032,16 +1123,6 @@
     if (hp <= 0) return;
     if (spawnI >= w.list.length && enemies.length === 0 && shots.length === 0) {
       kingCele = 1.15;
-      if (tutActive() && waveI === 0 && tut.step === 2) {
-        waveI = 1;
-        phase = "build";
-        spawnI = 0; spawnT = 0;
-        tut.step = 3;
-        selected = "gate";
-        renderHud();
-        beep(490, 0.1, "triangle", 0.05);
-        return;
-      }
       if (waveI + 1 >= L.waves.length) winLevel();
       else {
         waveI++;
@@ -1054,14 +1135,14 @@
   }
 
   function starCount() {
-    if (hp >= 5) return 3;
-    if (hp >= 3) return 2;
+    if (hp >= hpMax) return 3;
+    if (hp >= Math.ceil(hpMax / 2)) return 2;
     return 1;
   }
   function winLevel() {
     var stars = starCount();
     if (stars > save.stars[level]) save.stars[level] = stars;
-    if (save.unlocked < level + 2) save.unlocked = Math.min(5, level + 2);
+    if (save.unlocked < level + 2) save.unlocked = Math.min(10, level + 2);
     save.wood = wood;
     persist();
     phase = "build";
@@ -1073,7 +1154,7 @@
     var starStr = "★★★".slice(0, stars) + "☆☆☆".slice(0, 3 - stars);
     document.getElementById("win-stars").textContent = starStr;
     document.getElementById("win-msg").textContent = level === 0 ? "L1 held." : (LEVELS[level].name + " holds.");
-    document.getElementById("btn-next").textContent = level < 4 ? "Next" : "Map";
+    document.getElementById("btn-next").textContent = level < 9 ? "Next" : "Map";
     if (level === 4 && !save.filmSeen) playFilm("win");
     else show("win");
     beep(523, 0.12, "square", 0.05);
@@ -1085,84 +1166,57 @@
     show("lose");
   }
 
-  function placeOn(pad, kind, free) {
-    pad.kind = kind;
-    pad.rank = 0;
-    pad.cd = 0.2;
-    if (kind === "gate") {
-      pad.maxHp = KINDS.gate.hp[0];
-      pad.hp = pad.maxHp;
-    }
-    if (!free) wood -= KINDS[kind].cost;
-    pop(pad.x, pad.y - 18, KINDS[kind].name, "#F5C400");
-    renderHud();
-    beep(392, 0.07, "square", 0.05);
-  }
   function tryPlace(pad) {
-    if (!canPlaceNow() && !(tutActive() && phase === "build")) return;
-    if (pad.locked) { setHint("Opens later"); return; }
-    if (tutActive() && (tut.step === 1 || tut.step === 4)) {
-      setHint("Press START WAVE");
-      return;
-    }
-    if (tutActive() && tut.step === 0) {
-      if (pad !== firstBuildPad()) { setHint("Tap the glowing pad"); return; }
-      placeOn(pad, "sling", true);
-      tut.step = 1;
-      selected = null;
-      renderHud();
-      return;
-    }
-    if (tutActive() && tut.step === 3) {
-      if (pad.slot !== "gate") { setHint("Build Oak Gate on blue pad"); return; }
-      placeOn(pad, "gate", true);
-      tut.step = 4;
-      selected = null;
-      renderHud();
-      return;
-    }
-    if (pad.kind) {
-      if (pad.kind === "gate" && pad.hp <= 0) {
-        if (wood < 6) { flashChip(); setHint("Need 6 wood to repair"); return; }
-        wood -= 6;
-        pad.hp = pad.maxHp;
-        pop(pad.x, pad.y - 18, "repair", "#7ED957");
-        renderHud();
-        beep(400, 0.07, "square", 0.05);
-        return;
-      }
-      if (pad.rank >= 1) { setHint("Maxed — summer’s enough"); return; }
-      var up = KINDS[pad.kind].up;
-      if (wood < up) { flashChip(); flashCard(pad.kind); setHint("Need " + up + " wood to upgrade"); return; }
+    if (!canPlaceNow() && !(tutActive() && phase === "build" && tut.step === 1)) return false;
+    if (pad.locked) { setHint("Opens later"); return true; }
+    if (tutActive() && tut.step === 0) { setHint("Drag the King first"); return true; }
+    if (tutActive() && tut.step === 2) { setHint("Press START WAVE"); return true; }
+    if (pad.kind === "bow") {
+      var r = pad.rank || 0;
+      if (r >= 2) { setHint("Royal Ballista — max"); return true; }
+      var up = BOW.cost[r + 1];
+      if (wood < up) { flashChip(); flashCard("bow"); setHint("Need " + up + " wood"); return true; }
       wood -= up;
-      pad.rank = 1;
-      if (pad.kind === "gate") {
-        pad.maxHp = KINDS.gate.hp[1];
-        pad.hp = pad.maxHp;
-      }
-      pop(pad.x, pad.y - 18, "upgrade", "#F5C400");
+      pad.rank = r + 1;
+      pad.cd = 0.15;
+      pop(pad.x, pad.y - 18, BOW.name[pad.rank], "#F5C400");
+      checkRoyal();
       renderHud();
       beep(700, 0.08, "square", 0.05);
-      return;
+      return true;
     }
-    if (!selected) { setHint("Pick Nest, Gate, or Drum"); return; }
-    if (selected === "fence" || selected === "sap") { selected = null; return; }
-    if (pad.slot === "gate" && selected !== "gate") { setHint("Oak Gate only on blue pad"); return; }
-    if (pad.slot === "build" && selected === "gate") { setHint("Gates go on the blue pad"); return; }
-    var cost = KINDS[selected].cost;
-    if (wood < cost) { flashChip(); flashCard(selected); setHint("Need " + cost + " wood"); return; }
-    placeOn(pad, selected, false);
+    if (pad.kind) return true;
+    if (tutActive() && tut.step === 1) {
+      pad.kind = "bow"; pad.rank = 0; pad.cd = 0.2;
+      if (wood >= 12) wood -= 12;
+      tut.step = 2;
+      selected = null;
+      pop(pad.x, pad.y - 18, "Crossbow", "#F5C400");
+      renderHud();
+      beep(392, 0.07, "square", 0.05);
+      return true;
+    }
+    var cost = BOW.cost[0];
+    if (wood < cost) { flashChip(); flashCard("bow"); setHint("Need " + cost + " wood"); return true; }
+    wood -= cost;
+    pad.kind = "bow"; pad.rank = 0; pad.cd = 0.2;
+    pop(pad.x, pad.y - 18, "Crossbow", "#F5C400");
     if (phase === "wave" && !save.tutMidBuild) {
       save.tutMidBuild = true;
       persist();
       setBanner("Place during the wave.");
     }
+    checkRoyal();
+    renderHud();
+    beep(392, 0.07, "square", 0.05);
+    return true;
   }
   function persistWoodSoft() {
     /* spend is per-attempt; campaign wood writes on win/lose */
   }
   function flashCard(kind) {
-    var el = document.getElementById("card-" + kind);
+    var el = document.getElementById("card-" + (kind === "bow" ? "bow" : kind));
+    if (!el) return;
     el.classList.remove("flash");
     void el.offsetWidth;
     el.classList.add("flash");
@@ -1179,17 +1233,18 @@
           pop(b.x, b.y - 12, "+6", "#E85D4C");
           renderHud();
           beep(990, 0.06, "sine", 0.04);
-          return;
+          return true;
         }
       }
     }
-    if (!canPlaceNow() && !(tutActive() && phase === "build")) return;
-    var best = null, bd = 46 * sc;
+    var hitR = Math.max(36, 40 * sc);
+    var best = null, bd = hitR;
     for (var p = 0; p < pads.length; p++) {
       var d = Math.hypot(x - pads[p].x, y - pads[p].y);
       if (d < bd) { bd = d; best = pads[p]; }
     }
-    if (best) tryPlace(best);
+    if (best) return tryPlace(best);
+    return false;
   }
 
   function tickFx(dt) {
@@ -1400,10 +1455,8 @@
       return;
     }
     var glow = false;
-    if (tutActive() && tut.step === 0 && p === firstBuildPad()) glow = true;
-    if (tutActive() && tut.step === 3 && p.slot === "gate") glow = true;
-    if (phase === "build" && selected === "gate" && p.slot === "gate" && !p.kind) glow = true;
-    if (phase === "build" && selected && selected !== "gate" && p.slot === "build" && !p.kind) glow = true;
+    if (tutActive() && tut.step === 1 && !p.locked && !p.kind) glow = true;
+    if (canPlaceNow() && !p.kind && selected === "bow") glow = true;
     if (glow) {
       ctx.beginPath();
       ctx.ellipse(p.x, p.y, 30 * sc, 16 * sc, 0, 0, Math.PI * 2);
@@ -1411,40 +1464,24 @@
       ctx.lineWidth = 4 + (tutActive() ? Math.sin(tGame * 6) * 1.5 : 0);
       ctx.stroke();
     }
-    ctx.globalAlpha = (p.kind === "gate" && p.hp <= 0) ? 0.4 : 1;
-    if (p.kind === "sling") {
-      drawSpriteChunky(IM.sling, p.x, p.y + 10, 66 * sc, 70 * sc);
-    } else if (p.kind === "gate") {
-      if (!drawSpriteChunky(IM.gate, p.x, p.y + 10, 78 * sc, 62 * sc)) {
-        ctx.fillStyle = "#8B5A2B";
-        ctx.fillRect(p.x - 22 * sc, p.y - 28 * sc, 10 * sc, 32 * sc);
-        ctx.fillRect(p.x + 12 * sc, p.y - 28 * sc, 10 * sc, 32 * sc);
-        ctx.fillRect(p.x - 18 * sc, p.y - 18 * sc, 36 * sc, 10 * sc);
+    ctx.globalAlpha = 1;
+    if (p.kind === "bow") {
+      var im = (p.rank >= 2 && IM.ballista) ? IM.ballista : IM.bow;
+      if (!drawSpriteChunky(im, p.x, p.y + 10, p.rank >= 2 ? 70 * sc : 58 * sc, p.rank >= 2 ? 62 * sc : 52 * sc)) {
+        ctx.fillStyle = "#5C3A1A";
+        ctx.fillRect(p.x - 10 * sc, p.y - 24 * sc, 20 * sc, 8 * sc);
       }
-    } else if (p.kind === "drum") {
-      if (!drawSpriteChunky(IM.drum, p.x, p.y + 10, 64 * sc, 60 * sc)) {
-        ctx.fillStyle = "#C4A574";
-        ctx.beginPath(); ctx.ellipse(p.x, p.y - 8 * sc, 18 * sc, 12 * sc, 0, 0, Math.PI * 2); ctx.fill();
-      }
-    } else if (phase === "build") {
+    } else if (phase === "build" || canPlaceNow()) {
       ctx.fillStyle = "#1A2810";
       ctx.font = "800 " + Math.round(11 * sc) + "px Trebuchet MS,sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(p.slot === "gate" ? "GATE" : "PAD", p.x, p.y + 4);
+      ctx.fillText("PAD", p.x, p.y + 4);
     }
-    ctx.globalAlpha = 1;
-    if (p.kind === "gate" && p.maxHp > 0) {
-      var bw = 32 * sc, bh = 5;
-      ctx.fillStyle = "#1A2810";
-      ctx.fillRect(p.x - bw / 2, p.y - 36 * sc, bw, bh);
-      ctx.fillStyle = p.hp > 0 ? "#7ED957" : "#E85D4C";
-      ctx.fillRect(p.x - bw / 2, p.y - 36 * sc, bw * (p.hp / p.maxHp), bh);
-    }
-    if (p.rank === 1 && p.kind) {
+    if (p.kind === "bow" && p.rank > 0) {
       ctx.fillStyle = "#F5C400";
       ctx.font = "800 " + Math.round(12 * sc) + "px Trebuchet MS,sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("★", p.x, p.y - 40 * sc);
+      ctx.fillText(p.rank === 2 ? "★★★" : "★★", p.x, p.y - 36 * sc);
     }
   }
 
@@ -1466,7 +1503,7 @@
     ctx.save();
     if (e.hit > 0) ctx.filter = "brightness(1.8)";
     if (e.teleOn) ctx.translate(0, Math.sin(tGame * 20) * 2);
-    var im = IM[e.kind];
+    var im = IM[e.kind] || IM.rat;
     var bob = Math.sin(tGame * (e.kind === "rat" ? 14 : 8) + e.d) * 2;
     if (!drawSprite(im, e.x, e.y + bob, w, h)) {
       ctx.fillStyle = e.kind === "brute" ? "#4E7C28" : (e.kind === "bandit" ? "#6a6a70" : "#8B5A2B");
@@ -1544,6 +1581,7 @@
       if (kingCele > 0) bob -= Math.sin((1.15 - kingCele) * 10) * 8;
       ctx.save();
       if (kingFlash > 0) ctx.filter = "brightness(1.8)";
+      else if (royal) ctx.filter = "sepia(0.35) saturate(1.6)";
       ctx.translate(bober.x, bober.y + bob);
       ctx.rotate(Math.sin(tGame * 3.1) * 0.04);
       if (IM.king) ctx.drawImage(IM.king, -48 * sc, -78 * sc, 96 * sc, 80 * sc);
@@ -1553,10 +1591,19 @@
     list.sort(function (a, b) { return a.y - b.y; });
     list.forEach(function (it) { it.draw(); });
     shots.forEach(function (s) {
-      ctx.fillStyle = "#F4E6C3";
+      ctx.save();
+      ctx.translate(s.x, s.y);
+      ctx.rotate(Math.atan2(s.vy, s.vx));
+      ctx.fillStyle = s.from === "king" ? "#F5C400" : "#F4E6C3";
       ctx.strokeStyle = "#1A2810";
       ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.arc(s.x, s.y, 5 * sc, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(8 * sc, 0);
+      ctx.lineTo(-6 * sc, -3 * sc);
+      ctx.lineTo(-6 * sc, 3 * sc);
+      ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      ctx.restore();
     });
     pulses.forEach(function (p) {
       ctx.strokeStyle = "rgba(245,196,0,0.55)";
@@ -1591,6 +1638,7 @@
       }
     }
     if (screen === "play" && !paused) {
+      tickKing(dt);
       if (phase === "wave") tickWave(dt);
       tickFx(dt);
     }
@@ -1637,12 +1685,38 @@
     show("levels");
   }
 
-  function onPtr(ev) {
-    if (screen !== "play") return;
+  function canvasXY(ev) {
     var r = cv.getBoundingClientRect();
-    var x = (ev.clientX - r.left) * (W / r.width);
-    var y = (ev.clientY - r.top) * (H / r.height);
-    tapWorld(x, y);
+    return { x: (ev.clientX - r.left) * (W / r.width), y: (ev.clientY - r.top) * (H / r.height) };
+  }
+  function onPtr(ev) {
+    if (screen !== "play" || paused) return;
+    var pt = canvasXY(ev);
+    if (tapWorld(pt.x, pt.y)) return;
+    stick.on = true;
+    stick.x = (pt.x - bober.x) / 80;
+    stick.y = (pt.y - bober.y) / 80;
+    var m = Math.hypot(stick.x, stick.y);
+    if (m > 1) { stick.x /= m; stick.y /= m; }
+    try { cv.setPointerCapture(ev.pointerId); } catch (err) {}
+  }
+  function onMove(ev) {
+    if (!stick.on || screen !== "play") return;
+    var pt = canvasXY(ev);
+    stick.x = (pt.x - bober.x) / 80;
+    stick.y = (pt.y - bober.y) / 80;
+    var m = Math.hypot(stick.x, stick.y);
+    if (m > 1) { stick.x /= m; stick.y /= m; }
+  }
+  function onUp() {
+    stick.on = false; stick.x = 0; stick.y = 0;
+  }
+  function onKey(ev, down) {
+    var k = ev.key.toLowerCase();
+    if (k === "a" || k === "arrowleft") keys.l = down ? 1 : 0;
+    if (k === "d" || k === "arrowright") keys.r = down ? 1 : 0;
+    if (k === "w" || k === "arrowup") keys.u = down ? 1 : 0;
+    if (k === "s" || k === "arrowdown") keys.d = down ? 1 : 0;
   }
 
   document.getElementById("btn-face").addEventListener("click", function () {
@@ -1683,19 +1757,14 @@
   });
   goBtn.addEventListener("click", function () { ensureAudio(); startWave(); });
   skipEl.addEventListener("click", function () { ensureAudio(); skipTut(); });
-  ["sling", "gate", "drum"].forEach(function (k) {
-    document.getElementById("card-" + k).addEventListener("click", function () {
-      if (!canPlaceNow() && !(tutActive() && phase === "build")) return;
-      if (tutActive() && tut.step === 0 && k !== "sling") return;
-      if (tutActive() && tut.step === 3 && k !== "gate") return;
-      if (tutActive() && (tut.step === 1 || tut.step === 4)) return;
-      selected = selected === k ? null : k;
-      renderHud();
-      setHint(selected ? ("Tap a pad · " + KINDS[k].name) : "Tap a pad to place / upgrade");
-    });
+  document.getElementById("card-bow").addEventListener("click", function () {
+    if (!canPlaceNow() && !(tutActive() && tut.step === 1)) return;
+    selected = selected === "bow" ? null : "bow";
+    renderHud();
+    setHint(selected ? "Tap a pad · Crossbow" : "Tap a pad to place / upgrade");
   });
   document.getElementById("btn-next").addEventListener("click", function () {
-    if (level < 4 && level + 1 < save.unlocked) startLevel(level + 1);
+    if (level < 9 && level + 1 < save.unlocked) startLevel(level + 1);
     else openMap();
   });
   document.getElementById("btn-retry").addEventListener("click", function () { startLevel(level); });
@@ -1704,6 +1773,11 @@
     pendingCameo = false; show("win");
   });
   cv.addEventListener("pointerdown", onPtr);
+  cv.addEventListener("pointermove", onMove);
+  cv.addEventListener("pointerup", onUp);
+  cv.addEventListener("pointercancel", onUp);
+  window.addEventListener("keydown", function (e) { onKey(e, true); });
+  window.addEventListener("keyup", function (e) { onKey(e, false); });
   window.addEventListener("resize", resize);
   window.addEventListener("orientationchange", function () { setTimeout(resize, 80); });
 

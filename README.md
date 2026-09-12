@@ -4,75 +4,61 @@ Fan game by a holder. Not affiliated with any token, studio, or official Bober p
 
 **Play online:** https://ccosma1.github.io/green-home-crown/
 
-Splash: **GREEN HOME CROWN · Summer stays.**  
-Tag: Fan game by a holder.  
-CTA: More games · [Green Home Games](https://ccosma1.github.io/green-home-games/)
+You ARE the summer king. Move. Strike. Crossbows hold the crown line.
 
-A mobile-first **stage defense + build-between-waves** in the browser. Hold the Crown through feast-raiders. Prompt 0 ships **L1–5 Summer Dawn** only.
-
-No install. No wallet. No login. No gacha. No PvP. No build timers.
+No install. No wallet. No login. No gacha. No PvP.
 
 ## Local
 
-Run `START.bat` or open `index.html` in a browser.
+Run `START.bat` or open `index.html`.
 
 ## How to play
 
-1. **FACE THE SUMMER**, then pick a level. L1 is unlocked; beat a level to open the next.
-2. **Build phase** — tap a pad to place **Sling Nest** or **Feast Drum**. **Oak Gate** only goes on the blue **gate pad** at the choke bend. Tap a berry bush once for wood. Tap a building again to upgrade (once).
-3. **START WAVE** — enemies walk the bent meadow road toward the Crown (5 hearts). They stop to melee a live Gate until it breaks.
-4. **L1–2** build only between waves. **L3+** can place on empty pads during waves (Gate still only on blue pads).
-5. Pads ramp 2 → 3 → 4. Locked pads ghost with a lock. Tap → “Opens later.”
-6. Clear every wave to win. Crown HP ≤ 0 → **Retry** (soft save).
-7. **L1** teaches Nest then Gate. **Skip** auto-places a Nest so you cannot softlock.
-8. First **L5** clear plays the chapter film (marriage / family). Tap **Skip**. Splash **Watch story** replays it.
+1. **FACE THE SUMMER**, pick a level.
+2. **Move the King** — drag on the meadow or WASD / arrows. He auto-shoots nearby foes.
+3. **Crossbows** only, on pads in a **south arc by the Crown**. Tap empty pad to place (12 wood). Tap a tower to upgrade (20 → Heavy, 30 → Royal Ballista, pierce).
+4. **L1–2** place only between waves. **L3+** can place/upgrade during waves.
+5. Enemies drain Crown HP only at the **pedestal**, not the King’s body. Kite them through tower range.
+6. Max every placed bow at Ballista (**≥2 towers**) → **Royal Guard** once that level: King hits harder.
 
-### Buildings
+L1 start wood is **24** (two Crossbows). Skip on the L1 tutorial auto-places one.
 
-| Building | Role | Cost |
-|---|---|---|
-| Sling Nest | Single-target ranged DPS | 14 wood |
-| Oak Gate | Enemies melee the Gate until it breaks, then pass | 10 wood |
-| Feast Drum | Cooldown AoE thump + 0.35s stagger | 16 wood |
+### Pads live
 
-### Enemies
-
-| Unit | Role |
+| Levels | Pads |
 |---|---|
-| Field Rat | HP 1, fast |
-| Picnic Bandit | HP 3, medium |
-| Meadow Brute (L5) | HP 10, slow. Slam telegraph ≥ 0.45s |
+| L1 | 2 |
+| L2–3 | 3 |
+| L4–5 | 4 |
+| L6–7 | 5 |
+| L8–10 | 6 |
 
-Wood drops from clears. Tiny costs. No shop maze. No job cards.
+Ghost pads say **Opens later**.
 
-First L5 clear plays the chapter film under `assets/film/`.
+### Crossbow tiers
+
+| Tier | Name | Cost | Feel |
+|---|---|---|---|
+| T1 | Crossbow | 12 | 1 dmg / 0.7s, range 90 |
+| T2 | Heavy Crossbow | 20 | 2 / 0.65s, range 105 |
+| T3 | Royal Ballista | 30 | 3 / 0.55s, range 120, pierce 1 |
+
+### Enemies (L1–10)
+
+Field Rat, Picnic Bandit, Meadow Brute, Barrel Thief, Shield Goat, Fair Knight.
+
+First L5 clear plays the chapter film. Splash **Watch story** replays it.
 
 ## Soft save
 
-Key `green-home-crown-v1`: unlocked level, wood, stars, tutDone, tutMidBuild, filmSeen, mute.
+Key `green-home-crown-v1`: unlocked (1–10), wood, stars, tutDone, tutMidBuild, filmSeen, mute.
 
-**Wipe run?** lives on Pause (confirm). Splash has one primary: **FACE THE SUMMER**.
+**Wipe run?** on Pause.
 
 ## GitHub Pages
 
-Live at **https://ccosma1.github.io/green-home-crown/**
-
-Repo slant: `green-home-crown`
-
-`.nojekyll` is included so GitHub does not run Jekyll on the assets.
-
-## Files
-
-- `index.html` — the game (HTML, CSS, canvas JS)
-- `assets/splash.jpg` — title art
-- `assets/film/` — Act I chapter stills
-- `assets/sprites/` — keyed buildings, enemies, crowned king-on-horse
-- `assets/icons/` — original crown-on-grass mark (summer sky, not night purple)
-- `scripts/make_icon.py` — regenerates the mark
-- `scripts/prep_assets.py` — chroma-key sprites + hub card crop
-- `SPINE.md` — campaign acts (document only — not implemented past L5)
+https://ccosma1.github.io/green-home-crown/
 
 ## Note
 
-This is a fan game by a holder. It does not connect to a chain, a wallet, or a score server.
-It is ads-facing sunny town-defense — not a Lodge colony-sim, not a Dam river-path TD, not an idle MMO.
+Fan game by a holder. Not a Dam path-TD, not Yeet, not Nightfall sword rooms.
