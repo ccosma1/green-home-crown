@@ -16,7 +16,7 @@ Run `START.bat` or open `index.html`.
 
 1. **FACE THE SUMMER**, pick a level.
 2. **Move the King** — drag on the meadow or WASD / arrows. He auto-shoots nearby foes.
-3. **Crossbows** only, on pads in a **south arc by the Crown**. Tap empty pad to place (12 wood). Tap a tower to upgrade (20 → Heavy, 30 → Royal Ballista, pierce).
+3. **Crossbows** only, on pads **along both sides of the bent path** (T1 range hits the lane). Tap empty pad to place (12 wood). Tap a tower to upgrade (20 → Heavy, 30 → Royal Ballista, pierce).
 4. **L1–2** place only between waves. **L3+** can place/upgrade during waves.
 5. Enemies drain Crown HP only at the **pedestal**, not the King’s body. Kite them through tower range.
 6. Max every placed bow at Ballista (**≥2 towers**) → **Royal Guard** once that level: King hits harder.

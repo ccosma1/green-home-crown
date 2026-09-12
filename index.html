@@ -36,7 +36,7 @@
     #app {
       display: flex; flex-direction: column;
       height: 100dvh; height: 100svh;
-      width: 100%; max-width: 430px; margin: 0 auto;
+      width: 100%; max-width: 560px; margin: 0 auto;
       background: var(--sky); position: relative; overflow: hidden;
       padding: env(safe-area-inset-top) 0 0;
     }
@@ -318,68 +318,68 @@
   };
   var MOBS = {
     rat: { hp: 2, spd: 82, wood: 2, dmg: 1, scale: 0.62 },
-    bandit: { hp: 5, spd: 64, wood: 4, dmg: 1, scale: 0.82 },
-    brute: { hp: 16, spd: 28, wood: 12, dmg: 2, scale: 1.18 },
+    bandit: { hp: 6, spd: 66, wood: 4, dmg: 1, scale: 0.82 },
+    brute: { hp: 18, spd: 28, wood: 12, dmg: 2, scale: 1.18 },
     thief: { hp: 3, spd: 118, wood: 3, dmg: 1, scale: 0.7 },
     goat: { hp: 8, spd: 42, wood: 6, dmg: 1, scale: 0.95 },
     knight: { hp: 22, spd: 50, wood: 15, dmg: 2, scale: 1.12 }
   };
   var LEVELS = [
-    { name: "Meadow Gate", berries: 1, tip: "Move the King.",
+    { name: "Meadow Gate", berries: 0, tip: "Move the King.",
       waves: [
-        { gap: 0.7, list: ["rat", "rat"] },
-        { gap: 0.55, list: ["rat", "rat", "rat"] }
+        { gap: 0.52, list: ["rat", "rat", "rat"] },
+        { gap: 0.44, list: ["rat", "rat", "rat", "rat"] }
       ] },
-    { name: "Picnic Path", berries: 2, tip: "Kite into tower range.",
+    { name: "Picnic Path", berries: 1, tip: "Kite into tower range.",
       waves: [
-        { gap: 0.55, list: ["rat", "rat", "rat", "rat"] },
-        { gap: 0.6, list: ["rat", "bandit", "rat", "bandit"] },
-        { gap: 0.58, list: ["bandit", "bandit", "rat", "bandit"] }
+        { gap: 0.48, list: ["rat", "bandit", "rat", "rat", "rat"] },
+        { gap: 0.5, list: ["bandit", "rat", "bandit", "rat"] },
+        { gap: 0.48, list: ["bandit", "bandit", "rat", "bandit"] }
       ] },
-    { name: "Berry Raid", berries: 2, tip: "Place during the wave.",
+    { name: "Berry Raid", berries: 1, tip: "Place during the wave.",
       waves: [
-        { gap: 0.48, list: ["rat", "rat", "bandit", "rat", "rat"] },
-        { gap: 0.52, list: ["bandit", "rat", "bandit", "rat", "bandit"] },
-        { gap: 0.5, list: ["bandit", "bandit", "rat", "bandit", "bandit"] }
+        { gap: 0.4, list: ["rat", "bandit", "rat", "bandit", "rat", "rat"] },
+        { gap: 0.42, list: ["bandit", "rat", "bandit", "rat", "bandit"] },
+        { gap: 0.4, list: ["bandit", "bandit", "rat", "bandit", "bandit"] }
       ] },
-    { name: "Fair Noise", berries: 2, tip: "Upgrade the Crossbow.",
+    { name: "Fair Noise", berries: 1, tip: "Upgrade the Crossbow.",
       waves: [
-        { gap: 0.45, list: ["rat", "rat", "bandit", "rat", "bandit"] },
-        { gap: 0.5, list: ["bandit", "bandit", "bandit", "rat"] },
-        { gap: 0.48, list: ["rat", "bandit", "bandit", "rat", "bandit", "bandit"] }
+        { gap: 0.38, list: ["rat", "bandit", "rat", "bandit", "rat"] },
+        { gap: 0.4, list: ["bandit", "bandit", "bandit", "rat", "bandit"] },
+        { gap: 0.38, list: ["rat", "bandit", "bandit", "rat", "bandit", "bandit"] }
       ] },
-    { name: "Summer Dawn", berries: 2, tip: "Brute slams. Watch the ring.",
+    { name: "Summer Dawn", berries: 1, tip: "Brute slams. Watch the ring.",
       waves: [
-        { gap: 0.5, list: ["rat", "bandit", "rat", "bandit"] },
-        { gap: 0.52, list: ["bandit", "bandit", "bandit"] },
-        { gap: 0.55, list: ["rat", "bandit", "brute", "rat"] },
-        { gap: 0.6, list: ["bandit", "brute", "bandit"] }
+        { gap: 0.42, list: ["rat", "bandit", "rat", "bandit"] },
+        { gap: 0.4, list: ["bandit", "bandit", "bandit", "bandit"] },
+        { gap: 0.48, list: ["rat", "bandit", "brute", "rat"] },
+        { gap: 0.52, list: ["bandit", "brute", "bandit"] }
       ] },
-    { name: "Knife Guests", berries: 2, tip: "Guests with knives.",
+    { name: "Knife Guests", berries: 1, tip: "Guests with knives.",
       waves: [
         { gap: 0.4, list: ["thief", "thief", "rat", "thief"] },
         { gap: 0.45, list: ["bandit", "thief", "thief", "bandit"] },
         { gap: 0.4, list: ["thief", "thief", "thief", "bandit", "thief"] }
       ] },
-    { name: "Flies at Feast", berries: 2, tip: "Feast draws flies.",
+    { name: "Flies at Feast", berries: 1, tip: "Feast draws flies.",
       waves: [
         { gap: 0.42, list: ["thief", "bandit", "thief", "rat", "thief"] },
         { gap: 0.48, list: ["bandit", "bandit", "thief", "bandit"] },
         { gap: 0.42, list: ["thief", "bandit", "thief", "bandit", "thief"] }
       ] },
-    { name: "Tin Crowns", berries: 2, tip: "Tin crowns. Real horse.",
+    { name: "Tin Crowns", berries: 1, tip: "Tin crowns. Real horse.",
       waves: [
         { gap: 0.55, list: ["goat", "rat", "rat"] },
         { gap: 0.5, list: ["thief", "goat", "bandit", "thief"] },
         { gap: 0.52, list: ["goat", "bandit", "goat", "thief"] }
       ] },
-    { name: "Banner Edge", berries: 2, tip: "Banner at the edge.",
+    { name: "Banner Edge", berries: 1, tip: "Banner at the edge.",
       waves: [
         { gap: 0.45, list: ["thief", "goat", "thief", "bandit"] },
         { gap: 0.48, list: ["goat", "bandit", "thief", "goat"] },
         { gap: 0.5, list: ["thief", "goat", "bandit", "goat", "thief"] }
       ] },
-    { name: "Fair Knight", berries: 2, tip: "One crown. Bring summer.",
+    { name: "Fair Knight", berries: 1, tip: "One crown. Bring summer.",
       waves: [
         { gap: 0.5, list: ["goat", "thief", "bandit"] },
         { gap: 0.55, list: ["knight"] },
@@ -416,7 +416,8 @@
   var pulses = [];
   var path = [];
   var crown = { x: 0, y: 0 };
-  var bober = { x: 0, y: 0, cd: 0 };
+  var bober = { x: 0, y: 0, cd: 0, facing: Math.PI, moving: 0, atFlash: 0 };
+  var dust = [];
   var W = 360, H = 520, sc = 1;
   var shake = 0, tGame = 0;
   var scenery = [];
@@ -555,7 +556,7 @@
     void woodEl.offsetWidth;
     woodEl.classList.add("flash");
   }
-  function crownMax() { return level >= 3 ? 3 : 4; }
+  function crownMax() { return level >= 2 ? 3 : 4; }
   function renderHearts() {
     var html = "";
     for (var i = 0; i < hpMax; i++) html += "<i class=\"" + (i < hp ? "full" : "") + "\"></i>";
@@ -632,11 +633,13 @@
   }
   function samplePath() {
     var wps = [
-      { nx: 0.50, ny: 0.09 },
-      { nx: 0.76, ny: 0.28 },
-      { nx: 0.50, ny: 0.49 },
-      { nx: 0.24, ny: 0.70 },
-      { nx: 0.50, ny: 0.87 }
+      { nx: 0.50, ny: 0.05 },
+      { nx: 0.84, ny: 0.18 },
+      { nx: 0.72, ny: 0.34 },
+      { nx: 0.18, ny: 0.46 },
+      { nx: 0.28, ny: 0.62 },
+      { nx: 0.82, ny: 0.76 },
+      { nx: 0.50, ny: 0.91 }
     ];
     var ext = [wps[0]].concat(wps).concat([wps[wps.length - 1]]);
     var out = [];
@@ -688,26 +691,29 @@
     var last = path[path.length - 1];
     crown = { x: last.x, y: last.y };
     if (!bober.x) {
-      bober.x = Math.min(W - 40, last.x + 48 * sc);
-      bober.y = last.y - 8 * sc;
-    } else {
-      /* keep king; clamp after */
+      bober.x = Math.min(W - 40, last.x + 56 * sc);
+      bober.y = last.y - 12 * sc;
+      bober.facing = Math.PI;
     }
-    var spots = [
-      { id: "A", nx: 0.28, ny: 0.91 },
-      { id: "B", nx: 0.72, ny: 0.91 },
-      { id: "C", nx: 0.16, ny: 0.82 },
-      { id: "D", nx: 0.84, ny: 0.82 },
-      { id: "E", nx: 0.12, ny: 0.88 },
-      { id: "F", nx: 0.88, ny: 0.88 }
+    var plen = pathLen();
+    var mag = 54 * sc;
+    var specs = [
+      { id: "A", t: 0.20, side: 1 },
+      { id: "B", t: 0.36, side: -1 },
+      { id: "C", t: 0.52, side: 1 },
+      { id: "D", t: 0.66, side: -1 },
+      { id: "E", t: 0.80, side: 1 },
+      { id: "F", t: 0.91, side: -1 }
     ];
     var liveN = 2;
     if (level >= 1) liveN = 3;
     if (level >= 3) liveN = 4;
     if (level >= 5) liveN = 5;
     if (level >= 7) liveN = 6;
-    var defs = spots.map(function (s, i) {
-      return { id: s.id, slot: "build", x: s.nx * W, y: s.ny * H, locked: i >= liveN };
+    var defs = specs.map(function (s, i) {
+      var pos = sideOfPath(plen * s.t, mag * s.side);
+      pos = pullOntoLane(pos, BOW.range[0] * sc * 0.82);
+      return { id: s.id, slot: "build", x: pos.x, y: pos.y, locked: i >= liveN };
     });
     var old = pads.slice();
     pads = defs.map(blankPad);
@@ -725,8 +731,29 @@
     seedScenery();
     clampKing();
   }
+  function distToPath(x, y) {
+    var best = 1e9;
+    for (var i = 0; i < path.length - 1; i++) {
+      var a = path[i], b = path[i + 1];
+      var dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
+      var t = Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / (len * len)));
+      var dd = Math.hypot(x - (a.x + dx * t), y - (a.y + dy * t));
+      if (dd < best) best = dd;
+    }
+    return best;
+  }
+  function pullOntoLane(pos, maxDist) {
+    if (distToPath(pos.x, pos.y) <= maxDist) return pos;
+    var d = nearestPathDist(pos.x, pos.y);
+    var p = posOnPath(d);
+    var a = posOnPath(Math.max(0, d - 12));
+    var b = posOnPath(d + 12);
+    var ang = Math.atan2(b.y - a.y, b.x - a.x) + Math.PI / 2;
+    var side = ((pos.x - p.x) * Math.cos(ang) + (pos.y - p.y) * Math.sin(ang)) >= 0 ? 1 : -1;
+    return { x: p.x + Math.cos(ang) * maxDist * 0.72 * side, y: p.y + Math.sin(ang) * maxDist * 0.72 * side };
+  }
   function clampKing() {
-    var ox = W * 0.5, oy = H * 0.55, rx = W * 0.42, ry = H * 0.36;
+    var ox = W * 0.5, oy = H * 0.56, rx = W * 0.46, ry = H * 0.42;
     var dx = (bober.x - ox) / rx, dy = (bober.y - oy) / ry;
     var m = dx * dx + dy * dy;
     if (m > 1) {
@@ -796,9 +823,13 @@
     kingFlash = 0; kingCele = 0;
     layout();
     var last = path[path.length - 1];
-    bober.x = Math.min(W - 40, last.x + 52 * sc);
-    bober.y = last.y - 10 * sc;
+    bober.x = Math.min(W - 40, last.x + 56 * sc);
+    bober.y = last.y - 12 * sc;
     bober.cd = 0;
+    bober.facing = Math.PI;
+    bober.moving = 0;
+    bober.atFlash = 0;
+    dust = [];
     kingHome = { x: bober.x, y: bober.y };
     clampKing();
     pads.forEach(function (p) {
@@ -1064,28 +1095,56 @@
       e.x = pos.x; e.y = pos.y;
     }
   }
+  function angWrap(a) {
+    while (a > Math.PI) a -= Math.PI * 2;
+    while (a < -Math.PI) a += Math.PI * 2;
+    return a;
+  }
+  function turnToward(cur, target, step) {
+    var d = angWrap(target - cur);
+    if (Math.abs(d) <= step) return target;
+    return cur + Math.sign(d) * step;
+  }
   function tickKing(dt) {
     var mx = (keys.r - keys.l) + stick.x;
     var my = (keys.d - keys.u) + stick.y;
     var mag = Math.hypot(mx, my);
     if (mag > 1) { mx /= mag; my /= mag; }
+    bober.moving = mag > 0.08 ? 1 : Math.max(0, bober.moving - dt * 3);
+    if (bober.atFlash > 0) bober.atFlash -= dt;
     if (mag > 0.08) {
-      bober.x += mx * 140 * sc * dt;
-      bober.y += my * 140 * sc * dt;
+      bober.x += mx * 150 * sc * dt;
+      bober.y += my * 150 * sc * dt;
       clampKing();
       if (tutActive() && tut.step === 0 && Math.hypot(bober.x - kingHome.x, bober.y - kingHome.y) > 36) {
         tut.step = 1;
         selected = "bow";
         renderHud();
       }
+      if (Math.random() < dt * 14) {
+        dust.push({
+          x: bober.x - Math.cos(bober.facing) * 16 * sc,
+          y: bober.y + 6,
+          t: 0.35,
+          r: 3 + Math.random() * 4
+        });
+      }
     }
+    var rng = (royal ? 85 : 70) * sc;
+    var t = phase === "wave" ? nearest(bober.x, bober.y - 18 * sc, rng) : null;
+    var want;
+    if (t) want = Math.atan2(t.y - bober.y, t.x - bober.x);
+    else if (mag > 0.08) want = Math.atan2(my, mx);
+    else want = bober.facing;
+    bober.facing = turnToward(bober.facing, want, 16 * dt);
     if (phase !== "wave") return;
     bober.cd -= dt;
-    var rng = (royal ? 85 : 70) * sc;
-    var t = nearest(bober.x, bober.y - 18 * sc, rng);
-    if (t && bober.cd <= 0) {
-      fireShot(bober.x, bober.y - 22 * sc, t, royal ? 2 : 1, 0, "king");
+    if (t && bober.cd <= 0 && Math.abs(angWrap(want - bober.facing)) < 0.55) {
+      var fx = bober.x + Math.cos(bober.facing) * 26 * sc;
+      var fy = bober.y - 18 * sc + Math.sin(bober.facing) * 10 * sc;
+      fireShot(fx, fy, t, royal ? 2 : 1, 0, "king");
       bober.cd = 0.45;
+      bober.atFlash = 0.12;
       beep(640, 0.03, "square", 0.035);
     }
   }
@@ -1260,6 +1319,11 @@
     if (shake > 0) shake -= dt;
     if (kingFlash > 0) kingFlash -= dt;
     if (kingCele > 0) kingCele -= dt;
+    for (var d = dust.length - 1; d >= 0; d--) {
+      dust[d].t -= dt;
+      dust[d].y += 8 * dt;
+      if (dust[d].t <= 0) dust.splice(d, 1);
+    }
   }
 
   function ellipseShadow(x, y, rx, ry) {
@@ -1336,7 +1400,7 @@
     ctx.ellipse(W * 0.18, H * 0.09, 34 * sc, 12 * sc, -0.2, 0, Math.PI * 2);
     ctx.ellipse(W * 0.28, H * 0.08, 22 * sc, 9 * sc, 0.1, 0, Math.PI * 2);
     ctx.fill();
-    var ox = W * 0.5, oy = H * 0.55, rx = W * 0.46, ry = H * 0.40;
+    var ox = W * 0.5, oy = H * 0.54, rx = W * 0.48, ry = H * 0.46;
     ctx.fillStyle = "#6B9E3A";
     ctx.beginPath();
     ctx.ellipse(ox, oy, rx, ry, 0, 0, Math.PI * 2);
@@ -1575,15 +1639,27 @@
         ctx.fill(); ctx.stroke();
       }
     }});
+    dust.forEach(function (du) {
+      ctx.globalAlpha = Math.max(0, du.t / 0.35) * 0.35;
+      ctx.fillStyle = "#C4A574";
+      ctx.beginPath();
+      ctx.ellipse(du.x, du.y, du.r * sc, du.r * 0.5 * sc, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    });
     list.push({ y: bober.y, draw: function () {
       ellipseShadow(bober.x, bober.y, 28 * sc, 11 * sc);
-      var bob = Math.sin(tGame * 2.4) * 2.5;
+      var run = bober.moving;
+      var bob = Math.sin(tGame * (run ? 11 : 2.6)) * (run ? 3.4 : 2.2);
       if (kingCele > 0) bob -= Math.sin((1.15 - kingCele) * 10) * 8;
+      var flip = Math.cos(bober.facing) < 0;
+      var tilt = Math.sin(bober.facing) * 0.12 + Math.sin(tGame * (run ? 10 : 3)) * (run ? 0.06 : 0.03);
       ctx.save();
-      if (kingFlash > 0) ctx.filter = "brightness(1.8)";
+      if (kingFlash > 0 || bober.atFlash > 0) ctx.filter = "brightness(1.85)";
       else if (royal) ctx.filter = "sepia(0.35) saturate(1.6)";
       ctx.translate(bober.x, bober.y + bob);
-      ctx.rotate(Math.sin(tGame * 3.1) * 0.04);
+      ctx.rotate(tilt);
+      ctx.scale(flip ? -1 : 1, 1 + Math.sin(tGame * (run ? 12 : 4)) * (run ? 0.05 : 0.02));
       if (IM.king) ctx.drawImage(IM.king, -48 * sc, -78 * sc, 96 * sc, 80 * sc);
       else drawSpriteChunky(IM.bober, 0, 0, 62 * sc, 64 * sc);
       ctx.restore();
