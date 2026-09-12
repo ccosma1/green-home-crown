@@ -35,6 +35,8 @@ def main() -> None:
     must("densify" in HTML, "more NPCs")
     must("showBuddyTip" in HTML and "TIPS" in HTML, "buddy tips")
     must("IM.city" in HTML, "capital city")
+    must("btn-reset" in HTML, "reset on map")
+    must("LIVE_CAP" in HTML and "swarmify" in HTML, "hundreds swarm")
     must("Ride over gold coins" in HTML, "coin tip")
     must((ROOT / "assets/sprites/reed.png").is_file(), "reed.png")
     must((ROOT / "assets/sprites/wagon.png").is_file(), "wagon.png")

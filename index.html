@@ -277,6 +277,7 @@
       <p class="how">Move the King. Crossbows by the Crown.</p>
       <div id="level-grid"></div>
       <button class="play ghost" id="btn-back" type="button">Back</button>
+      <button class="wipe-link" id="btn-reset" type="button">Reset</button>
     </div>
 
     <div id="paused" class="overlay hidden">
@@ -286,7 +287,6 @@
         <button class="play" id="btn-resume" type="button">Resume</button>
         <button class="play ghost" id="btn-map" type="button">Map</button>
       </div>
-      <button class="wipe-link" id="btn-wipe" type="button">Wipe run?</button>
     </div>
 
     <div id="win" class="overlay hidden">
@@ -330,23 +330,24 @@
   var HUB = "https://ccosma1.github.io/green-home-games/";
 
   var TELE = 0.62;
+  var LIVE_CAP = 56;
   var BOW = {
     name: ["Crossbow", "Heavy Crossbow", "Royal Ballista"],
     cost: [12, 20, 30],
     dmg: [1, 2, 3],
-    rate: [0.7, 0.65, 0.55],
-    range: [90, 105, 120],
-    pierce: [0, 0, 1]
+    rate: [0.38, 0.32, 0.24],
+    range: [118, 132, 148],
+    pierce: [0, 1, 2]
   };
   var MOBS = {
-    rat: { hp: 2, spd: 70, wood: 2, dmg: 1, scale: 0.62 },
-    bandit: { hp: 6, spd: 60, wood: 4, dmg: 1, scale: 0.82 },
-    brute: { hp: 18, spd: 26, wood: 12, dmg: 2, scale: 1.18 },
-    thief: { hp: 3, spd: 100, wood: 3, dmg: 1, scale: 0.7 },
-    goat: { hp: 8, spd: 42, wood: 6, dmg: 1, scale: 0.95 },
-    knight: { hp: 22, spd: 50, wood: 15, dmg: 2, scale: 1.12 },
-    reed: { hp: 2, spd: 108, wood: 2, dmg: 1, scale: 0.58 },
-    wagon: { hp: 28, spd: 36, wood: 16, dmg: 2, scale: 1.22 }
+    rat: { hp: 1, spd: 68, wood: 2, dmg: 1, scale: 0.58 },
+    bandit: { hp: 4, spd: 58, wood: 4, dmg: 1, scale: 0.78 },
+    brute: { hp: 14, spd: 26, wood: 12, dmg: 2, scale: 1.18 },
+    thief: { hp: 2, spd: 96, wood: 3, dmg: 1, scale: 0.66 },
+    goat: { hp: 6, spd: 42, wood: 6, dmg: 1, scale: 0.9 },
+    knight: { hp: 16, spd: 50, wood: 15, dmg: 2, scale: 1.08 },
+    reed: { hp: 1, spd: 102, wood: 2, dmg: 1, scale: 0.54 },
+    wagon: { hp: 20, spd: 36, wood: 16, dmg: 2, scale: 1.18 }
   };
   var LEVELS = [
     { name: "Meadow Gate", berries: 0, tip: "Move the King.",
@@ -533,19 +534,25 @@
         { gap: 0.42, list: ["wagon", "knight", "goat", "reed"] }
       ] }
   ];
-  (function densify() {
-    var fodder = { rat: 1, reed: 1, thief: 1 };
+  (function swarmify() {
     LEVELS.forEach(function (L, li) {
       L.waves.forEach(function (w, wi) {
-        if (li === 0 && wi === 0) return;
-        var extra = [];
+        var fodder = [];
         var j;
         for (j = 0; j < w.list.length; j++) {
-          if (fodder[w.list[j]] && extra.length < 4) extra.push(w.list[j]);
+          if (w.list[j] === "rat" || w.list[j] === "reed" || w.list[j] === "thief") fodder.push(w.list[j]);
         }
-        if (extra.length && w.list.length < 10) w.list = w.list.concat(extra);
+        if (!fodder.length) fodder = li < 10 ? ["rat"] : ["reed", "thief"];
+        var target = li === 0 && wi === 0 ? 12 : (22 + Math.min(36, li * 2));
+        var out = w.list.slice();
+        j = 0;
+        while (out.length < target) {
+          out.push(fodder[j % fodder.length]);
+          j++;
+        }
+        w.list = out;
         var boss = w.list.indexOf("wagon") >= 0 || w.list.indexOf("knight") >= 0 || w.list.indexOf("brute") >= 0;
-        if (!boss) w.gap = Math.max(0.26, (w.gap || 0.4) - 0.06);
+        w.gap = boss ? Math.max(0.22, Math.min(0.32, w.gap)) : 0.14;
       });
     });
   })();
@@ -1436,7 +1443,7 @@
         });
       }
     }
-    var rng = (royal ? 85 : 70) * sc;
+    var rng = (royal ? 110 : 92) * sc;
     var t = phase === "wave" ? nearest(bober.x, bober.y - 18 * sc, rng) : null;
     var want;
     if (t) want = Math.atan2(t.y - bober.y, t.x - bober.x);
@@ -1449,7 +1456,7 @@
       var fx = bober.x + Math.cos(bober.facing) * 26 * sc;
       var fy = bober.y - 18 * sc + Math.sin(bober.facing) * 10 * sc;
       fireShot(fx, fy, t, royal ? 2 : 1, 0, "king");
-      bober.cd = 0.45;
+      bober.cd = 0.26;
       bober.atFlash = 0.12;
       beep(640, 0.03, "square", 0.035);
     }
@@ -1483,9 +1490,13 @@
     if (spawnI < w.list.length) {
       spawnT -= dt;
       if (spawnT <= 0) {
-        spawn(w.list[spawnI]);
-        spawnI++;
-        spawnT = w.gap;
+        if (enemies.length >= LIVE_CAP) {
+          spawnT = 0.04;
+        } else {
+          spawn(w.list[spawnI]);
+          spawnI++;
+          spawnT = w.gap;
+        }
       }
     }
     tickBuildings(dt);
@@ -2173,10 +2184,10 @@
     ensureAudio();
     playFilm("splash");
   });
-  document.getElementById("btn-wipe").addEventListener("click", function () {
-    if (!window.confirm("Wipe run?")) return;
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    if (!window.confirm("Reset progress? New run from L1.")) return;
     wipeKeepIntro();
-    openMap();
+    show("splash");
   });
   document.getElementById("btn-film-skip").addEventListener("click", function () { endFilm(); });
   document.getElementById("film").addEventListener("click", function (ev) {

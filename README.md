@@ -53,7 +53,7 @@ First L5 clear plays the chapter film. Splash **Watch story** replays it.
 
 Key `green-home-crown-v1`: unlocked (1–10), wood, stars, tutDone, tutMidBuild, filmSeen, mute.
 
-**Wipe run?** on Pause.
+**Reset** on the Map (confirm). Mute stays.
 
 ## GitHub Pages
 
