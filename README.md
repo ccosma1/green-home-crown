@@ -19,17 +19,18 @@ Run `START.bat` or open `index.html` in a browser.
 ## How to play
 
 1. **FACE THE SUMMER**, then pick a level. L1 is unlocked; beat a level to open the next.
-2. **Build phase** — tap a pad (left / right / north) to place **Stick Fence**, **Sling Nest**, or **Sap Bowl**. Tap a berry bush once for wood. Tap a building again to upgrade (once).
-3. **START WAVE** — enemies walk the meadow lane toward the Crown (5 hearts). You cannot place during a wave.
+2. **Build phase** — tap a pad to place **Sling Nest** or **Feast Drum**. **Oak Gate** only goes on the blue **gate pad** at the choke bend. Tap a berry bush once for wood. Tap a building again to upgrade (once).
+3. **START WAVE** — enemies walk the bent meadow road toward the Crown (5 hearts). They stop to melee a live Gate until it breaks. You cannot place during a wave.
 4. Clear every wave to win. Crown HP ≤ 0 → **Retry** (soft save).
+5. **L1** teaches Nest then Gate. **Skip** is always on screen and auto-places a Nest so you cannot softlock.
 
 ### Buildings
 
 | Building | Role | Cost |
 |---|---|---|
-| Stick Fence | Slow the lane | 8 wood |
-| Sling Nest | Ranged chip | 14 wood |
-| Sap Bowl | Splash slow | 16 wood |
+| Sling Nest | Single-target ranged DPS | 14 wood |
+| Oak Gate | Enemies melee the Gate until it breaks, then pass | 10 wood |
+| Feast Drum | Cooldown AoE thump + 0.35s stagger | 16 wood |
 
 ### Enemies
 
@@ -45,9 +46,9 @@ L5 clear plays a skippable cartoon picnic-truck cameo.
 
 ## Soft save
 
-Key `green-home-crown-v1`: unlocked level, wood, stars, mute.
+Key `green-home-crown-v1`: unlocked level, wood, stars, tutDone, mute.
 
-**New game** wipes unlocks and wood. Splash **FACE THE SUMMER** goes straight to the level map — no history slideshow.
+**New game** wipes unlocks, wood, and tutorial. Splash **FACE THE SUMMER** goes straight to the level map — no history slideshow.
 
 ## GitHub Pages
 

@@ -108,6 +108,21 @@
       font-weight: 900; font-size: 16px; cursor: pointer; letter-spacing: 0.04em;
     }
     #btn-go:disabled { filter: grayscale(0.3) brightness(0.85); cursor: default; }
+    #btn-go.pulse { animation: pulseGo 0.9s ease infinite; }
+    @keyframes pulseGo {
+      0%, 100% { box-shadow: 0 0 0 0 #F5C400aa; transform: scale(1); }
+      50% { box-shadow: 0 0 0 8px #F5C40000; transform: scale(1.03); }
+    }
+    #btn-skip {
+      position: absolute; right: 8px; top: 6px; z-index: 7;
+      min-height: 36px; padding: 6px 12px;
+      border: 2px solid #1A2810; background: var(--cream); color: var(--ink);
+      font-weight: 900; font-size: 13px; letter-spacing: 0.04em;
+      border-radius: 12px; cursor: pointer;
+    }
+    #btn-skip.hidden { display: none; }
+    #btn-skip:active { transform: translateY(1px); }
+    #app.tut #banner { right: 88px; }
     @media (max-height: 560px) {
       .card { min-height: 52px; padding: 3px 2px 4px; }
       .card img { width: 24px; height: 20px; }
@@ -196,22 +211,23 @@
     <div id="stage">
       <canvas id="cv"></canvas>
       <div id="banner" class="hidden"></div>
+      <button id="btn-skip" class="hidden" type="button">Skip</button>
     </div>
     <div id="dock">
-      <button class="card" id="card-fence" type="button" data-kind="fence">
-        <img src="assets/sprites/fence.png" alt="" />
-        <span class="name">Stick Fence</span>
-        <span class="cost" id="cost-fence">8</span>
-      </button>
       <button class="card" id="card-sling" type="button" data-kind="sling">
         <img src="assets/sprites/sling.png" alt="" />
         <span class="name">Sling Nest</span>
         <span class="cost" id="cost-sling">14</span>
       </button>
-      <button class="card" id="card-sap" type="button" data-kind="sap">
-        <img src="assets/sprites/sap.png" alt="" />
-        <span class="name">Sap Bowl</span>
-        <span class="cost" id="cost-sap">16</span>
+      <button class="card" id="card-gate" type="button" data-kind="gate">
+        <img src="assets/sprites/gate.png" alt="" />
+        <span class="name">Oak Gate</span>
+        <span class="cost" id="cost-gate">10</span>
+      </button>
+      <button class="card" id="card-drum" type="button" data-kind="drum">
+        <img src="assets/sprites/drum.png" alt="" />
+        <span class="name">Feast Drum</span>
+        <span class="cost" id="cost-drum">16</span>
       </button>
       <div id="dock-hint">Tap a pad · then START WAVE</div>
       <button id="btn-go" type="button">START WAVE</button>
@@ -282,10 +298,11 @@
   var SAVE_KEY = "green-home-crown-v1";
   var HUB = "https://ccosma1.github.io/green-home-games/";
 
+  var TELE = 0.62;
   var KINDS = {
-    fence: { name: "Stick Fence", cost: 8, up: 10, slow: [0.44, 0.30], rad: [78, 92] },
     sling: { name: "Sling Nest", cost: 14, up: 12, range: [138, 162], rate: [0.68, 0.42], dmg: [1, 1] },
-    sap: { name: "Sap Bowl", cost: 16, up: 12, rad: [82, 102], rate: [1.05, 0.85], slow: [0.55, 0.40], dur: [1.15, 1.4] }
+    gate: { name: "Oak Gate", cost: 10, up: 12, hp: [12, 20] },
+    drum: { name: "Feast Drum", cost: 16, up: 12, rad: [90, 112], rate: [1.15, 0.9], dmg: [1, 1], stag: 0.35 }
   };
   var MOBS = {
     rat: { hp: 1, spd: 86, wood: 2, dmg: 1, scale: 0.62 },
@@ -293,31 +310,31 @@
     brute: { hp: 10, spd: 28, wood: 12, dmg: 2, scale: 1.18 }
   };
   var LEVELS = [
-    { name: "Meadow Gate", berries: 1, tip: "Tap a pad. Place a Sling Nest. START WAVE.",
+    { name: "Meadow Gate", berries: 1, tip: "Hold the Crown.",
       waves: [
-        { gap: 0.52, list: ["rat", "rat", "rat", "rat"] },
-        { gap: 0.46, list: ["rat", "rat", "rat", "rat", "rat", "rat"] }
+        { gap: 0.55, list: ["rat", "rat", "rat"] },
+        { gap: 0.48, list: ["rat", "rat", "rat", "rat", "rat"] }
       ] },
-    { name: "Picnic Path", berries: 2, tip: "Fence slows a lane. Sap sticks a pack.",
+    { name: "Picnic Path", berries: 2, tip: "Gates soak. Drums thump.",
       waves: [
         { gap: 0.48, list: ["rat", "rat", "rat", "rat", "rat"] },
         { gap: 0.55, list: ["rat", "rat", "bandit", "rat", "bandit"] },
         { gap: 0.62, list: ["bandit", "bandit", "bandit", "bandit"] }
       ] },
-    { name: "Berry Raid", berries: 2, tip: "Tap a berry bush once. Spend it on a pad.",
+    { name: "Berry Raid", berries: 2, tip: "Tap a berry bush once.",
       waves: [
         { gap: 0.44, list: ["rat", "rat", "rat", "rat", "rat", "rat"] },
         { gap: 0.5, list: ["rat", "bandit", "rat", "bandit", "rat", "bandit"] },
         { gap: 0.52, list: ["bandit", "bandit", "rat", "bandit", "bandit", "bandit"] }
       ] },
-    { name: "Fair Noise", berries: 3, tip: "Upgrade a pad — tap it again in build.",
+    { name: "Fair Noise", berries: 3, tip: "Upgrade a pad — tap again.",
       waves: [
         { gap: 0.4, list: ["rat", "rat", "rat", "rat", "rat", "rat", "rat", "rat"] },
         { gap: 0.58, list: ["bandit", "bandit", "bandit", "bandit"] },
         { gap: 0.48, list: ["rat", "rat", "bandit", "rat", "rat", "bandit", "bandit"] },
         { gap: 0.5, list: ["bandit", "bandit", "bandit", "bandit", "bandit", "bandit"] }
       ] },
-    { name: "Summer Dawn", berries: 3, tip: "Meadow Brute slams. Watch the red ring.",
+    { name: "Summer Dawn", berries: 3, tip: "Brute slams. Watch the ring.",
       waves: [
         { gap: 0.46, list: ["rat", "rat", "bandit", "rat", "rat", "bandit"] },
         { gap: 0.55, list: ["bandit", "bandit", "bandit", "bandit"] },
@@ -362,9 +379,11 @@
   var scenery = [];
   var actx = null;
   var pendingCameo = false;
+  var tut = { on: false, step: 0 };
+  var skipEl = document.getElementById("btn-skip");
 
   function defaultSave() {
-    return { unlocked: 1, wood: 24, stars: [0, 0, 0, 0, 0], introSeen: false, mute: false };
+    return { unlocked: 1, wood: 24, stars: [0, 0, 0, 0, 0], tutDone: false, mute: false };
   }
   function loadSave() {
     try {
@@ -376,7 +395,7 @@
       d.wood = Math.max(0, s.wood | 0);
       d.stars = [0, 0, 0, 0, 0];
       if (s.stars) for (var i = 0; i < 5; i++) d.stars[i] = Math.max(0, Math.min(3, s.stars[i] | 0));
-      d.introSeen = !!s.introSeen;
+      d.tutDone = !!s.tutDone;
       d.mute = !!s.mute;
       return d;
     } catch (e) { return defaultSave(); }
@@ -385,14 +404,12 @@
     try {
       localStorage.setItem(SAVE_KEY, JSON.stringify({
         unlocked: save.unlocked, wood: save.wood, stars: save.stars,
-        introSeen: !!save.introSeen, mute: !!mute
+        tutDone: !!save.tutDone, mute: !!mute
       }));
     } catch (e) {}
   }
   function wipeKeepIntro() {
-    var seen = !!save.introSeen;
     save = defaultSave();
-    save.introSeen = seen;
     save.mute = mute;
     persist();
   }
@@ -406,12 +423,12 @@
     });
   }
   function boot() {
-    var keys = ["splash", "cameo", "bober", "crown", "fence", "sling", "sap", "rat", "bandit", "brute", "berry"];
+    var keys = ["splash", "cameo", "bober", "crown", "sling", "gate", "drum", "rat", "bandit", "brute", "berry"];
     var paths = {
       splash: "assets/splash.jpg", cameo: "assets/cameo-picnic.jpg",
       bober: "assets/sprites/bober.png", crown: "assets/sprites/crown.png",
-      fence: "assets/sprites/fence.png", sling: "assets/sprites/sling.png",
-      sap: "assets/sprites/sap.png", rat: "assets/sprites/rat.png",
+      sling: "assets/sprites/sling.png", gate: "assets/sprites/gate.png",
+      drum: "assets/sprites/drum.png", rat: "assets/sprites/rat.png",
       bandit: "assets/sprites/bandit.png", brute: "assets/sprites/brute.png",
       berry: "assets/sprites/berry.png"
     };
@@ -434,6 +451,11 @@
     var play = name === "play";
     app.classList.toggle("play", play);
     app.classList.toggle("menu", !play);
+    if (!play) {
+      skipEl.classList.add("hidden");
+      app.classList.remove("tut");
+      goBtn.classList.remove("pulse");
+    }
     if (name !== "paused") paused = false;
   }
 
@@ -471,27 +493,54 @@
     for (var i = 0; i < 5; i++) html += "<i class=\"" + (i < hp ? "full" : "") + "\"></i>";
     heartsEl.innerHTML = html;
   }
+  function tutActive() { return level === 0 && tut.on && !save.tutDone; }
+  function firstBuildPad() {
+    for (var i = 0; i < pads.length; i++) if (pads[i].slot === "build") return pads[i];
+    return pads[0];
+  }
+  function firstGatePad() {
+    for (var i = 0; i < pads.length; i++) if (pads[i].slot === "gate") return pads[i];
+    return null;
+  }
   function renderHud() {
     lvlEl.textContent = "L" + (level + 1);
     woodEl.textContent = "Wood " + wood;
     renderHearts();
     var L = LEVELS[level];
     var n = L.waves.length;
-    if (phase === "build") {
-      goBtn.disabled = false;
-      goBtn.textContent = waveI === 0 ? "START WAVE" : "NEXT WAVE";
+    var tOn = tutActive();
+    goBtn.classList.toggle("pulse", tOn && (tut.step === 1 || tut.step === 4) && phase === "build");
+    skipEl.classList.toggle("hidden", !tOn);
+    app.classList.toggle("tut", tOn);
+    if (tOn) {
+      if (tut.step === 0) { setBanner("Hold the Crown."); setHint("Tap pad. Build Sling Nest."); }
+      else if (tut.step === 1) { setBanner("START WAVE"); setHint("Press START WAVE"); }
+      else if (tut.step === 2) { setBanner("They walk the path."); setHint("Crown loses hearts."); }
+      else if (tut.step === 3) { setBanner("Gates soak hits."); setHint("Build Oak Gate on blue pad"); }
+      else if (tut.step === 4) { setBanner("START WAVE"); setHint("Press START WAVE"); }
+      else { setBanner("Drum thumps clumps."); setHint("Optional · then hold"); }
+    } else if (phase === "build") {
       setBanner(waveI === 0 ? (L.tip || "Build · then START WAVE") : "Build · then NEXT WAVE");
       setHint("Tap a pad to place / upgrade");
     } else {
-      goBtn.disabled = true;
-      goBtn.textContent = "WAVE " + (waveI + 1) + " / " + n;
       setBanner("Wave " + (waveI + 1) + " / " + n + " · Hold the Crown");
       setHint("Build between waves");
     }
-    ["fence", "sling", "sap"].forEach(function (k) {
+    if (phase === "build") {
+      goBtn.disabled = tOn && (tut.step === 0 || tut.step === 3);
+      goBtn.textContent = waveI === 0 ? "START WAVE" : "NEXT WAVE";
+    } else {
+      goBtn.disabled = true;
+      goBtn.textContent = "WAVE " + (waveI + 1) + " / " + n;
+    }
+    ["sling", "gate", "drum"].forEach(function (k) {
       var card = document.getElementById("card-" + k);
       card.classList.toggle("on", selected === k);
-      card.disabled = phase !== "build";
+      var lock = phase !== "build";
+      if (tOn && tut.step === 0) lock = k !== "sling";
+      if (tOn && tut.step === 3) lock = k !== "gate";
+      if (tOn && (tut.step === 1 || tut.step === 4)) lock = true;
+      card.disabled = lock;
       document.getElementById("cost-" + k).textContent = String(KINDS[k].cost);
     });
   }
@@ -508,29 +557,109 @@
     sc = H / 520;
     layout();
   }
-  function layout() {
-    path = [
-      { x: W * 0.50, y: H * 0.07 },
-      { x: W * 0.50, y: H * 0.20 },
-      { x: W * 0.50, y: H * 0.36 },
-      { x: W * 0.50, y: H * 0.54 },
-      { x: W * 0.50, y: H * 0.70 },
-      { x: W * 0.50, y: H * 0.82 }
+  function crPoint(p0, p1, p2, p3, t, axis) {
+    var a = p0[axis], b = p1[axis], c = p2[axis], d = p3[axis];
+    var t2 = t * t, t3 = t2 * t;
+    return 0.5 * ((2 * b) + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (-a + 3 * b - 3 * c + d) * t3);
+  }
+  function samplePath() {
+    var wps = [
+      { nx: 0.50, ny: 0.09 },
+      { nx: 0.76, ny: 0.28 },
+      { nx: 0.50, ny: 0.49 },
+      { nx: 0.24, ny: 0.70 },
+      { nx: 0.50, ny: 0.87 }
     ];
-    crown = { x: W * 0.50, y: H * 0.84 };
-    bober = { x: W * 0.68, y: H * 0.86 };
-    var old = pads.slice();
-    pads = [
-      { id: "N", x: W * 0.50, y: H * 0.30, kind: null, rank: 0, cd: 0, stun: 0 },
-      { id: "L", x: W * 0.22, y: H * 0.52, kind: null, rank: 0, cd: 0, stun: 0 },
-      { id: "R", x: W * 0.78, y: H * 0.52, kind: null, rank: 0, cd: 0, stun: 0 }
-    ];
-    if (old.length === 3) {
-      for (var i = 0; i < 3; i++) {
-        pads[i].kind = old[i].kind; pads[i].rank = old[i].rank;
-        pads[i].cd = old[i].cd; pads[i].stun = old[i].stun;
+    var ext = [wps[0]].concat(wps).concat([wps[wps.length - 1]]);
+    var out = [];
+    for (var i = 1; i < ext.length - 2; i++) {
+      for (var s = 0; s < 12; s++) {
+        var t = s / 12;
+        out.push({
+          x: crPoint(ext[i - 1], ext[i], ext[i + 1], ext[i + 2], t, "nx") * W,
+          y: crPoint(ext[i - 1], ext[i], ext[i + 1], ext[i + 2], t, "ny") * H
+        });
       }
     }
+    out.push({ x: wps[wps.length - 1].nx * W, y: wps[wps.length - 1].ny * H });
+    return out;
+  }
+  function nearestPathDist(x, y) {
+    var best = 0, bd = 1e9, acc = 0;
+    for (var i = 0; i < path.length - 1; i++) {
+      var a = path[i], b = path[i + 1];
+      var dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
+      var t = Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / (len * len)));
+      var px = a.x + dx * t, py = a.y + dy * t;
+      var dd = Math.hypot(x - px, y - py);
+      if (dd < bd) { bd = dd; best = acc + t * len; }
+      acc += len;
+    }
+    return best;
+  }
+  function sideOfPath(d, mag) {
+    var plen = pathLen();
+    var a = posOnPath(Math.max(0, d - 14));
+    var b = posOnPath(Math.min(plen, d + 14));
+    var p = posOnPath(d);
+    var ang = Math.atan2(b.y - a.y, b.x - a.x) + Math.PI / 2;
+    return { x: p.x + Math.cos(ang) * mag, y: p.y + Math.sin(ang) * mag };
+  }
+  function blankPad(d) {
+    return {
+      id: d.id, slot: d.slot, x: d.x, y: d.y,
+      kind: null, rank: 0, cd: 0, hp: 0, maxHp: 0,
+      pathD: nearestPathDist(d.x, d.y)
+    };
+  }
+  function migrateKind(k) {
+    if (k === "fence" || k === "sap") return null;
+    if (k === "sling" || k === "gate" || k === "drum") return k;
+    return null;
+  }
+  function layout() {
+    path = samplePath();
+    var last = path[path.length - 1];
+    crown = { x: last.x, y: last.y };
+    bober = { x: Math.min(W - 36, last.x + 56 * sc), y: last.y + 6 * sc };
+    var plen = pathLen();
+    var d1 = plen * 0.22, dc = plen * 0.48, d2 = plen * 0.74;
+    var nest1 = sideOfPath(d1, 44 * sc);
+    var nest2 = sideOfPath(d2, -44 * sc);
+    var nest3 = sideOfPath(d2, 44 * sc);
+    var gate1 = sideOfPath(dc, 42 * sc);
+    var gate2 = sideOfPath(dc, -42 * sc);
+    var defs;
+    if (level <= 0) {
+      defs = [
+        { id: "A", slot: "build", x: nest1.x, y: nest1.y },
+        { id: "B", slot: "build", x: nest2.x, y: nest2.y },
+        { id: "G", slot: "gate", x: gate1.x, y: gate1.y }
+      ];
+    } else if (level <= 2) {
+      defs = [
+        { id: "A", slot: "build", x: nest1.x, y: nest1.y },
+        { id: "B", slot: "build", x: nest2.x, y: nest2.y },
+        { id: "C", slot: "build", x: nest3.x, y: nest3.y },
+        { id: "G", slot: "gate", x: gate1.x, y: gate1.y }
+      ];
+    } else {
+      defs = [
+        { id: "A", slot: "build", x: nest1.x, y: nest1.y },
+        { id: "B", slot: "build", x: nest2.x, y: nest2.y },
+        { id: "G", slot: "gate", x: gate1.x, y: gate1.y },
+        { id: "H", slot: "gate", x: gate2.x, y: gate2.y }
+      ];
+    }
+    var old = pads.slice();
+    pads = defs.map(blankPad);
+    old.forEach(function (o) {
+      pads.forEach(function (p) {
+        if (p.id !== o.id) return;
+        p.kind = migrateKind(o.kind);
+        p.rank = o.rank; p.cd = o.cd; p.hp = o.hp; p.maxHp = o.maxHp;
+      });
+    });
     berries.forEach(function (b) {
       b.x = W * b.nx; b.y = H * b.ny;
     });
@@ -564,7 +693,7 @@
 
   function berrySpots(n) {
     var spots = [
-      { nx: 0.16, ny: 0.22 }, { nx: 0.84, ny: 0.22 }, { nx: 0.14, ny: 0.68 }
+      { nx: 0.12, ny: 0.18 }, { nx: 0.88, ny: 0.18 }, { nx: 0.12, ny: 0.80 }
     ];
     var out = [];
     for (var i = 0; i < n; i++) {
@@ -583,11 +712,35 @@
     waveI = 0; spawnI = 0; spawnT = 0;
     enemies = []; shots = []; fx = []; pulses = [];
     layout();
-    pads.forEach(function (p) { p.kind = null; p.rank = 0; p.cd = 0; p.stun = 0; });
+    pads.forEach(function (p) {
+      p.kind = null; p.rank = 0; p.cd = 0; p.hp = 0; p.maxHp = 0;
+    });
     berries = berrySpots(LEVELS[i].berries);
+    beginTut();
     show("play");
     renderHud();
     beep(520, 0.08, "triangle", 0.04);
+  }
+  function beginTut() {
+    tut.on = (level === 0 && !save.tutDone);
+    tut.step = 0;
+    if (tut.on) selected = "sling";
+    skipEl.classList.toggle("hidden", !tut.on);
+  }
+  function skipTut() {
+    var nest = firstBuildPad();
+    if (nest && !nest.kind) {
+      nest.kind = "sling"; nest.rank = 0; nest.cd = 0.2;
+    }
+    save.tutDone = true;
+    persist();
+    tut.on = false;
+    tut.step = 5;
+    selected = null;
+    skipEl.classList.add("hidden");
+    app.classList.remove("tut");
+    renderHud();
+    beep(520, 0.08, "triangle", 0.05);
   }
 
   function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
@@ -618,15 +771,19 @@
     var p0 = path[0];
     enemies.push({
       kind: kind, hp: m.hp, max: m.hp, spd: m.spd * sc, d: 0,
-      x: p0.x, y: p0.y, tele: 0, teleOn: false, slamCd: 0.8, sapT: 0, sapMul: 1, hit: 0
+      x: p0.x, y: p0.y, tele: 0, teleOn: false, slamCd: 0.8, stag: 0, atkT: 0, hit: 0
     });
   }
 
   function startWave() {
     if (phase !== "build") return;
+    if (tutActive() && tut.step === 0) { setHint("Build a Sling Nest first"); return; }
+    if (tutActive() && tut.step === 3) { setHint("Place the Oak Gate first"); return; }
     phase = "wave";
     spawnI = 0; spawnT = 0.15;
     selected = null;
+    if (tutActive() && tut.step === 1) tut.step = 2;
+    if (tutActive() && tut.step === 4) tut.step = 5;
     renderHud();
     beep(330, 0.1, "square", 0.05);
   }
@@ -662,29 +819,26 @@
     return best;
   }
 
-  function fenceSlow(e) {
-    var mul = 1;
+  function liveGateFor(e) {
+    var best = null, bestD = 28 * sc;
     for (var i = 0; i < pads.length; i++) {
       var p = pads[i];
-      if (p.kind !== "fence" || p.stun > 0) continue;
-      var spec = KINDS.fence;
-      var rad = spec.rad[p.rank] * sc;
-      if (Math.hypot(e.x - p.x, e.y - p.y) < rad) {
-        var s = spec.slow[p.rank];
-        if (s < mul) mul = s;
+      if (p.kind !== "gate" || p.hp <= 0) continue;
+      if (e.d + 12 * sc >= p.pathD && e.d < p.pathD + 16 * sc) {
+        var dd = Math.abs(e.d - p.pathD);
+        if (dd < bestD) { bestD = dd; best = p; }
       }
     }
-    return mul;
+    return best;
   }
 
   function tickBuildings(dt) {
     for (var i = 0; i < pads.length; i++) {
       var p = pads[i];
-      if (p.stun > 0) p.stun -= dt;
-      if (!p.kind || p.stun > 0) continue;
+      if (!p.kind) continue;
       p.cd -= dt;
       var spec = KINDS[p.kind];
-      var r = p.rank;
+      var r = p.rank || 0;
       if (p.kind === "sling" && p.cd <= 0) {
         var t = nearest(p.x, p.y, spec.range[r] * sc);
         if (t) {
@@ -693,20 +847,22 @@
           beep(880, 0.03, "square", 0.03);
         }
       }
-      if (p.kind === "sap" && p.cd <= 0) {
-        var any = nearest(p.x, p.y, spec.rad[r] * sc + 20);
+      if (p.kind === "drum" && p.cd <= 0) {
+        var any = nearest(p.x, p.y, spec.rad[r] * sc);
         if (any) {
-          pulses.push({ x: p.x, y: p.y, r: 8, max: spec.rad[r] * sc, t: 0.35 });
+          pulses.push({ x: p.x, y: p.y, r: 8, max: spec.rad[r] * sc, t: 0.32 });
           p.cd = spec.rate[r];
           for (var k = 0; k < enemies.length; k++) {
             var e = enemies[k];
             if (e.hp <= 0) continue;
             if (Math.hypot(e.x - p.x, e.y - p.y) < spec.rad[r] * sc) {
-              e.sapMul = spec.slow[r];
-              e.sapT = spec.dur[r];
+              e.hp -= spec.dmg[r];
+              e.stag = spec.stag;
+              e.hit = 0.12;
+              if (e.hp <= 0) kill(e);
             }
           }
-          beep(240, 0.08, "sine", 0.04);
+          beep(140, 0.09, "sine", 0.06);
         }
       }
     }
@@ -735,10 +891,10 @@
   function bruteThink(e, dt) {
     if (e.kind !== "brute") return false;
     if (e.slamCd > 0) e.slamCd -= dt;
-    var fenceHit = null;
+    var gateHit = null;
     for (var i = 0; i < pads.length; i++) {
       var p = pads[i];
-      if (p.kind === "fence" && p.stun <= 0 && Math.hypot(e.x - p.x, e.y - p.y) < 70 * sc) fenceHit = p;
+      if (p.kind === "gate" && p.hp > 0 && Math.hypot(e.x - p.x, e.y - p.y) < 72 * sc) gateHit = p;
     }
     var nearCrown = Math.hypot(e.x - crown.x, e.y - crown.y) < 86 * sc;
     if (e.teleOn) {
@@ -748,9 +904,9 @@
         e.slamCd = 1.6;
         shake = 0.22;
         beep(70, 0.16, "sawtooth", 0.07);
-        if (fenceHit) {
-          fenceHit.stun = 3.2;
-          pop(fenceHit.x, fenceHit.y - 16, "fence down", "#E85D4C");
+        if (gateHit && gateHit.hp > 0) {
+          gateHit.hp = Math.max(0, gateHit.hp - 4);
+          pop(gateHit.x, gateHit.y - 16, gateHit.hp > 0 ? "slam" : "gate down", "#E85D4C");
         } else if (nearCrown) {
           hitCrown(2);
           e.hp = 0;
@@ -758,9 +914,9 @@
       }
       return true;
     }
-    if (e.slamCd <= 0 && (fenceHit || nearCrown)) {
+    if (e.slamCd <= 0 && (gateHit || nearCrown)) {
       e.teleOn = true;
-      e.tele = 0.55;
+      e.tele = TELE;
       beep(140, 0.12, "triangle", 0.05);
       return true;
     }
@@ -772,19 +928,40 @@
     for (var i = enemies.length - 1; i >= 0; i--) {
       var e = enemies[i];
       if (e.hp <= 0) { enemies.splice(i, 1); continue; }
-      if (e.sapT > 0) e.sapT -= dt; else e.sapMul = 1;
       if (e.hit > 0) e.hit -= dt;
       if (bruteThink(e, dt)) {
-        var p = posOnPath(e.d);
-        e.x = p.x; e.y = p.y;
+        var bp = posOnPath(e.d);
+        e.x = bp.x; e.y = bp.y;
         continue;
       }
-      var spd = e.spd * fenceSlow(e) * e.sapMul;
-      e.d += spd * dt;
+      if (e.stag > 0) {
+        e.stag -= dt;
+        var sp = posOnPath(e.d);
+        e.x = sp.x; e.y = sp.y;
+        continue;
+      }
+      var g = liveGateFor(e);
+      if (g) {
+        e.d = Math.min(e.d, g.pathD - 6 * sc);
+        e.atkT -= dt;
+        if (e.atkT <= 0) {
+          g.hp -= 1;
+          e.atkT = 0.62;
+          if (g.hp <= 0) {
+            g.hp = 0;
+            pop(g.x, g.y - 16, "gate down", "#E85D4C");
+            beep(90, 0.12, "sawtooth", 0.05);
+          }
+        }
+        var gp = posOnPath(e.d);
+        e.x = gp.x; e.y = gp.y;
+        continue;
+      }
+      e.d += e.spd * dt;
       if (e.d >= plen - 4) {
         if (e.kind === "brute") {
           e.d = plen - 4;
-          if (!e.teleOn) { e.teleOn = true; e.tele = 0.55; e.slamCd = 0; }
+          if (!e.teleOn) { e.teleOn = true; e.tele = TELE; e.slamCd = 0; }
           var hold = posOnPath(e.d);
           e.x = hold.x; e.y = hold.y;
           continue;
@@ -814,6 +991,16 @@
     tickEnemies(dt);
     if (hp <= 0) return;
     if (spawnI >= w.list.length && enemies.length === 0 && shots.length === 0) {
+      if (tutActive() && waveI === 0 && tut.step === 2) {
+        waveI = 1;
+        phase = "build";
+        spawnI = 0; spawnT = 0;
+        tut.step = 3;
+        selected = "gate";
+        renderHud();
+        beep(490, 0.1, "triangle", 0.05);
+        return;
+      }
       if (waveI + 1 >= L.waves.length) winLevel();
       else {
         waveI++;
@@ -837,9 +1024,14 @@
     save.wood = wood;
     persist();
     phase = "build";
+    if (level === 0) {
+      save.tutDone = true;
+      tut.on = false;
+      persist();
+    }
     var starStr = "★★★".slice(0, stars) + "☆☆☆".slice(0, 3 - stars);
     document.getElementById("win-stars").textContent = starStr;
-    document.getElementById("win-msg").textContent = LEVELS[level].name + " holds.";
+    document.getElementById("win-msg").textContent = level === 0 ? "L1 held." : (LEVELS[level].name + " holds.");
     document.getElementById("btn-next").textContent = level < 4 ? "Next" : "Map";
     if (level === 4) {
       pendingCameo = true;
@@ -854,29 +1046,72 @@
     show("lose");
   }
 
+  function placeOn(pad, kind, free) {
+    pad.kind = kind;
+    pad.rank = 0;
+    pad.cd = 0.2;
+    if (kind === "gate") {
+      pad.maxHp = KINDS.gate.hp[0];
+      pad.hp = pad.maxHp;
+    }
+    if (!free) wood -= KINDS[kind].cost;
+    pop(pad.x, pad.y - 18, KINDS[kind].name, "#F5C400");
+    renderHud();
+    beep(392, 0.07, "square", 0.05);
+  }
   function tryPlace(pad) {
     if (phase !== "build") return;
+    if (tutActive() && (tut.step === 1 || tut.step === 4)) {
+      setHint("Press START WAVE");
+      return;
+    }
+    if (tutActive() && tut.step === 0) {
+      if (pad !== firstBuildPad()) { setHint("Tap the glowing pad"); return; }
+      placeOn(pad, "sling", true);
+      tut.step = 1;
+      selected = null;
+      renderHud();
+      return;
+    }
+    if (tutActive() && tut.step === 3) {
+      if (pad.slot !== "gate") { setHint("Build Oak Gate on blue pad"); return; }
+      placeOn(pad, "gate", true);
+      tut.step = 4;
+      selected = null;
+      renderHud();
+      return;
+    }
     if (pad.kind) {
+      if (pad.kind === "gate" && pad.hp <= 0) {
+        if (wood < 6) { flashChip(); setHint("Need 6 wood to repair"); return; }
+        wood -= 6;
+        pad.hp = pad.maxHp;
+        pop(pad.x, pad.y - 18, "repair", "#7ED957");
+        renderHud();
+        beep(400, 0.07, "square", 0.05);
+        return;
+      }
       if (pad.rank >= 1) { setHint("Maxed — summer’s enough"); return; }
       var up = KINDS[pad.kind].up;
       if (wood < up) { flashChip(); flashCard(pad.kind); setHint("Need " + up + " wood to upgrade"); return; }
       wood -= up;
       pad.rank = 1;
+      if (pad.kind === "gate") {
+        pad.maxHp = KINDS.gate.hp[1];
+        pad.hp = pad.maxHp;
+      }
       pop(pad.x, pad.y - 18, "upgrade", "#F5C400");
-      persistWoodSoft();
       renderHud();
       beep(700, 0.08, "square", 0.05);
       return;
     }
-    if (!selected) { setHint("Pick Fence, Sling, or Sap below"); return; }
+    if (!selected) { setHint("Pick Nest, Gate, or Drum"); return; }
+    if (selected === "fence" || selected === "sap") { selected = null; return; }
+    if (pad.slot === "gate" && selected !== "gate") { setHint("Oak Gate only on blue pad"); return; }
+    if (pad.slot === "build" && selected === "gate") { setHint("Gates go on the blue pad"); return; }
     var cost = KINDS[selected].cost;
     if (wood < cost) { flashChip(); flashCard(selected); setHint("Need " + cost + " wood"); return; }
-    wood -= cost;
-    pad.kind = selected;
-    pad.rank = 0; pad.cd = 0.2; pad.stun = 0;
-    persistWoodSoft();
-    renderHud();
-    beep(392, 0.07, "square", 0.05);
+    placeOn(pad, selected, false);
   }
   function persistWoodSoft() {
     /* spend is per-attempt; campaign wood writes on win/lose */
@@ -941,10 +1176,17 @@
     ctx.stroke();
   }
   function ribbonW() {
-    var w = 24 * sc;
-    if (w < 18) w = 18;
-    if (w > 30) w = 30;
+    var w = 32 * sc;
+    if (w < 28) w = 28;
+    if (w > 42) w = 42;
     return w;
+  }
+  function tooCloseToPath(nx, ny) {
+    var x = nx * W, y = ny * H, lim = ribbonW() + 14;
+    for (var i = 0; i < path.length; i += 2) {
+      if (Math.hypot(x - path[i].x, y - path[i].y) < lim) return true;
+    }
+    return false;
   }
   function drawSprite(im, x, y, w, h, flip) {
     if (!im) return false;
@@ -1005,6 +1247,7 @@
     var i, d;
     for (i = 0; i < scenery.length; i++) {
       d = scenery[i];
+      if (tooCloseToPath(d.nx, d.ny)) continue;
       if (d.k === "clump") {
         ctx.fillStyle = d.c;
         ctx.beginPath();
@@ -1086,52 +1329,57 @@
     ctx.fill();
     ctx.beginPath();
     ctx.ellipse(p.x, p.y, 24 * sc, 12 * sc, 0, 0, Math.PI * 2);
-    ctx.fillStyle = p.kind ? "#A89068" : "#D2C08A";
+    ctx.fillStyle = p.kind ? "#A89068" : (p.slot === "gate" ? "#B8D4E8" : "#D2C08A");
     ctx.fill();
-    ctx.strokeStyle = "#5C3A1A";
+    ctx.strokeStyle = p.slot === "gate" ? "#3A7CA5" : "#5C3A1A";
     ctx.lineWidth = 3;
     ctx.stroke();
-    ctx.beginPath();
-    ctx.ellipse(p.x, p.y, 14 * sc, 6 * sc, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = "rgba(92,58,26,0.45)";
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-    if (phase === "build" && selected && (!p.kind || selected === p.kind)) {
+    var glow = false;
+    if (tutActive() && tut.step === 0 && p === firstBuildPad()) glow = true;
+    if (tutActive() && tut.step === 3 && p.slot === "gate") glow = true;
+    if (phase === "build" && selected === "gate" && p.slot === "gate" && !p.kind) glow = true;
+    if (phase === "build" && selected && selected !== "gate" && p.slot === "build" && !p.kind) glow = true;
+    if (glow) {
       ctx.beginPath();
-      ctx.ellipse(p.x, p.y, 28 * sc, 15 * sc, 0, 0, Math.PI * 2);
-      ctx.strokeStyle = "#F5C400";
-      ctx.lineWidth = 4;
+      ctx.ellipse(p.x, p.y, 30 * sc, 16 * sc, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = p.slot === "gate" ? "#4AA0D8" : "#F5C400";
+      ctx.lineWidth = 4 + (tutActive() ? Math.sin(tGame * 6) * 1.5 : 0);
       ctx.stroke();
     }
-    if (p.stun > 0) ctx.globalAlpha = 0.45;
-    if (p.kind === "fence") {
-      if (!drawSpriteChunky(IM.fence, p.x, p.y + 8, 78 * sc, 58 * sc)) {
-        ctx.strokeStyle = "#5C3A1A"; ctx.lineWidth = 5;
-        ctx.beginPath(); ctx.moveTo(p.x - 24 * sc, p.y); ctx.lineTo(p.x + 24 * sc, p.y); ctx.stroke();
-      }
-      ctx.save();
-      ctx.strokeStyle = "rgba(245,196,0,0.22)";
-      ctx.setLineDash([6, 5]);
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, KINDS.fence.rad[p.rank] * sc, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.restore();
-    } else if (p.kind === "sling") {
+    ctx.globalAlpha = (p.kind === "gate" && p.hp <= 0) ? 0.4 : 1;
+    if (p.kind === "sling") {
       drawSpriteChunky(IM.sling, p.x, p.y + 10, 66 * sc, 70 * sc);
-    } else if (p.kind === "sap") {
-      drawSpriteChunky(IM.sap, p.x, p.y + 10, 68 * sc, 60 * sc);
+    } else if (p.kind === "gate") {
+      if (!drawSpriteChunky(IM.gate, p.x, p.y + 10, 78 * sc, 62 * sc)) {
+        ctx.fillStyle = "#8B5A2B";
+        ctx.fillRect(p.x - 22 * sc, p.y - 28 * sc, 10 * sc, 32 * sc);
+        ctx.fillRect(p.x + 12 * sc, p.y - 28 * sc, 10 * sc, 32 * sc);
+        ctx.fillRect(p.x - 18 * sc, p.y - 18 * sc, 36 * sc, 10 * sc);
+      }
+    } else if (p.kind === "drum") {
+      if (!drawSpriteChunky(IM.drum, p.x, p.y + 10, 64 * sc, 60 * sc)) {
+        ctx.fillStyle = "#C4A574";
+        ctx.beginPath(); ctx.ellipse(p.x, p.y - 8 * sc, 18 * sc, 12 * sc, 0, 0, Math.PI * 2); ctx.fill();
+      }
     } else if (phase === "build") {
       ctx.fillStyle = "#1A2810";
-      ctx.font = "800 " + Math.round(12 * sc) + "px Trebuchet MS,sans-serif";
+      ctx.font = "800 " + Math.round(11 * sc) + "px Trebuchet MS,sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("PAD", p.x, p.y + 4);
+      ctx.fillText(p.slot === "gate" ? "GATE" : "PAD", p.x, p.y + 4);
     }
     ctx.globalAlpha = 1;
+    if (p.kind === "gate" && p.maxHp > 0) {
+      var bw = 32 * sc, bh = 5;
+      ctx.fillStyle = "#1A2810";
+      ctx.fillRect(p.x - bw / 2, p.y - 36 * sc, bw, bh);
+      ctx.fillStyle = p.hp > 0 ? "#7ED957" : "#E85D4C";
+      ctx.fillRect(p.x - bw / 2, p.y - 36 * sc, bw * (p.hp / p.maxHp), bh);
+    }
     if (p.rank === 1 && p.kind) {
       ctx.fillStyle = "#F5C400";
       ctx.font = "800 " + Math.round(12 * sc) + "px Trebuchet MS,sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("★", p.x, p.y - 34 * sc);
+      ctx.fillText("★", p.x, p.y - 40 * sc);
     }
   }
 
@@ -1145,7 +1393,7 @@
       ctx.lineWidth = 4;
       ctx.globalAlpha = 0.55 + 0.45 * Math.sin(tGame * 14);
       ctx.beginPath();
-      var rr = 28 * sc + (1 - e.tele / 0.55) * 36 * sc;
+      var rr = 28 * sc + (1 - e.tele / TELE) * 40 * sc;
       ctx.ellipse(e.x, e.y, rr, rr * 0.55, 0, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
@@ -1325,9 +1573,13 @@
     if (!mute) ensureAudio();
   });
   goBtn.addEventListener("click", function () { ensureAudio(); startWave(); });
-  ["fence", "sling", "sap"].forEach(function (k) {
+  skipEl.addEventListener("click", function () { ensureAudio(); skipTut(); });
+  ["sling", "gate", "drum"].forEach(function (k) {
     document.getElementById("card-" + k).addEventListener("click", function () {
       if (phase !== "build") return;
+      if (tutActive() && tut.step === 0 && k !== "sling") return;
+      if (tutActive() && tut.step === 3 && k !== "gate") return;
+      if (tutActive() && (tut.step === 1 || tut.step === 4)) return;
       selected = selected === k ? null : k;
       renderHud();
       setHint(selected ? ("Tap a pad · " + KINDS[k].name) : "Tap a pad to place / upgrade");

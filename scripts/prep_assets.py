@@ -17,6 +17,8 @@ SPRITES = (
     "fence.jpg",
     "sling.jpg",
     "sap.jpg",
+    "gate.jpg",
+    "drum.jpg",
     "rat.jpg",
     "bandit.jpg",
     "brute.jpg",
