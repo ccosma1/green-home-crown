@@ -45,9 +45,9 @@ L5 clear plays a skippable cartoon picnic-truck cameo.
 
 ## Soft save
 
-Key `green-home-crown-v1`: unlocked level, wood, stars, introSeen, mute.
+Key `green-home-crown-v1`: unlocked level, wood, stars, mute.
 
-**New game** wipes progress and keeps `introSeen`.
+**New game** wipes unlocks and wood. Splash **FACE THE SUMMER** goes straight to the level map — no history slideshow.
 
 ## GitHub Pages
 

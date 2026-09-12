@@ -30,8 +30,9 @@ def main() -> None:
     must("min-height: 55dvh" in HTML, "stage ≥55% viewport")
     must(HTML.count("waves:") >= 5 or "LEVELS = [" in HTML, "levels present")
     must(HTML.count("{ gap:") >= 5, "waves present")
-    must("introSeen" in HTML, "introSeen persist")
-    must("wipeKeepIntro" in HTML, "new game wipe keeps intro")
+    must("A short history" not in HTML, "history overlay still present")
+    must("id=\"history\"" not in HTML, "history DOM still present")
+    must("drawPathRibbon" in HTML and "#F4E6C3" in HTML, "cream dirt ribbon")
     must("gacha" not in low and "alliance" not in low, "no gacha/alliances")
 
     # L1 sling vs rats: path ~0.75 of 520px, rat 86 px/s
