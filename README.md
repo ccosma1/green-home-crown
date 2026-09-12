@@ -16,12 +16,12 @@ Run `START.bat` or open `index.html`.
 
 1. **FACE THE SUMMER**, pick a level.
 2. **Move the King** — drag on the meadow or WASD / arrows. He auto-shoots nearby foes.
-3. **Crossbows** only. Live pads sit near the **crown** so kills read on-screen. Tap empty pad to place (12 wood). Tap a tower to upgrade (20 → Heavy, 30 → Royal Ballista, pierce).
+3. **Crossbows** only. Live pads sit near the **crown**. Place **50**, Heavy **90**, Royal Ballista **160**. The king is short-range support — towers do the killing.
 4. **L1–2** place only between waves. **L3+** can place/upgrade during waves.
 5. Enemies drain Crown HP only at the **pedestal**. Kite them through tower range.
 6. **Royal Guard** once per level: all *placed* towers T3, and either ≥2 towers **or** the only live pad is already T3.
 
-L1 start wood is **12** (one Crossbow). Skip auto-places that one. Kills and berry bushes drop **gold wooden coins** on the lane — wood only when the King rides close and scoops them (generous vacuum). Levels run long enough to fund Crossbow → Heavy → Ballista on live pads; **Royal Guard** is the T3 payoff.
+L1 start wood is **50** (one Crossbow). Kills drop **1–12** coins; income tapers after 280 dropped so the bank does not explode. Extra coins buy **Feast shop** cosmetics (80–980, visual) or **king barding** (leather 240 / mail 520 / royal plate 980 — modest hearts and damage reduction only).
 
 ### Pads live
 
@@ -39,9 +39,9 @@ Ghost pads say **Opens later**.
 
 | Tier | Name | Cost | Feel |
 |---|---|---|---|
-| T1 | Crossbow | 12 | 1 dmg / 0.7s, range 90 |
-| T2 | Heavy Crossbow | 20 | 2 / 0.65s, range 105 |
-| T3 | Royal Ballista | 30 | 3 / 0.55s, range 120, pierce 1 |
+| T1 | Crossbow | 50 | Main clear |
+| T2 | Heavy Crossbow | 90 | Stronger |
+| T3 | Royal Ballista | 160 | Pierce; Royal Guard when all live maxed |
 
 ### Enemies (L1–10)
 

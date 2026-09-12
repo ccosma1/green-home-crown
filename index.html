@@ -242,7 +242,7 @@
       <div class="chips">
         <span class="chip" id="chip-lvl">L1</span>
         <span id="hearts" aria-label="Crown hearts"></span>
-        <span class="chip wood" id="chip-wood">Wood 12</span>
+        <span class="chip wood" id="chip-wood">Wood 50</span>
       </div>
       <div class="btns">
         <button class="icon-btn" id="btn-shop" type="button" aria-label="Shop">🏵</button>
@@ -304,7 +304,7 @@
 
     <div id="shop" class="overlay hidden">
       <h2>Feast shop</h2>
-      <p class="how">Pretty the capital. Story only — no extra fight power.</p>
+      <p class="how">Spend coins on the capital and king’s kit. Armor is the only fight help. Cosmetics are story only.</p>
       <p class="chip wood" id="shop-wood">Wood 0</p>
       <div id="shop-list"></div>
       <button class="play" id="btn-shop-close" type="button">Close</button>
@@ -354,21 +354,21 @@
   var LIVE_CAP = 56;
   var BOW = {
     name: ["Crossbow", "Heavy Crossbow", "Royal Ballista"],
-    cost: [12, 20, 30],
+    cost: [50, 90, 160],
     dmg: [1, 2, 3],
     rate: [0.38, 0.32, 0.24],
     range: [118, 132, 148],
     pierce: [0, 1, 2]
   };
   var MOBS = {
-    rat: { hp: 1, spd: 68, wood: 2, dmg: 1, scale: 0.52 },
-    bandit: { hp: 4, spd: 58, wood: 4, dmg: 1, scale: 0.8 },
-    brute: { hp: 14, spd: 26, wood: 12, dmg: 2, scale: 1.22 },
-    thief: { hp: 2, spd: 96, wood: 3, dmg: 1, scale: 0.7 },
-    goat: { hp: 6, spd: 42, wood: 6, dmg: 1, scale: 0.96 },
-    knight: { hp: 16, spd: 50, wood: 15, dmg: 2, scale: 1.12 },
+    rat: { hp: 1, spd: 68, wood: 1, dmg: 1, scale: 0.52 },
+    bandit: { hp: 4, spd: 58, wood: 2, dmg: 1, scale: 0.8 },
+    brute: { hp: 14, spd: 26, wood: 8, dmg: 2, scale: 1.22 },
+    thief: { hp: 2, spd: 96, wood: 1, dmg: 1, scale: 0.7 },
+    goat: { hp: 6, spd: 42, wood: 3, dmg: 1, scale: 0.96 },
+    knight: { hp: 16, spd: 50, wood: 10, dmg: 2, scale: 1.12 },
     reed: { hp: 1, spd: 102, wood: 2, dmg: 1, scale: 0.5 },
-    wagon: { hp: 20, spd: 36, wood: 16, dmg: 2, scale: 1.24 }
+    wagon: { hp: 20, spd: 36, wood: 12, dmg: 2, scale: 1.24 }
   };
   var LEVELS = [
     { name: "Meadow Gate", berries: 0, tip: "Move the King.",
@@ -612,6 +612,7 @@
   var dust = [];
   var coins = [];
   var coinTip = false;
+  var droppedWood = 0;
   var W = 360, H = 520, sc = 1;
   var shake = 0, tGame = 0;
   var scenery = [];
@@ -662,17 +663,23 @@
     "Claim summer. Scoop, then tap Next."
   ];
   var COSMETICS = [
-    { id: "banners", name: "Feast banners", cost: 30 },
-    { id: "flowers", name: "Flower boxes", cost: 22 },
-    { id: "fountain", name: "Fountain", cost: 45 },
-    { id: "lanterns", name: "Lantern string", cost: 28 },
-    { id: "blanket", name: "Horse blanket", cost: 26 },
-    { id: "bunting", name: "Wedding bunting", cost: 36 }
+    { id: "leather", name: "Leather barding", cost: 240, kind: "gear", req: null },
+    { id: "mail", name: "Mail barding", cost: 520, kind: "gear", req: "leather" },
+    { id: "plate", name: "Royal plate", cost: 980, kind: "gear", req: "mail" },
+    { id: "flowers", name: "Flower boxes", cost: 80, kind: "small" },
+    { id: "lanterns", name: "Lantern string", cost: 140, kind: "small" },
+    { id: "blanket", name: "Horse blanket", cost: 160, kind: "small" },
+    { id: "banners", name: "Feast banners", cost: 220, kind: "medium" },
+    { id: "bunting", name: "Wedding bunting", cost: 280, kind: "medium" },
+    { id: "fountain", name: "Fountain", cost: 420, kind: "medium" },
+    { id: "flag", name: "Capital flag", cost: 560, kind: "big" },
+    { id: "hearth", name: "Keep hearth", cost: 720, kind: "big" },
+    { id: "statue", name: "Crown statue", cost: 980, kind: "landmark" }
   ];
   var shopFrom = "levels";
 
   function defaultSave() {
-    return { unlocked: 1, wood: 12, stars: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], tutDone: false, tutMidBuild: false, filmSeen: false, mute: false, shopTip: false, cosmetics: {} };
+    return { unlocked: 1, wood: 50, stars: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], tutDone: false, tutMidBuild: false, filmSeen: false, mute: false, shopTip: false, cosmetics: {} };
   }
   function loadSave() {
     try {
@@ -797,7 +804,19 @@
     void woodEl.offsetWidth;
     woodEl.classList.add("flash");
   }
-  function crownMax() { return level >= 2 ? 3 : 4; }
+  function armorRank() {
+    if (hasCosmetic("plate")) return 3;
+    if (hasCosmetic("mail")) return 2;
+    if (hasCosmetic("leather")) return 1;
+    return 0;
+  }
+  function crownMax() {
+    var base = level >= 2 ? 3 : 4;
+    var ar = armorRank();
+    if (ar >= 2) base += 1;
+    if (ar >= 3) base += 1;
+    return base;
+  }
   function renderHearts() {
     var html = "";
     for (var i = 0; i < hpMax; i++) html += "<i class=\"" + (i < hp ? "full" : "") + "\"></i>";
@@ -1086,6 +1105,7 @@
     dust = [];
     coins = [];
     coinTip = false;
+    droppedWood = 0;
     kingHome = { x: bober.x, y: bober.y };
     clampKing();
     pads.forEach(function (p) {
@@ -1107,7 +1127,7 @@
     var pad = firstLivePad();
     if (pad && !pad.kind) {
       pad.kind = "bow"; pad.rank = 0; pad.cd = 0.2;
-      if (wood >= 12) wood -= 12;
+      if (wood >= BOW.cost[0]) wood -= BOW.cost[0];
     }
     save.tutDone = true;
     persist();
@@ -1190,6 +1210,7 @@
   }
 
   function hitCrown(n) {
+    if (armorRank() >= 1 && n > 1) n = Math.max(1, n - 1);
     hp = Math.max(0, hp - n);
     shake = 0.28;
     kingFlash = 0.12;
@@ -1215,6 +1236,8 @@
   }
   function dropCoin(x, y, val) {
     if (val <= 0) return;
+    if (droppedWood >= 280) val = Math.min(val, 1);
+    droppedWood += val;
     if (coins.length >= 90) {
       var old = coins.shift();
       if (coins.length) coins[0].val += old.val;
@@ -1254,7 +1277,7 @@
       b = berries[i];
       if (!b.used && Math.hypot(b.x - bober.x, b.y - bober.y) < r) {
         b.used = true;
-        dropCoin(b.x, b.y, 6);
+        dropCoin(b.x, b.y, 8);
       }
     }
   }
@@ -1471,7 +1494,7 @@
         });
       }
     }
-    var rng = (royal ? 110 : 92) * sc;
+    var rng = (royal ? 64 : 52) * sc;
     var t = phase === "wave" ? nearest(bober.x, bober.y - 18 * sc, rng) : null;
     var want;
     if (t) want = Math.atan2(t.y - bober.y, t.x - bober.x);
@@ -1483,8 +1506,8 @@
     if (t && bober.cd <= 0 && Math.abs(angWrap(want - bober.facing)) < 0.55) {
       var fx = bober.x + Math.cos(bober.facing) * 26 * sc;
       var fy = bober.y - 18 * sc + Math.sin(bober.facing) * 10 * sc;
-      fireShot(fx, fy, t, royal ? 3 : 1, royal ? 1 : 0, "king");
-      bober.cd = royal ? 0.18 : 0.26;
+      fireShot(fx, fy, t, 1, 0, "king");
+      bober.cd = royal ? 0.48 : 0.62;
       bober.atFlash = 0.12;
       beep(640, 0.03, "square", 0.035);
     }
@@ -1615,7 +1638,7 @@
     if (pad.kind) return true;
     if (tutActive() && tut.step === 1) {
       pad.kind = "bow"; pad.rank = 0; pad.cd = 0.2;
-      if (wood >= 12) wood -= 12;
+      if (wood >= BOW.cost[0]) wood -= BOW.cost[0];
       tut.step = 2;
       selected = null;
       pop(pad.x, pad.y - 18, "Crossbow", "#F5C400");
@@ -1656,7 +1679,7 @@
         var b = berries[i];
         if (!b.used && Math.hypot(x - b.x, y - b.y) < 36 * sc) {
           b.used = true;
-          dropCoin(b.x, b.y, 6);
+          dropCoin(b.x, b.y, 8);
           return true;
         }
       }
@@ -2070,6 +2093,32 @@
         ctx.fill();
       }
     }
+    if (hasCosmetic("flag")) {
+      ctx.fillStyle = "#5C3A1A";
+      ctx.fillRect(x + 44 * sc, y - 88 * sc, 3 * sc, 36 * sc);
+      ctx.fillStyle = "#F5C400";
+      ctx.beginPath();
+      ctx.moveTo(x + 47 * sc, y - 88 * sc);
+      ctx.lineTo(x + 70 * sc, y - 78 * sc);
+      ctx.lineTo(x + 47 * sc, y - 68 * sc);
+      ctx.fill();
+    }
+    if (hasCosmetic("hearth")) {
+      ctx.fillStyle = "#C62828";
+      ctx.beginPath(); ctx.arc(x + 6 * sc, y - 18 * sc, 5 * sc, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#F5C400";
+      ctx.beginPath(); ctx.arc(x + 6 * sc, y - 20 * sc, 3 * sc, 0, Math.PI * 2); ctx.fill();
+    }
+    if (hasCosmetic("statue")) {
+      ctx.fillStyle = "#C4A574";
+      ctx.fillRect(x - 6 * sc, y - 96 * sc, 12 * sc, 18 * sc);
+      ctx.fillStyle = "#F5C400";
+      ctx.beginPath();
+      ctx.moveTo(x - 8 * sc, y - 96 * sc);
+      ctx.lineTo(x, y - 110 * sc);
+      ctx.lineTo(x + 8 * sc, y - 96 * sc);
+      ctx.fill();
+    }
   }
   function fillShop() {
     var bank = shopFrom === "play" ? wood : save.wood;
@@ -2081,11 +2130,14 @@
       var row = document.createElement("div");
       row.className = "shop-row";
       var lab = document.createElement("span");
-      lab.textContent = item.name + " · " + item.cost;
+      var tag = item.kind === "gear" ? "gear" : (item.kind || "story");
+      lab.textContent = item.name + " · " + item.cost + " · " + tag;
       var btn = document.createElement("button");
       btn.type = "button";
       btn.textContent = owned ? "Owned" : "Buy";
-      btn.disabled = owned || bank < item.cost;
+      var locked = item.req && !hasCosmetic(item.req);
+      btn.disabled = owned || locked || bank < item.cost;
+      if (locked) btn.textContent = "Need " + item.req;
       btn.addEventListener("click", function () { buyCosmetic(item.id); });
       row.appendChild(lab);
       row.appendChild(btn);
@@ -2120,6 +2172,9 @@
     if (!save.shopTip) {
       save.shopTip = true;
       persist();
+      document.getElementById("elon-line").textContent = "Pretty the capital. Armor is the only fight help.";
+      document.getElementById("elon-tip").classList.remove("hidden");
+      tipT = 3.4;
     }
   }
   function closeShop() {
@@ -2232,6 +2287,21 @@
         ctx.fillStyle = "#C62828";
         ctx.beginPath();
         ctx.ellipse(4 * sc, -22 * sc, 18 * sc, 8 * sc, 0.1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      var ar = armorRank();
+      if (ar >= 1) {
+        ctx.fillStyle = ar >= 3 ? "#F5C400" : (ar >= 2 ? "#8A8A82" : "#8B5A2B");
+        ctx.beginPath();
+        ctx.ellipse(2 * sc, -28 * sc, 16 * sc, 10 * sc, 0.05, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      if (ar >= 3) {
+        ctx.fillStyle = "#C62828";
+        ctx.beginPath();
+        ctx.moveTo(-6 * sc, -36 * sc);
+        ctx.lineTo(-18 * sc, -8 * sc);
+        ctx.lineTo(2 * sc, -12 * sc);
         ctx.fill();
       }
       ctx.restore();
