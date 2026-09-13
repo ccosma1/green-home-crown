@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#87C6E8" />
   <meta name="description" content="Green Home Crown - fan game by a holder. Summer stays. Hold the town." />
   <title>Green Home Crown · Summer stays</title>
-  <!-- ghc-25 -->
+  <!-- ghc-26 -->
   <link rel="icon" href="assets/icons/green-home-crown.ico" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
@@ -260,7 +260,7 @@
       </div>
       <div class="btns">
         <button class="icon-btn" id="btn-pause" type="button" aria-label="Pause">⏸</button>
-        <button class="icon-btn" id="btn-speed" type="button" aria-label="1×">1×</button>
+        <button class="icon-btn" id="btn-speed" type="button" aria-label="1x">1x</button>
         <button class="icon-btn" id="btn-mute" type="button" aria-label="Sound">Sound</button>
       </div>
     </header>
@@ -287,7 +287,7 @@
     <div id="also">More games · <a href="https://ccosma1.github.io/green-home-games/">Green Home Games</a></div>
 
     <div id="splash" class="overlay">
-      <img class="hero" src="assets/splash.jpg?v=25" alt="" />
+      <img class="hero" src="assets/splash.jpg?v=26" alt="" />
       <h1>GREEN HOME CROWN</h1>
       <p class="tag">100 days. One crown.</p>
       <p class="how">You ride as summer king - feast, fight usurpers, keep the crown until the land calls it his.</p>
@@ -1543,12 +1543,12 @@
   var speedBtn = document.getElementById("btn-speed");
 
   var IM = {};
-  var save = loadSave();
+  var save = null;
   var screen = "splash";
   var selected = null;
   var paused = false;
-  var mute = !!save.mute;
-  var gameSpeed = save.speed === 2 ? 2 : 1;
+  var mute = false;
+  var gameSpeed = 1;
   var level = 0;
   var phase = "build";
   var waveI = 0, spawnI = 0, spawnT = 0;
@@ -1578,6 +1578,7 @@
   var keys = { l: 0, r: 0, u: 0, d: 0 };
   var stick = { on: false, x: 0, y: 0 };
   var kingHome = { x: 0, y: 0 };
+  var kingWaveHome = { x: 0, y: 0 };
   var eid = 1;
   var skipEl = document.getElementById("btn-skip");
   var kingFlash = 0, kingCele = 0;
@@ -1619,6 +1620,9 @@
       { src: "assets/film/reels/r100-4.jpg", cap: "Summer stays. Assemble." }
     ] }
   ];
+  save = loadSave();
+  mute = !!save.mute;
+  gameSpeed = save.speed === 2 ? 2 : 1;
   var filmI = 0, filmT = 0, filmFrom = "splash";
   var filmReel = null;
   var histFrom = "levels";
@@ -1810,8 +1814,8 @@
   }
   function setSpeedLabel() {
     if (!speedBtn) return;
-    speedBtn.textContent = gameSpeed === 2 ? "2×" : "1×";
-    speedBtn.setAttribute("aria-label", gameSpeed === 2 ? "2×" : "1×");
+    speedBtn.textContent = gameSpeed === 2 ? "2x" : "1x";
+    speedBtn.setAttribute("aria-label", gameSpeed === 2 ? "2x" : "1x");
     speedBtn.classList.toggle("on", gameSpeed === 2);
   }
   function faceSummer() {
@@ -1863,7 +1867,7 @@
         }
         next();
       }
-      loadImg("assets/splash.jpg?v=25").then(function (im) {
+      loadImg("assets/splash.jpg?v=26").then(function (im) {
         IM.splash = im;
         loadRest();
       }).catch(loadRest);
@@ -1918,10 +1922,17 @@
     void woodEl.offsetWidth;
     woodEl.classList.add("flash");
   }
+  var DAWN_LINES = [
+    "Gate's still soft. Ride it anyway.",
+    "Dawn muster. Plant a bow.",
+    "Summer rides. Hold the gate.",
+    "Picnic first. Knives later.",
+    "The lane is yours. Don't freeze."
+  ];
   function storyAct(lv) {
     if (lv == null) lv = level;
     var n = lv + 1;
-    if (n <= 20) return { id: "dawn", short: "Green Gate", name: "Green Gate · Dawn Muster", from: 1, to: 20, story: "Gate's still soft. Ride it anyway." };
+    if (n <= 20) return { id: "dawn", short: "Green Gate", name: "Green Gate · Dawn Muster", from: 1, to: 20, story: DAWN_LINES[(lv || 0) % DAWN_LINES.length] };
     if (n <= 40) return { id: "feast", short: "Feast Draws Flies", name: "Feast Draws Flies", from: 21, to: 40, story: "Count the knives at the picnic." };
     if (n <= 60) return { id: "false", short: "False Crowns", name: "False Crowns", from: 41, to: 60, story: "Tin crowns. Not ours." };
     if (n <= 75) return { id: "usurp", short: "Usurper Banner", name: "Usurper Banner", from: 61, to: 75, story: "There's a banner out there." };
@@ -1935,7 +1946,7 @@
     var key = (level * 3 + waveI) % 11;
     if (key !== 0 && key !== 7) return "";
     var bag = {
-      dawn: "Cake and a crown. That's the job.",
+      dawn: (["Cake and a crown. That's the job.", "Dawn guests. Ride them down.", "The gate still holds."][level % 3]),
       feast: "The feast can hear this one.",
       false: "Tin crowns in the grass.",
       usurp: "A banner sniffer on the wind.",
@@ -1957,8 +1968,8 @@
   function tutActive() { return level === 0 && tut.on && !save.tutDone; }
   function canPlaceNow() {
     if (screen !== "play" || paused) return false;
-    if (phase === "clear" || phase === "scoop" || phase === "magnet") return false;
-    if (phase === "build") return true;
+    if (phase === "clear" || phase === "scoop" || phase === "magnet" || phase === "ride") return false;
+    if (phase === "build" || phase === "loot") return true;
     if (phase === "wave" && level >= 2 && !tutActive()) return true;
     return false;
   }
@@ -1972,7 +1983,7 @@
     var L = LEVELS[level];
     var n = L.waves.length;
     var tOn = tutActive();
-    goBtn.classList.toggle("pulse", (tOn && tut.step === 2 && phase === "build") || phase === "scoop");
+    goBtn.classList.toggle("pulse", (tOn && tut.step === 2 && phase === "build") || phase === "scoop" || phase === "loot");
     skipEl.classList.toggle("hidden", !tOn);
     app.classList.toggle("tut", tOn);
     if (tOn && phase !== "scoop") {
@@ -1989,6 +2000,12 @@
     } else if (royal && royalTold && kingCele > 0) {
       setBanner("All ballistae ready - armies fire harder.");
       setHint("Armies fire harder");
+    } else if (phase === "loot") {
+      setBanner("Scoop coins, or Collect");
+      setHint("Collect walks the gold home");
+    } else if (phase === "ride") {
+      setBanner("Scooping gold.");
+      setHint("King rides the coins");
     } else if (phase === "build") {
       var actB = storyAct();
       if (waveI === 0) setBanner(actB.name + " · " + (L.tip || "Hold the crown"));
@@ -2005,6 +2022,12 @@
     if (phase === "scoop") {
       goBtn.disabled = false;
       goBtn.textContent = level >= LEVELS.length - 1 ? "Continue" : "Next";
+    } else if (phase === "loot") {
+      goBtn.disabled = false;
+      goBtn.textContent = "COLLECT";
+    } else if (phase === "ride") {
+      goBtn.disabled = true;
+      goBtn.textContent = "SCOOPING";
     } else if (phase === "build") {
       goBtn.disabled = tOn && tut.step < 2;
       goBtn.textContent = waveI === 0 ? "START WAVE" : "NEXT WAVE";
@@ -2116,7 +2139,7 @@
     var specs = [
       { id: "A", t: 0.80, side: 1 },
       { id: "B", t: 0.76, side: -1 },
-      { id: "C", t: narrow ? 0.62 : 0.56, side: 1 },
+      { id: "C", t: 0.56, side: 1 },
       { id: "E", t: 0.70, side: -1 }
     ];
     var liveN = 1;
@@ -2126,8 +2149,14 @@
     var defs = specs.slice(0, liveN).map(function (s) {
       var posIn = sideOfPath(plen * s.t, mag * s.side);
       var posOut = sideOfPath(plen * s.t, mag * -s.side);
-      var pos = Math.abs(posIn.x - W * 0.5) <= Math.abs(posOut.x - W * 0.5) ? posIn : posOut;
-      pos = pushOffLane(pos, narrow ? 30 : 40, Math.min(narrow ? 52 : 72, BOW.range[0] * sc - 16));
+      var pos;
+      if (s.id === "C") {
+        pos = posIn.x <= posOut.x ? posIn : posOut;
+        pos = { x: pos.x - (narrow ? 16 : 26) * sc, y: pos.y };
+      } else {
+        pos = Math.abs(posIn.x - W * 0.5) <= Math.abs(posOut.x - W * 0.5) ? posIn : posOut;
+      }
+      pos = pushOffLane(pos, s.id === "C" ? (narrow ? 38 : 52) : (narrow ? 30 : 40), Math.min(s.id === "C" ? 84 : (narrow ? 52 : 72), BOW.range[0] * sc - 16));
       pos = clampPadPos(pos);
       var cd = Math.hypot(pos.x - city.x, pos.y - city.y);
       var minCity = narrow ? 70 * sc : 88 * sc;
@@ -2472,6 +2501,7 @@
     coinTip = false;
     droppedWood = 0;
     kingHome = { x: bober.x, y: bober.y };
+    kingWaveHome = { x: bober.x, y: bober.y };
     clampKing();
     pads.forEach(function (p) {
       p.kind = null; p.rank = 0; p.cd = 0; p.hp = 0; p.maxHp = 0;
@@ -2678,6 +2708,7 @@
 
   function startWave() {
     if (phase !== "build") return;
+    kingWaveHome = { x: bober.x, y: bober.y };
     if (tutActive() && tut.step < 2) { setHint("Place a Crossbow first"); return; }
     phase = "wave";
     spawnI = 0; spawnT = 0.15;
@@ -2691,6 +2722,43 @@
     }
     renderHud();
     beep(330, 0.1, "square", 0.05);
+  }
+  function startCollect() {
+    if (phase !== "loot") return;
+    if (!coins.length) { phase = "build"; renderHud(); return; }
+    phase = "ride";
+    stick.on = false; stick.x = 0; stick.y = 0;
+    renderHud();
+    beep(520, 0.08, "triangle", 0.04);
+  }
+  function tickCollect(dt) {
+    if (phase !== "ride") return;
+    var best = null, bd = 1e9, i, c, d;
+    for (i = 0; i < coins.length; i++) {
+      c = coins[i];
+      if (c.fly) continue;
+      d = Math.hypot(c.x - bober.x, c.y - bober.y);
+      if (d < bd) { bd = d; best = c; }
+    }
+    var home = kingWaveHome || kingHome;
+    var tx = best ? best.x : home.x;
+    var ty = best ? best.y : home.y;
+    var dx = tx - bober.x, dy = ty - bober.y, L = Math.hypot(dx, dy);
+    var spd = 175 * sc;
+    if (L > 6) {
+      bober.x += dx / L * Math.min(spd * dt, L);
+      bober.y += dy / L * Math.min(spd * dt, L);
+      bober.facing = Math.atan2(dy, dx);
+      bober.moving = 1;
+      clampKing();
+    } else if (!best) {
+      bober.x = home.x;
+      bober.y = home.y;
+      bober.moving = 0;
+      phase = "build";
+      renderHud();
+      beep(490, 0.08, "triangle", 0.04);
+    }
   }
   function showBuddyTip() {
     var el = document.getElementById("elon-tip");
@@ -2784,6 +2852,10 @@
         coins.splice(i, 1);
       }
     }
+    if (phase === "loot" && coins.length === 0) {
+      phase = "build";
+      renderHud();
+    }
     if (phase === "magnet" || phase === "clear") return;
     for (i = 0; i < berries.length; i++) {
       b = berries[i];
@@ -2848,8 +2920,10 @@
         p.aim = turnToward(p.aim || 0, want, 12 * dt);
       }
       if (p.cd <= 0 && t) {
-        var ox = p.x + Math.cos(p.aim || 0) * 14 * sc;
-        var oy = p.y - 8 * sc + Math.sin(p.aim || 0) * 10 * sc;
+        var aim = p.aim || 0;
+        var up = (r >= 2 ? 44 : 34) * sc;
+        var ox = p.x + Math.cos(aim) * 22 * sc;
+        var oy = p.y - up + Math.sin(aim) * 8 * sc;
         fireShot(ox, oy, t, BOW.dmg[r] + (royal ? 1 : 0), BOW.pierce[r] + (royal ? 1 : 0), "tower");
         p.cd = BOW.rate[r] * (royal ? 0.62 : 1);
         beep(820, 0.03, "square", 0.03);
@@ -3030,25 +3104,21 @@
         });
       }
     }
-    var rng = (royal ? 86 : 72) * sc;
-    var t = phase === "wave" ? nearest(bober.x, bober.y - 18 * sc, rng) : null;
+    var rng = (royal ? 104 : 88) * sc;
+    var t = phase === "wave" ? nearest(bober.x, bober.y - 42 * sc, rng) : null;
     var want;
-    if (t) want = Math.atan2(t.y - bober.y, t.x - bober.x);
+    if (t) want = Math.atan2(t.y - (bober.y - 42 * sc), t.x - bober.x);
     else if (mag > 0.08) want = Math.atan2(my, mx);
     else want = bober.facing;
     bober.facing = turnToward(bober.facing, want, 16 * dt);
     if (phase !== "wave") return;
     bober.cd -= dt;
     if (t && bober.cd <= 0 && Math.abs(angWrap(want - bober.facing)) < 0.55) {
-      var leap = 16 * sc;
-      bober.x += Math.cos(bober.facing) * leap;
-      bober.y += Math.sin(bober.facing) * leap;
-      clampKing();
-      var fx = bober.x + Math.cos(bober.facing) * 26 * sc;
-      var fy = bober.y - 18 * sc + Math.sin(bober.facing) * 10 * sc;
+      var fx = bober.x + Math.cos(bober.facing) * 28 * sc;
+      var fy = bober.y - 46 * sc + Math.sin(bober.facing) * 8 * sc;
       fireShot(fx, fy, t, royal ? 3 : 2, 0, "king");
       bober.cd = royal ? 0.32 : 0.42;
-      bober.atFlash = 0.14;
+      bober.atFlash = 0.1;
       beep(640, 0.03, "square", 0.035);
     }
   }
@@ -3103,9 +3173,9 @@
       }
       else {
         waveI++;
-        phase = "build";
         spawnI = 0; spawnT = 0;
         kingCele = 0.8;
+        phase = coins.length ? "loot" : "build";
         renderHud();
         beep(490, 0.1, "triangle", 0.05);
       }
@@ -4061,8 +4131,7 @@
       ctx.save();
       if (kingFlash > 0) ctx.globalAlpha = 0.78;
       ctx.translate(bober.x, bober.y + bob);
-      if (bober.atFlash > 0) ctx.translate((flip ? -1 : 1) * 8 * sc, -2 * sc);
-      ctx.rotate(tilt + (bober.atFlash > 0 ? 0.08 : 0));
+      ctx.rotate(tilt);
       ctx.scale(flip ? -1 : 1, 1);
       if (IM.king) ctx.drawImage(IM.king, -52 * sc, -84 * sc, 104 * sc, 86 * sc);
       else drawSpriteChunky(IM.bober, 0, 0, 66 * sc, 68 * sc);
@@ -4121,7 +4190,8 @@
       if (tipT <= 0) hideBuddyTip();
     }
     if (screen === "play" && !paused) {
-      tickKing(sim);
+      if (phase === "ride") tickCollect(sim);
+      else tickKing(sim);
       tickCoins(sim);
       if (phase === "wave") tickWave(sim);
       if (phase === "magnet") tickMagnet(sim);
@@ -4286,7 +4356,7 @@
     if (m < 0.12) { stick.x = 0.35; stick.y = 0; }
   }
   function onPtr(ev) {
-    if (screen !== "play" || paused) return;
+    if (screen !== "play" || paused || phase === "ride") return;
     var pt = canvasXY(ev);
     var nearKing = Math.hypot(pt.x - bober.x, pt.y - bober.y) < 72 * sc;
     if (tutActive() && tut.step === 0) {
@@ -4304,7 +4374,7 @@
     try { cv.setPointerCapture(ev.pointerId); } catch (err) {}
   }
   function onMove(ev) {
-    if (!stick.on || screen !== "play") return;
+    if (!stick.on || screen !== "play" || phase === "ride") return;
     var pt = canvasXY(ev);
     stick.x = (pt.x - bober.x) / 80;
     stick.y = (pt.y - bober.y) / 80;
@@ -4374,6 +4444,7 @@
   goBtn.addEventListener("click", function () {
     ensureAudio();
     if (phase === "scoop") { beginClear(); return; }
+    if (phase === "loot") { startCollect(); return; }
     startWave();
   });
   skipEl.addEventListener("click", function () { ensureAudio(); skipTut(); });

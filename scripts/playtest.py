@@ -512,7 +512,15 @@ def main() -> None:
     must('id: "D"' not in HTML, "spawn pad gone")
     must("bober.cd = royal ? 0.32 : 0.42" in HTML, "king faster but not machine-gun")
     must("fireShot(fx, fy, t, royal ? 3 : 2" in HTML, "king shot dmg")
-    must("btn-speed" in HTML and "2×" in HTML, "speed toggle")
+    must("btn-speed" in HTML and "2x" in HTML, "speed toggle")
+    must(HTML.find("var REELS") < HTML.find("save = loadSave()"), "REELS before loadSave")
+    must("function startCollect" in HTML and 'phase === "loot"' in HTML, "Collect between waves")
+    must("function tickCollect" in HTML, "collect walk")
+    must("var leap" not in HTML, "king jump gone")
+    must("(royal ? 104 : 88) * sc" in HTML, "king arrow range")
+    must("DAWN_LINES" in HTML, "dawn tip rotation")
+    must('s.id === "C"' in HTML, "left bend pad outward")
+    must("y - up" in HTML, "tower muzzle raised")
     must("gameSpeed" in HTML, "speed sim dt")
     must("level < 12) return 0" in HTML and "level < 28) return 1" in HTML, "earlier land bands")
     must("level < 48) return 2" in HTML and "level < 72) return 3" in HTML, "fair and dusk earlier")
@@ -649,10 +657,10 @@ def check_phone_pads() -> None:
     bot = 16 + 16 * sc
     half = 37 * sc * 0.86
     tall = 60 * sc * 0.86
-    ts = [0.80, 0.76, 0.62, 0.70]
+    ts = [0.80, 0.76, 0.56, 0.70]
     mag = max(26, 32 * sc)
     pads = []
-    for t in ts:
+    for ti, t in enumerate(ts):
         p = pos_on(plen * t)
         a = pos_on(max(0, plen * t - 14))
         b = pos_on(min(plen, plen * t + 14))
@@ -661,7 +669,11 @@ def check_phone_pads() -> None:
             (p[0] + __import__("math").cos(ang) * mag, p[1] + __import__("math").sin(ang) * mag),
             (p[0] - __import__("math").cos(ang) * mag, p[1] - __import__("math").sin(ang) * mag),
         ]
-        pos = min(cands, key=lambda q: abs(q[0] - W * 0.5))
+        if ti == 2:
+            pos = min(cands, key=lambda q: q[0])
+            pos = (pos[0] - 16 * sc, pos[1])
+        else:
+            pos = min(cands, key=lambda q: abs(q[0] - W * 0.5))
         x = min(W - mx, max(mx, pos[0]))
         y = min(H - bot, max(top, pos[1]))
         pads.append((x, y))
