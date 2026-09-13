@@ -35,7 +35,7 @@ True end is **L100 Assemble**. Victory reels (feast chapters) at L15 Slay / 30 C
 
 **Royal Guard:** all *placed* towers T3, and either ≥2 towers **or** the only live pad is 1×T3.
 
-**Landscapes:** L1–20 meadow, L21–40 river, L41–60 fair, L61–80 gold dusk, L81–100 capital siege.
+**Landscapes:** L1–12 meadow, L13–28 river, L29–48 fair, L49–72 gold dusk, L73–100 capital siege.
 
 ## Names for later (L21–25, not in this slice)
 

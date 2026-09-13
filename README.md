@@ -66,15 +66,17 @@ Late (from ~L50, denser L70–100): **Shield Rat**, **Horn Bandit**, **Siege Dru
 
 ### Landscapes
 
-The hill changes by band so L76 is not L10 with extra rats.
+The hill changes by band so L13 is already river, not one meadow forever.
 
 | Levels | Look |
 |---|---|
-| 1–20 | Meadow / picnic |
-| 21–40 | River / reed bank |
-| 41–60 | Fair / banner field |
-| 61–80 | Dry hill / gold dusk |
-| 81–100 | Capital siege / storm light |
+| 1–12 | Meadow / picnic |
+| 13–28 | River / reed bank |
+| 29–48 | Fair / banner field |
+| 49–72 | Dry hill / gold dusk |
+| 73–100 | Capital siege / storm light |
+
+**Speed:** header **1× / 2×** (saved). King rides and fights (dmg 2, 3 with Royal Guard).
 
 First L5 clear plays the chapter film. Splash **Watch story** replays it.
 

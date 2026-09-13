@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#87C6E8" />
   <meta name="description" content="Green Home Crown — fan game by a holder. Summer stays. Hold the town." />
   <title>Green Home Crown · Summer stays</title>
-  <!-- ghc-23 -->
+  <!-- ghc-24 -->
   <link rel="icon" href="assets/icons/green-home-crown.ico" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
@@ -67,7 +67,7 @@
     }
     .icon-btn:active { transform: translateY(1px); filter: brightness(0.85); }
     .icon-btn.on { background: var(--gold); color: var(--ink); border-color: var(--gold); }
-    #btn-mute { width: auto; min-width: 36px; padding: 0 7px; font-size: 11px; }
+    #btn-mute, #btn-speed { width: auto; min-width: 36px; padding: 0 7px; font-size: 11px; }
     #stage {
       flex: 1 1 auto; min-height: 55dvh; min-width: 0; width: 100%;
       position: relative; z-index: 1; background: var(--sky);
@@ -260,6 +260,7 @@
       </div>
       <div class="btns">
         <button class="icon-btn" id="btn-pause" type="button" aria-label="Pause">⏸</button>
+        <button class="icon-btn" id="btn-speed" type="button" aria-label="1×">1×</button>
         <button class="icon-btn" id="btn-mute" type="button" aria-label="Sound">Sound</button>
       </div>
     </header>
@@ -286,7 +287,7 @@
     <div id="also">More games · <a href="https://ccosma1.github.io/green-home-games/">Green Home Games</a></div>
 
     <div id="splash" class="overlay">
-      <img class="hero" src="assets/splash.jpg?v=23" alt="" />
+      <img class="hero" src="assets/splash.jpg?v=24" alt="" />
       <h1>GREEN HOME CROWN</h1>
       <p class="tag">100 days. One crown.</p>
       <p class="how">You ride as summer king — feast, fight usurpers, keep the crown until the land calls it his.</p>
@@ -419,7 +420,7 @@
         { gap: 0.36, list: ["rat", "rat", "rat", "rat", "rat"] },
         { gap: 0.36, list: ["rat", "rat", "rat", "rat", "rat"] }
       ] },
-    { name: "Picnic Path", berries: 1, tip: "Ride over gold coins.",
+    { name: "Picnic Path", berries: 1, tip: "Ride, fight, scoop gold.",
       waves: [
         { gap: 0.4, list: ["rat", "rat", "rat", "bandit"] },
         { gap: 0.38, list: ["rat", "rat", "bandit", "rat"] },
@@ -428,23 +429,23 @@
         { gap: 0.36, list: ["bandit", "rat", "bandit", "rat"] },
         { gap: 0.34, list: ["bandit", "bandit", "rat", "rat", "bandit"] }
       ] },
-    { name: "Berry Raid", berries: 1, tip: "Place during the wave.",
+    { name: "Berry Raid", berries: 1, tip: "Place during the wave. Ride and fight.",
       waves: [
+        { gap: 0.42, list: ["rat", "rat", "bandit"] },
+        { gap: 0.34, list: ["bandit", "rat", "rat", "bandit"] },
         { gap: 0.4, list: ["rat", "bandit", "rat", "rat"] },
+        { gap: 0.3, list: ["bandit", "bandit", "rat"] },
         { gap: 0.38, list: ["rat", "rat", "bandit", "rat"] },
-        { gap: 0.36, list: ["bandit", "rat", "bandit", "rat"] },
-        { gap: 0.36, list: ["bandit", "rat", "bandit", "rat"] },
-        { gap: 0.34, list: ["bandit", "bandit", "rat", "bandit"] },
-        { gap: 0.34, list: ["bandit", "rat", "bandit", "rat", "bandit"] }
+        { gap: 0.32, list: ["bandit", "rat", "bandit", "rat", "bandit"] }
       ] },
-    { name: "Fair Noise", berries: 1, tip: "Upgrade the Crossbow.",
+    { name: "Fair Noise", berries: 1, tip: "Upgrade the Crossbow. Knives soon.",
       waves: [
+        { gap: 0.4, list: ["rat", "bandit", "rat", "thief"] },
+        { gap: 0.36, list: ["bandit", "rat", "thief", "bandit"] },
         { gap: 0.4, list: ["rat", "bandit", "rat", "bandit"] },
-        { gap: 0.38, list: ["bandit", "rat", "rat", "bandit"] },
-        { gap: 0.36, list: ["rat", "bandit", "rat", "bandit"] },
-        { gap: 0.36, list: ["bandit", "bandit", "rat", "rat"] },
-        { gap: 0.34, list: ["bandit", "rat", "bandit", "bandit"] },
-        { gap: 0.34, list: ["bandit", "bandit", "rat", "bandit", "rat"] }
+        { gap: 0.32, list: ["thief", "bandit", "rat"] },
+        { gap: 0.36, list: ["bandit", "rat", "bandit", "thief"] },
+        { gap: 0.3, list: ["bandit", "thief", "rat", "bandit", "rat"] }
       ] },
     { name: "Summer Dawn", berries: 1, tip: "Brute slams. Watch the ring.",
       waves: [
@@ -520,14 +521,14 @@
         { gap: 0.32, list: ["reed", "bandit", "thief", "reed"] },
         { gap: 0.32, list: ["reed", "goat", "bandit", "reed"] }
       ] },
-    { name: "Reed Road", berries: 1, tip: "Reeds in the lane.",
+    { name: "Reed Road", berries: 1, tip: "A brute in the reeds.",
       waves: [
         { gap: 0.32, list: ["reed", "reed", "goat", "reed"] },
         { gap: 0.32, list: ["reed", "reed", "reed", "bandit"] },
-        { gap: 0.32, list: ["bandit", "reed", "goat", "reed"] },
+        { gap: 0.5, list: ["reed", "brute", "reed"] },
         { gap: 0.32, list: ["reed", "goat", "reed", "reed"] },
         { gap: 0.32, list: ["reed", "bandit", "goat", "reed"] },
-        { gap: 0.3, list: ["reed", "goat", "bandit", "reed", "reed"] }
+        { gap: 0.3, list: ["reed", "goat", "brute", "reed"] }
       ] },
     { name: "Tin River", berries: 1, tip: "Tin crowns. Keep riding.",
       waves: [
@@ -604,15 +605,15 @@
         { gap: 0.42, list: ["wagon", "reed", "goat"] },
         { gap: 0.3, list: ["reed", "thief", "goat", "reed", "bandit"] }
       ] },
-    { name: "Feast Storm", berries: 1, tip: "The feast becomes a storm.",
+    { name: "Feast Storm", berries: 1, tip: "Crows steal the picnic.",
       waves: [
-        { gap: 0.3, list: ["thief", "reed", "thief", "goat"] },
-        { gap: 0.3, list: ["reed", "thief", "reed", "thief"] },
+        { gap: 0.3, list: ["thief", "crow", "thief", "goat"] },
+        { gap: 0.3, list: ["reed", "thief", "crow", "thief"] },
         { gap: 0.32, list: ["goat", "thief", "reed", "bandit"] },
-        { gap: 0.45, list: ["knight", "thief", "reed"] },
-        { gap: 0.3, list: ["thief", "reed", "goat", "reed"] },
-        { gap: 0.3, list: ["reed", "thief", "bandit", "thief"] },
-        { gap: 0.4, list: ["wagon", "thief", "reed"] }
+        { gap: 0.45, list: ["knight", "crow", "reed"] },
+        { gap: 0.3, list: ["thief", "crow", "goat", "reed"] },
+        { gap: 0.3, list: ["reed", "thief", "bandit", "crow"] },
+        { gap: 0.4, list: ["wagon", "thief", "crow"] }
       ] },
     { name: "Tin Claim", berries: 1, tip: "Tin wagons claim the lane.",
       waves: [
@@ -624,26 +625,26 @@
         { gap: 0.46, list: ["wagon", "knight"] },
         { gap: 0.32, list: ["reed", "wagon", "goat", "reed"] }
       ] },
-    { name: "Banner War", berries: 1, tip: "Banners on every bend.",
+    { name: "Banner War", berries: 1, tip: "Crows over the banners.",
       waves: [
-        { gap: 0.3, list: ["reed", "thief", "reed", "goat"] },
-        { gap: 0.3, list: ["thief", "reed", "bandit", "reed"] },
+        { gap: 0.3, list: ["reed", "thief", "crow", "goat"] },
+        { gap: 0.3, list: ["thief", "crow", "bandit", "reed"] },
         { gap: 0.46, list: ["knight", "reed", "goat"] },
-        { gap: 0.3, list: ["reed", "goat", "thief", "reed"] },
+        { gap: 0.3, list: ["reed", "goat", "thief", "crow"] },
         { gap: 0.44, list: ["wagon", "reed", "thief"] },
-        { gap: 0.3, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.3, list: ["crow", "thief", "goat", "reed"] },
         { gap: 0.42, list: ["knight", "wagon", "reed"] },
-        { gap: 0.3, list: ["thief", "reed", "goat", "bandit", "reed"] }
+        { gap: 0.3, list: ["thief", "crow", "goat", "bandit", "reed"] }
       ] },
     { name: "Summer Crown", berries: 1, tip: "Hold the summer. Last stand.",
       waves: [
-        { gap: 0.3, list: ["reed", "goat", "thief", "reed"] },
+        { gap: 0.3, list: ["reed", "goat", "crow", "reed"] },
         { gap: 0.48, list: ["knight", "reed"] },
-        { gap: 0.3, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.3, list: ["reed", "thief", "goat", "crow"] },
         { gap: 0.5, list: ["wagon", "brute"] },
-        { gap: 0.3, list: ["thief", "reed", "goat", "reed"] },
+        { gap: 0.3, list: ["thief", "crow", "goat", "reed"] },
         { gap: 0.46, list: ["knight", "wagon"] },
-        { gap: 0.28, list: ["reed", "thief", "reed", "goat", "reed"] },
+        { gap: 0.28, list: ["reed", "thief", "crow", "goat", "reed"] },
         { gap: 0.42, list: ["wagon", "knight", "brute", "wagon"] }
       ] },
     { name: "Gate Dust", berries: 1, tip: "Dust on the gate road.",
@@ -1539,6 +1540,7 @@
   var lvlEl = document.getElementById("chip-lvl");
   var heartsEl = document.getElementById("hearts");
   var muteBtn = document.getElementById("btn-mute");
+  var speedBtn = document.getElementById("btn-speed");
 
   var IM = {};
   var save = loadSave();
@@ -1546,6 +1548,7 @@
   var selected = null;
   var paused = false;
   var mute = !!save.mute;
+  var gameSpeed = save.speed === 2 ? 2 : 1;
   var level = 0;
   var phase = "build";
   var waveI = 0, spawnI = 0, spawnT = 0;
@@ -1622,8 +1625,8 @@
   var tipT = 0;
   var fightLine = "";
   var TIPS = [
-    "Drag the king. Plant a crossbow. Hold the capital.",
-    "Ride the lane. Scoop the gold wood coins.",
+    "Drag the king. Ride and fight. Towers hold the line.",
+    "Ride the lane. Fight the clump. Scoop the gold.",
     "Place while they march. Upgrade when you can.",
     "Heavy Crossbow hits harder. Keep scooping.",
     "Brute incoming. Kite. Scoop. Don’t AFK the coins.",
@@ -1731,7 +1734,7 @@
     return a;
   }
   function defaultSave() {
-    return { unlocked: 1, wood: 50, stars: blankStars(), tutDone: false, tutMidBuild: false, filmSeen: false, mute: false, reels: {}, reelSeen: {} };
+    return { unlocked: 1, wood: 50, stars: blankStars(), tutDone: false, tutMidBuild: false, filmSeen: false, mute: false, speed: 1, reels: {}, reelSeen: {} };
   }
   function loadSave() {
     try {
@@ -1753,6 +1756,7 @@
       d.tutMidBuild = !!s.tutMidBuild;
       d.filmSeen = !!s.filmSeen;
       d.mute = !!s.mute;
+      d.speed = (s.speed === 2) ? 2 : 1;
       d.reels = {};
       d.reelSeen = {};
       if (s.reels && typeof s.reels === "object") {
@@ -1770,7 +1774,7 @@
       localStorage.setItem(SAVE_KEY, JSON.stringify({
         unlocked: save.unlocked, wood: save.wood, stars: save.stars,
         tutDone: !!save.tutDone, tutMidBuild: !!save.tutMidBuild,
-        filmSeen: !!save.filmSeen, mute: !!mute,
+        filmSeen: !!save.filmSeen, mute: !!mute, speed: gameSpeed === 2 ? 2 : 1,
         reels: save.reels || {}, reelSeen: save.reelSeen || {}
       }));
     } catch (e) {}
@@ -1778,6 +1782,7 @@
   function wipeKeepIntro() {
     save = defaultSave();
     save.mute = mute;
+    save.speed = gameSpeed === 2 ? 2 : 1;
     persist();
   }
 
@@ -1801,6 +1806,12 @@
     muteBtn.setAttribute("aria-label", mute ? "Mute" : "Sound");
     muteBtn.classList.toggle("on", mute);
   }
+  function setSpeedLabel() {
+    if (!speedBtn) return;
+    speedBtn.textContent = gameSpeed === 2 ? "2×" : "1×";
+    speedBtn.setAttribute("aria-label", gameSpeed === 2 ? "2×" : "1×");
+    speedBtn.classList.toggle("on", gameSpeed === 2);
+  }
   function faceSummer() {
     clearBootLoad();
     try { ensureAudio(); } catch (e) {}
@@ -1817,6 +1828,7 @@
     clearBootLoad();
     try {
       setMuteLabel();
+      setSpeedLabel();
       app.classList.remove("boot");
       show("splash");
       resize();
@@ -1849,7 +1861,7 @@
         }
         next();
       }
-      loadImg("assets/splash.jpg?v=23").then(function (im) {
+      loadImg("assets/splash.jpg?v=24").then(function (im) {
         IM.splash = im;
         loadRest();
       }).catch(loadRest);
@@ -2171,10 +2183,10 @@
     }
   }
   function landBand() {
-    if (level < 20) return 0;
-    if (level < 40) return 1;
-    if (level < 60) return 2;
-    if (level < 80) return 3;
+    if (level < 12) return 0;
+    if (level < 28) return 1;
+    if (level < 48) return 2;
+    if (level < 72) return 3;
     return 4;
   }
   function landTheme() {
@@ -2706,7 +2718,7 @@
     });
     if (!coinTip) {
       coinTip = true;
-      setHint("Ride over gold coins.");
+      setHint("Ride over gold coins. Fight the clump.");
     }
   }
   function collectCoin(c) {
@@ -2733,7 +2745,7 @@
       b = berries[i];
       if (!b.used && Math.hypot(b.x - bober.x, b.y - bober.y) < r) {
         b.used = true;
-        dropCoin(b.x, b.y, 8);
+        dropCoin(b.x, b.y, 10);
       }
     }
   }
@@ -2974,7 +2986,7 @@
         });
       }
     }
-    var rng = (royal ? 64 : 52) * sc;
+    var rng = (royal ? 86 : 72) * sc;
     var t = phase === "wave" ? nearest(bober.x, bober.y - 18 * sc, rng) : null;
     var want;
     if (t) want = Math.atan2(t.y - bober.y, t.x - bober.x);
@@ -2984,11 +2996,15 @@
     if (phase !== "wave") return;
     bober.cd -= dt;
     if (t && bober.cd <= 0 && Math.abs(angWrap(want - bober.facing)) < 0.55) {
+      var leap = 16 * sc;
+      bober.x += Math.cos(bober.facing) * leap;
+      bober.y += Math.sin(bober.facing) * leap;
+      clampKing();
       var fx = bober.x + Math.cos(bober.facing) * 26 * sc;
       var fy = bober.y - 18 * sc + Math.sin(bober.facing) * 10 * sc;
-      fireShot(fx, fy, t, 1, 0, "king");
-      bober.cd = royal ? 0.48 : 0.62;
-      bober.atFlash = 0.12;
+      fireShot(fx, fy, t, royal ? 3 : 2, 0, "king");
+      bober.cd = royal ? 0.32 : 0.42;
+      bober.atFlash = 0.14;
       beep(640, 0.03, "square", 0.035);
     }
   }
@@ -3241,7 +3257,7 @@
         var b = berries[i];
         if (!b.used && Math.hypot(x - b.x, y - b.y) < 36 * sc) {
           b.used = true;
-          dropCoin(b.x, b.y, 8);
+          dropCoin(b.x, b.y, 10);
           return true;
         }
       }
@@ -4000,7 +4016,8 @@
       ctx.save();
       if (kingFlash > 0) ctx.globalAlpha = 0.78;
       ctx.translate(bober.x, bober.y + bob);
-      ctx.rotate(tilt);
+      if (bober.atFlash > 0) ctx.translate((flip ? -1 : 1) * 8 * sc, -2 * sc);
+      ctx.rotate(tilt + (bober.atFlash > 0 ? 0.08 : 0));
       ctx.scale(flip ? -1 : 1, 1);
       if (IM.king) ctx.drawImage(IM.king, -52 * sc, -84 * sc, 104 * sc, 86 * sc);
       else drawSpriteChunky(IM.bober, 0, 0, 66 * sc, 68 * sc);
@@ -4045,7 +4062,8 @@
     if (!last) last = ts;
     var dt = Math.min(0.033, (ts - last) / 1000);
     last = ts;
-    tGame += dt;
+    var sim = (screen === "play" && !paused) ? dt * (gameSpeed === 2 ? 2 : 1) : dt;
+    tGame += sim;
     if (screen === "film") {
       filmT += dt;
       if (filmT >= 2.8) {
@@ -4058,15 +4076,15 @@
       if (tipT <= 0) hideBuddyTip();
     }
     if (screen === "play" && !paused) {
-      tickKing(dt);
-      tickCoins(dt);
-      if (phase === "wave") tickWave(dt);
-      if (phase === "magnet") tickMagnet(dt);
+      tickKing(sim);
+      tickCoins(sim);
+      if (phase === "wave") tickWave(sim);
+      if (phase === "magnet") tickMagnet(sim);
       if (phase === "clear") {
-        winHold -= dt;
+        winHold -= sim;
         if (winHold <= 0) finishWin();
       }
-      tickFx(dt);
+      tickFx(sim);
     }
     if (screen === "play" || screen === "paused") drawWorld();
   }
@@ -4301,6 +4319,12 @@
     mute = !mute; save.mute = mute; persist();
     setMuteLabel();
     if (!mute) ensureAudio();
+  });
+  if (speedBtn) speedBtn.addEventListener("click", function () {
+    gameSpeed = gameSpeed === 2 ? 1 : 2;
+    save.speed = gameSpeed;
+    persist();
+    setSpeedLabel();
   });
   goBtn.addEventListener("click", function () {
     ensureAudio();
