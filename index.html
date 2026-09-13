@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#87C6E8" />
   <meta name="description" content="Green Home Crown - fan game by a holder. Summer stays. Hold the town." />
   <title>Green Home Crown · Summer stays</title>
-  <!-- ghc-26 -->
+  <!-- ghc-27 -->
   <link rel="icon" href="assets/icons/green-home-crown.ico" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
@@ -243,6 +243,33 @@
     }
     .goals .g { margin: 3px 0; }
     .goals .g.on { color: var(--gold); }
+    #museum { justify-content: flex-start; overflow: auto; padding-top: 14px; }
+    #museum-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      width: 100%; max-width: 22em; margin: 8px 0 16px;
+    }
+    .mcard {
+      background: #1a2810cc; border: 3px solid var(--gold); border-radius: 14px;
+      padding: 8px 8px 10px; text-align: center; min-width: 0;
+    }
+    .mcard img {
+      width: 100%; height: 84px; object-fit: contain; display: block;
+      pointer-events: none; background: #243818; border-radius: 8px;
+    }
+    .mcard h3 {
+      margin: 7px 0 4px; font-size: 13px; color: var(--gold);
+      text-shadow: 0 2px 0 #1A2810; line-height: 1.15;
+    }
+    .mcard p {
+      margin: 0; font-size: 11px; font-weight: 700; line-height: 1.3;
+      color: var(--cream); text-shadow: 0 1px 4px #000;
+    }
+    .mcard.lock { border-color: #5C3A1A; }
+    .mcard.lock img { filter: brightness(0); opacity: 0.4; }
+    .mcard.lock h3, .mcard.lock p { color: #a89878; }
+    #win { justify-content: flex-end; padding-bottom: 28px; }
+    #win .end-stars, #win .end-msg, #win .play { position: relative; z-index: 1; }
+    #win .end-msg { max-width: 18em; }
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       25% { transform: translateX(-3px); }
@@ -256,7 +283,7 @@
       <div class="chips">
         <span class="chip" id="chip-lvl">L1</span>
         <span id="hearts" aria-label="Crown hearts"></span>
-        <span class="chip wood" id="chip-wood">Wood 50</span>
+        <span class="chip wood" id="chip-wood">$BOBER 50</span>
       </div>
       <div class="btns">
         <button class="icon-btn" id="btn-pause" type="button" aria-label="Pause">⏸</button>
@@ -278,7 +305,7 @@
         <img src="assets/sprites/bow.png" alt="" />
         <span class="meta">
           <span class="name" id="bow-name">Crossbow</span>
-          <span class="cost" id="cost-bow">50</span>
+          <span class="cost" id="cost-bow">50 $BOBER</span>
         </span>
       </button>
       <div id="dock-hint">Tap a pad · place a Crossbow</div>
@@ -287,7 +314,7 @@
     <div id="also">More games · <a href="https://ccosma1.github.io/green-home-games/">Green Home Games</a></div>
 
     <div id="splash" class="overlay">
-      <img class="hero" src="assets/splash.jpg?v=26" alt="" />
+      <img class="hero" src="assets/splash.jpg?v=27" alt="" />
       <h1>GREEN HOME CROWN</h1>
       <p class="tag">100 days. One crown.</p>
       <p class="how">You ride as summer king - feast, fight usurpers, keep the crown until the land calls it his.</p>
@@ -297,6 +324,7 @@
       <button class="play" id="btn-face" type="button" onclick="if(window.ghcFace)window.ghcFace();">FACE THE SUMMER</button>
       <button class="play ghost" id="btn-more" type="button">More games · Green Home Games</button>
       <button class="film-link" id="btn-watch" type="button">Victory history</button>
+      <button class="film-link" id="btn-museum-splash" type="button">Museum</button>
     </div>
 
     <div id="levels" class="overlay hidden">
@@ -308,6 +336,7 @@
       <div id="map-goals" class="goals"></div>
       <button class="play ghost" id="btn-back" type="button">Back</button>
       <button class="play ghost" id="btn-history" type="button">History</button>
+      <button class="play ghost" id="btn-museum" type="button">Museum</button>
       <button class="wipe-link" id="btn-reset" type="button">Reset</button>
     </div>
 
@@ -321,10 +350,9 @@
     </div>
 
     <div id="win" class="overlay hidden">
-      <img class="hero" src="assets/splash.jpg" alt="" />
-      <h2>Clear</h2>
+      <img class="hero" id="win-hero" src="assets/clear/meadow.jpg" alt="" />
       <p class="end-stars" id="win-stars">★★★</p>
-      <p class="end-msg" id="win-msg">The meadow holds.</p>
+      <p class="end-msg" id="win-msg">Muster done. Ride on.</p>
       <button class="play" id="btn-next" type="button">Next</button>
     </div>
 
@@ -358,6 +386,13 @@
       <div id="story-goals" class="goals"></div>
       <div id="history-list"></div>
       <button class="play ghost" id="btn-history-back" type="button">Back</button>
+    </div>
+
+    <div id="museum" class="overlay hidden">
+      <h2>Museum</h2>
+      <p class="how">Play cards. Unlock by riding.</p>
+      <div id="museum-grid"></div>
+      <button class="play ghost" id="btn-museum-back" type="button">Back</button>
     </div>
   </div>
 
@@ -1594,28 +1629,28 @@
       { src: "assets/film/reels/r30-3.jpg", cap: "Home still gold." }
     ] },
     { id: "r45", lvl: 45, name: "Feast", chapter: "Feast", frames: [
-      { src: "assets/film/reels/r45-1.jpg", cap: "Feast of false crowns." },
+      { src: "assets/film/reels/r45-1.jpg", cap: "False crowns on the fair." },
       { src: "assets/film/reels/r45-2.jpg", cap: "Tin on the lawn." },
       { src: "assets/film/reels/r45-3.jpg", cap: "The sun is ours." }
     ] },
     { id: "r60", lvl: 60, name: "Claim", chapter: "Claim", frames: [
-      { src: "assets/film/reels/r60-1.jpg", cap: "Claim the long summer." },
+      { src: "assets/film/reels/r60-1.jpg", cap: "Gold dusk. Claim it." },
       { src: "assets/film/reels/r60-2.jpg", cap: "Gold home." },
       { src: "assets/film/reels/r60-3.jpg", cap: "The land starts to say it." }
     ] },
     { id: "r75", lvl: 75, name: "Storm Court", chapter: "Storm Court", frames: [
-      { src: "assets/film/reels/r75-1.jpg", cap: "Banners in the dust." },
-      { src: "assets/film/reels/r75-2.jpg", cap: "The feast hears the siege." },
-      { src: "assets/film/reels/r75-3.jpg", cap: "Storm Court wants the hill." }
+      { src: "assets/film/reels/r75-1.jpg", cap: "Banner knight. Shield rat." },
+      { src: "assets/film/reels/r75-2.jpg", cap: "Storm Court wants the hill." },
+      { src: "assets/film/reels/r75-3.jpg", cap: "The feast hears the siege." }
     ] },
     { id: "r90", lvl: 90, name: "Crown Siege", chapter: "Crown Siege", frames: [
-      { src: "assets/film/reels/r90-1.jpg", cap: "The swarm at the wall." },
-      { src: "assets/film/reels/r90-2.jpg", cap: "Almost his." },
+      { src: "assets/film/reels/r90-1.jpg", cap: "Crows and horns at the wall." },
+      { src: "assets/film/reels/r90-2.jpg", cap: "Siege light. Almost his." },
       { src: "assets/film/reels/r90-3.jpg", cap: "Family waits the gate." }
     ] },
     { id: "r100", lvl: 100, name: "Assemble", chapter: "Assemble", frames: [
-      { src: "assets/film/reels/r100-1.jpg", cap: "The line holds." },
-      { src: "assets/film/reels/r100-2.jpg", cap: "Family at the gate." },
+      { src: "assets/film/reels/r100-1.jpg", cap: "King on the gate road." },
+      { src: "assets/film/reels/r100-2.jpg", cap: "Picnic at the capital." },
       { src: "assets/film/reels/r100-3.jpg", cap: "The land calls it his." },
       { src: "assets/film/reels/r100-4.jpg", cap: "Summer stays. Assemble." }
     ] }
@@ -1738,7 +1773,7 @@
     return a;
   }
   function defaultSave() {
-    return { unlocked: 1, wood: 50, stars: blankStars(), tutDone: false, tutMidBuild: false, filmSeen: false, mute: false, speed: 1, speedTip: false, reels: {}, reelSeen: {} };
+    return { unlocked: 1, wood: 50, stars: blankStars(), tutDone: false, tutMidBuild: false, filmSeen: false, mute: false, speed: 1, speedTip: false, reels: {}, reelSeen: {}, seen: {} };
   }
   function loadSave() {
     try {
@@ -1762,6 +1797,10 @@
       d.mute = !!s.mute;
       d.speed = (s.speed === 2) ? 2 : 1;
       d.speedTip = !!s.speedTip;
+      d.seen = {};
+      if (s.seen && typeof s.seen === "object") {
+        Object.keys(s.seen).forEach(function (k) { if (s.seen[k]) d.seen[k] = true; });
+      }
       d.reels = {};
       d.reelSeen = {};
       if (s.reels && typeof s.reels === "object") {
@@ -1780,7 +1819,7 @@
         unlocked: save.unlocked, wood: save.wood, stars: save.stars,
         tutDone: !!save.tutDone, tutMidBuild: !!save.tutMidBuild,
         filmSeen: !!save.filmSeen, mute: !!mute, speed: gameSpeed === 2 ? 2 : 1,
-        speedTip: !!save.speedTip,
+        speedTip: !!save.speedTip, seen: save.seen || {},
         reels: save.reels || {}, reelSeen: save.reelSeen || {}
       }));
     } catch (e) {}
@@ -1867,7 +1906,7 @@
         }
         next();
       }
-      loadImg("assets/splash.jpg?v=26").then(function (im) {
+      loadImg("assets/splash.jpg?v=27").then(function (im) {
         IM.splash = im;
         loadRest();
       }).catch(loadRest);
@@ -1879,7 +1918,7 @@
 
   function show(name) {
     screen = name;
-    ["splash", "levels", "paused", "win", "lose", "cameo", "film", "history"].forEach(function (id) {
+    ["splash", "levels", "paused", "win", "lose", "cameo", "film", "history", "museum"].forEach(function (id) {
       document.getElementById(id).classList.toggle("hidden", id !== name);
     });
     var play = name === "play";
@@ -1978,7 +2017,7 @@
   }
   function renderHud() {
     lvlEl.textContent = "L" + (level + 1);
-    woodEl.textContent = "Wood " + wood;
+    woodEl.textContent = "$BOBER " + wood;
     renderHearts();
     var L = LEVELS[level];
     var n = L.waves.length;
@@ -1993,9 +2032,9 @@
       else { setBanner("King shoots close. Towers hold the path."); setHint("Kite into range"); }
     } else if (phase === "scoop") {
       setBanner("Scoop coins, then Next");
-      setHint("Ride to collect wood");
+      setHint("Ride to collect $BOBER");
     } else if (phase === "magnet") {
-      setBanner("Wood home.");
+      setBanner("$BOBER home.");
       setHint("Gold flies to the King");
     } else if (royal && royalTold && kingCele > 0) {
       setBanner("All ballistae ready - armies fire harder.");
@@ -2044,7 +2083,7 @@
     if (tOn && tut.step !== 1) lock = true;
     if (tOn && tut.step === 1) lock = false;
     card.disabled = lock;
-    document.getElementById("cost-bow").textContent = String(BOW.cost[0]);
+    document.getElementById("cost-bow").textContent = BOW.cost[0] + " $BOBER";
     document.getElementById("bow-name").textContent = BOW.name[0];
   }
 
@@ -2507,6 +2546,7 @@
       p.kind = null; p.rank = 0; p.cd = 0; p.hp = 0; p.maxHp = 0;
     });
     berries = berrySpots(LEVELS[i].berries);
+    markSeen("king"); markSeen("bow"); markSeen("city"); markSeen("crown"); markSeen("buddy");
     beginTut();
     show("play");
     renderHud();
@@ -2699,6 +2739,7 @@
     if (!m) return;
     var p0 = path[0];
     var hp = mobHp(kind, level);
+    markSeen(kind);
     enemies.push({
       id: eid++, kind: kind, hp: hp, max: hp, spd: m.spd * sc, d: 0,
       x: p0.x, y: p0.y, tele: 0, teleOn: false, slamCd: 0.8, hit: 0,
@@ -3268,7 +3309,7 @@
     }
     phase = "magnet";
     startMagnet();
-    setBanner("Wood home.");
+    setBanner("$BOBER home.");
     setHint("Gold flies to the King");
     renderHud();
     beep(660, 0.08, "triangle", 0.045);
@@ -3287,7 +3328,9 @@
     var last = LEVELS.length - 1;
     var starStr = "★★★".slice(0, stars) + "☆☆☆".slice(0, 3 - stars);
     document.getElementById("win-stars").textContent = starStr;
-    document.getElementById("win-msg").textContent = level === last ? "Summer stays. The land calls it his." : (level === 0 ? "L1 held." : (LEVELS[level].name + " holds."));
+    document.getElementById("win-msg").textContent = winLine();
+    var hero = document.getElementById("win-hero");
+    if (hero) hero.src = CLEAR_ART[landBand()] + "?v=27";
     document.getElementById("btn-next").textContent = level < last ? "Next" : "Map";
     var rid = reelIdForClear(level);
     if (rid) {
@@ -3317,9 +3360,10 @@
       var r = pad.rank || 0;
       if (r >= 2) { setHint("Royal Ballista - max"); return true; }
       var up = BOW.cost[r + 1];
-      if (wood < up) { flashChip(); flashCard("bow"); setHint("Need " + up + " wood"); return true; }
+      if (wood < up) { flashChip(); flashCard("bow"); setHint("Need " + up + " $BOBER"); return true; }
       wood -= up;
       pad.rank = r + 1;
+      if (pad.rank >= 2) markSeen("ballista");
       pad.cd = 0.15;
       pop(pad.x, pad.y - 18, BOW.name[pad.rank], "#F5C400");
       checkRoyal();
@@ -3339,7 +3383,7 @@
       return true;
     }
     var cost = BOW.cost[0];
-    if (wood < cost) { flashChip(); flashCard("bow"); setHint("Need " + cost + " wood"); return true; }
+    if (wood < cost) { flashChip(); flashCard("bow"); setHint("Need " + cost + " $BOBER"); return true; }
     wood -= cost;
     pad.kind = "bow"; pad.rank = 0; pad.cd = 0.2;
     pop(pad.x, pad.y - 18, "Crossbow", "#F5C400");
@@ -4204,6 +4248,86 @@
     if (screen === "play" || screen === "paused") drawWorld();
   }
 
+  var CLEAR_ART = [
+    "assets/clear/meadow.jpg", "assets/clear/river.jpg", "assets/clear/fair.jpg",
+    "assets/clear/dusk.jpg", "assets/clear/siege.jpg"
+  ];
+  function winLine() {
+    if (level >= LEVELS.length - 1) return "Summer stays. The land calls it his.";
+    var pools = {
+      dawn: ["Muster done. Ride on.", "Picnic gate stands.", "Dawn is still ours.", "Crossbows earned this hill.", "Green Gate keeps the sun."],
+      feast: ["Flies gone. Feast stays.", "River guests paid the crown.", "Reeds bow. Ride on.", "The picnic heard that."],
+      false: ["Tin crowns stay in the grass.", "False sun set.", "Fair banners still ours.", "The lawn stays gold."],
+      usurp: ["Banner out there. Not in here.", "Usurper dust.", "The dusk hill is yours."],
+      storm: ["Storm Court blinked.", "Gold dusk held."],
+      siege: ["Crown Siege cracked.", "The wall still sings summer."],
+      approach: ["Almost his. Keep riding.", "Approach keeps the road."],
+      assemble: ["The land calls it his."]
+    };
+    var a = storyAct();
+    var p = pools[a.id] || pools.dawn;
+    return p[level % p.length];
+  }
+  var MUSEUM = [
+    { id: "king", name: "King Bober", img: "assets/sprites/king-horse.png", blurb: "You. Summer on a cream pony.", at: 1 },
+    { id: "bow", name: "Crossbow", img: "assets/sprites/bow.png", blurb: "50 $BOBER. Plant it by the crown.", at: 1 },
+    { id: "ballista", name: "Royal Ballista", img: "assets/sprites/ballista.png", blurb: "Pierce the packed lane.", at: 16 },
+    { id: "rat", name: "Field Rat", img: "assets/sprites/rat.png", blurb: "Trash with teeth. Fast picnic thieves.", at: 1 },
+    { id: "bandit", name: "Picnic Bandit", img: "assets/sprites/bandit.png", blurb: "Baguette and a stolen napkin.", at: 2 },
+    { id: "thief", name: "Barrel Thief", img: "assets/sprites/thief.png", blurb: "Knives at the feast. Don't freeze.", at: 4 },
+    { id: "brute", name: "Meadow Brute", img: "assets/sprites/brute.png", blurb: "Slow slam. Telegraph, then the crown.", at: 5 },
+    { id: "goat", name: "Shield Goat", img: "assets/sprites/goat.png", blurb: "Front is armor. Shoot the rear.", at: 8 },
+    { id: "knight", name: "Fair Knight", img: "assets/sprites/knight.png", blurb: "Tin crown. Real charge.", at: 10 },
+    { id: "reed", name: "Reed Runner", img: "assets/sprites/reed.png", blurb: "River fodder. Pierce them.", at: 11 },
+    { id: "wagon", name: "Siege Wagon", img: "assets/sprites/wagon.png", blurb: "Slow picnic armor on wheels.", at: 15 },
+    { id: "shield", name: "Shield Rat", img: "assets/sprites/shield.png", blurb: "Heart-lid. Late tank.", at: 50 },
+    { id: "horn", name: "Horn Bandit", img: "assets/sprites/horn.png", blurb: "War horn. Charges the king.", at: 50 },
+    { id: "drummer", name: "Siege Drummer", img: "assets/sprites/drummer.png", blurb: "The pack marches faster near him.", at: 55 },
+    { id: "crow", name: "Crow Thief", img: "assets/sprites/crow.png", blurb: "Hops the lane. Steals $BOBER.", at: 22 },
+    { id: "banner", name: "Banner Knight", img: "assets/sprites/banner.png", blurb: "Sun flag. Mini-boss of the dusk.", at: 50 },
+    { id: "city", name: "The Capital", img: "assets/sprites/city.png", blurb: "Hold the gate. Summer lives here.", at: 1 },
+    { id: "buddy", name: "Tip Face", img: "assets/sprites/buddy.png", blurb: "Hair on. He talks. You ride.", at: 1 },
+    { id: "crown", name: "The Crown", img: "assets/sprites/crown.png", blurb: "One crown. Bring summer.", at: 1 },
+    { id: "act-dawn", name: "Green Gate", img: "assets/clear/meadow.jpg", blurb: "Day 1-20. The picnic still thinks it's a picnic.", at: 1 },
+    { id: "act-feast", name: "Feast Draws Flies", img: "assets/clear/river.jpg", blurb: "Guests with knives. Count them.", at: 21 },
+    { id: "act-false", name: "False Crowns", img: "assets/clear/fair.jpg", blurb: "Tin on the lawn. Yours is gold.", at: 41 },
+    { id: "act-storm", name: "Storm Court", img: "assets/clear/dusk.jpg", blurb: "A banner sniffer on the wind.", at: 61 },
+    { id: "act-trial", name: "Crown Trial", img: "assets/clear/siege.jpg", blurb: "Siege light. Assemble waits.", at: 81 }
+  ];
+  function markSeen(id) {
+    if (!save.seen) save.seen = {};
+    if (id && !save.seen[id]) { save.seen[id] = true; persist(); }
+  }
+  function museumUnlocked(card) {
+    if (save.seen && save.seen[card.id]) return true;
+    return (save.unlocked | 0) >= (card.at || 1);
+  }
+  function fillMuseum() {
+    var grid = document.getElementById("museum-grid");
+    if (!grid) return;
+    grid.innerHTML = "";
+    MUSEUM.forEach(function (card) {
+      var on = museumUnlocked(card);
+      var el = document.createElement("div");
+      el.className = "mcard" + (on ? "" : " lock");
+      var img = document.createElement("img");
+      img.src = card.img;
+      img.alt = "";
+      var h = document.createElement("h3");
+      h.textContent = on ? card.name : "????";
+      var p = document.createElement("p");
+      p.textContent = on ? card.blurb : "Ride further.";
+      el.appendChild(img);
+      el.appendChild(h);
+      el.appendChild(p);
+      grid.appendChild(el);
+    });
+  }
+  function openMuseum(from) {
+    if (from) histFrom = from;
+    fillMuseum();
+    show("museum");
+  }
   function reelById(id) {
     var i;
     for (i = 0; i < REELS.length; i++) if (REELS[i].id === id) return REELS[i];
@@ -4401,6 +4525,18 @@
   document.getElementById("btn-history").addEventListener("click", function () {
     ensureAudio();
     openHistory("levels");
+  });
+  document.getElementById("btn-museum").addEventListener("click", function () {
+    ensureAudio();
+    openMuseum("levels");
+  });
+  document.getElementById("btn-museum-splash").addEventListener("click", function () {
+    ensureAudio();
+    openMuseum("splash");
+  });
+  document.getElementById("btn-museum-back").addEventListener("click", function () {
+    if (histFrom === "splash") show("splash");
+    else openMap();
   });
   document.getElementById("btn-history-back").addEventListener("click", function () {
     if (histFrom === "splash") show("splash");
