@@ -33,6 +33,11 @@ SPRITES = (
     "bandit.jpg",
     "brute.jpg",
     "berry.jpg",
+    "shield.jpg",
+    "horn.jpg",
+    "drummer.jpg",
+    "crow.jpg",
+    "banner.jpg",
 )
 
 

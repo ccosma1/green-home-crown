@@ -29,8 +29,15 @@ True end is **L100 Summer Stays**. Victory reels at L15 / 30 / 45 / 60 / 75 / 90
 | Fair Knight | L10 | Mini-boss, charges the king |
 | Reed Runner | L11 | Fast fodder |
 | Siege Wagon | L15 | Slow armored picnic wagon |
+| Shield Rat | ~L50 | Front DR, slow, heart-lid shield |
+| Horn Bandit | ~L50 | Fast charge, war horn |
+| Siege Drummer | ~L55 | Slow tank; nearby foes march faster |
+| Crow Thief | ~L50 | Fast hop, weaves the lane |
+| Banner Knight | ~L50 | Mini-boss, sun banner |
 
 **Royal Guard:** all *placed* towers T3, and either ≥2 towers **or** the only live pad is 1×T3.
+
+**Landscapes:** L1–20 meadow, L21–40 river, L41–60 fair, L61–80 gold dusk, L81–100 capital siege.
 
 ## Names for later (L21–25, not in this slice)
 

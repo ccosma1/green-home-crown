@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#87C6E8" />
   <meta name="description" content="Green Home Crown — fan game by a holder. Summer stays. Hold the town." />
   <title>Green Home Crown · Summer stays</title>
-  <!-- ghc-21b -->
+  <!-- ghc-22 -->
   <link rel="icon" href="assets/icons/green-home-crown.ico" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
@@ -374,9 +374,9 @@
     name: ["Crossbow", "Heavy Crossbow", "Royal Ballista"],
     cost: [50, 90, 160],
     dmg: [1, 2, 3],
-    rate: [0.32, 0.28, 0.22],
-    range: [136, 148, 162],
-    pierce: [0, 1, 2]
+    rate: [0.32, 0.30, 0.22],
+    range: [136, 140, 156],
+    pierce: [0, 0, 2]
   };
   var MOBS = {
     rat: { hp: 1, spd: 68, wood: 1, dmg: 1, scale: 0.52 },
@@ -386,7 +386,12 @@
     goat: { hp: 6, spd: 42, wood: 3, dmg: 1, scale: 0.96 },
     knight: { hp: 16, spd: 50, wood: 10, dmg: 2, scale: 1.12 },
     reed: { hp: 1, spd: 94, wood: 2, dmg: 1, scale: 0.5 },
-    wagon: { hp: 20, spd: 36, wood: 12, dmg: 2, scale: 1.24 }
+    wagon: { hp: 20, spd: 36, wood: 12, dmg: 2, scale: 1.24 },
+    shield: { hp: 10, spd: 38, wood: 4, dmg: 1, scale: 0.78 },
+    horn: { hp: 8, spd: 64, wood: 4, dmg: 1, scale: 0.9 },
+    drummer: { hp: 18, spd: 30, wood: 8, dmg: 2, scale: 1.16 },
+    crow: { hp: 3, spd: 108, wood: 2, dmg: 1, scale: 0.64 },
+    banner: { hp: 22, spd: 44, wood: 12, dmg: 2, scale: 1.18 }
   };
   var LEVELS = [
     { name: "Meadow Gate", berries: 0, tip: "Move the King.",
@@ -880,25 +885,25 @@
       ] },
     { name: "Knight Line", berries: 1, tip: "Knights in a line.",
       waves: [
-        { gap: 0.26, list: ["reed", "goat", "thief", "reed"] },
-        { gap: 0.4, list: ["knight", "reed"] },
-        { gap: 0.24, list: ["reed", "thief", "goat", "reed"] },
-        { gap: 0.4, list: ["knight", "goat"] },
-        { gap: 0.24, list: ["thief", "reed", "goat", "reed"] },
-        { gap: 0.38, list: ["knight", "wagon"] },
-        { gap: 0.24, list: ["reed", "thief", "reed", "goat"] },
-        { gap: 0.36, list: ["knight", "wagon", "knight"] }
+        { gap: 0.26, list: ["reed", "goat", "thief", "crow"] },
+        { gap: 0.4, list: ["knight", "banner"] },
+        { gap: 0.24, list: ["reed", "thief", "shield", "reed"] },
+        { gap: 0.4, list: ["knight", "horn"] },
+        { gap: 0.24, list: ["thief", "reed", "goat", "crow"] },
+        { gap: 0.38, list: ["banner", "wagon"] },
+        { gap: 0.24, list: ["reed", "thief", "reed", "shield"] },
+        { gap: 0.36, list: ["knight", "banner", "knight"] }
       ] },
     { name: "Siege Road", berries: 1, tip: "Siege on the crown road.",
       waves: [
-        { gap: 0.26, list: ["reed", "goat", "reed", "bandit"] },
-        { gap: 0.42, list: ["wagon", "reed"] },
-        { gap: 0.24, list: ["reed", "thief", "goat", "reed"] },
+        { gap: 0.26, list: ["reed", "goat", "reed", "horn"] },
+        { gap: 0.42, list: ["wagon", "drummer"] },
+        { gap: 0.24, list: ["reed", "thief", "shield", "reed"] },
         { gap: 0.4, list: ["wagon", "goat"] },
-        { gap: 0.24, list: ["reed", "bandit", "reed", "goat"] },
-        { gap: 0.4, list: ["wagon", "knight"] },
-        { gap: 0.26, list: ["reed", "wagon", "goat", "reed"] },
-        { gap: 0.36, list: ["wagon", "brute", "wagon"] }
+        { gap: 0.24, list: ["crow", "bandit", "reed", "goat"] },
+        { gap: 0.4, list: ["drummer", "knight"] },
+        { gap: 0.26, list: ["reed", "wagon", "shield", "reed"] },
+        { gap: 0.36, list: ["wagon", "drummer", "wagon"] }
       ] },
     { name: "Banner Heat", berries: 1, tip: "Banners in the heat.",
       waves: [
@@ -999,24 +1004,24 @@
       ] },
     { name: "Knife Road", berries: 1, tip: "Knives on the crown road.",
       waves: [
-        { gap: 0.2, list: ["thief", "reed", "thief", "goat"] },
-        { gap: 0.2, list: ["reed", "thief", "reed", "thief"] },
-        { gap: 0.36, list: ["knight", "thief", "reed"] },
-        { gap: 0.2, list: ["thief", "goat", "reed", "thief"] },
-        { gap: 0.34, list: ["wagon", "thief", "goat"] },
-        { gap: 0.2, list: ["reed", "thief", "bandit", "reed"] },
-        { gap: 0.34, list: ["knight", "wagon", "thief"] },
-        { gap: 0.2, list: ["thief", "reed", "goat", "thief"] }
+        { gap: 0.2, list: ["thief", "crow", "thief", "goat"] },
+        { gap: 0.2, list: ["reed", "thief", "crow", "thief"] },
+        { gap: 0.36, list: ["knight", "thief", "crow"] },
+        { gap: 0.2, list: ["thief", "shield", "reed", "thief"] },
+        { gap: 0.34, list: ["wagon", "thief", "horn"] },
+        { gap: 0.2, list: ["crow", "thief", "bandit", "reed"] },
+        { gap: 0.34, list: ["banner", "wagon", "thief"] },
+        { gap: 0.2, list: ["thief", "crow", "goat", "thief"] }
       ] },
     { name: "Horn Tide", berries: 1, tip: "Horns in a tide.",
       waves: [
-        { gap: 0.22, list: ["goat", "reed", "thief", "reed"] },
-        { gap: 0.22, list: ["reed", "goat", "bandit", "reed"] },
-        { gap: 0.38, list: ["knight", "goat", "reed"] },
-        { gap: 0.22, list: ["reed", "thief", "goat", "reed"] },
-        { gap: 0.36, list: ["wagon", "reed", "goat"] },
-        { gap: 0.22, list: ["goat", "reed", "thief", "reed"] },
-        { gap: 0.34, list: ["knight", "wagon", "brute"] }
+        { gap: 0.22, list: ["horn", "reed", "thief", "reed"] },
+        { gap: 0.22, list: ["reed", "horn", "bandit", "reed"] },
+        { gap: 0.38, list: ["knight", "horn", "reed"] },
+        { gap: 0.22, list: ["reed", "thief", "horn", "reed"] },
+        { gap: 0.36, list: ["wagon", "horn", "goat"] },
+        { gap: 0.22, list: ["horn", "reed", "thief", "shield"] },
+        { gap: 0.34, list: ["banner", "wagon", "horn"] }
       ] },
     { name: "Dust Bend", berries: 1, tip: "Dust on the last bend.",
       waves: [
@@ -1097,14 +1102,14 @@
       ] },
     { name: "Keep Road", berries: 1, tip: "The road to the keep.",
       waves: [
-        { gap: 0.18, list: ["reed", "goat", "thief", "reed"] },
-        { gap: 0.36, list: ["knight", "reed"] },
-        { gap: 0.18, list: ["reed", "thief", "goat", "reed"] },
-        { gap: 0.38, list: ["wagon", "brute"] },
-        { gap: 0.18, list: ["thief", "reed", "goat", "reed"] },
-        { gap: 0.34, list: ["knight", "wagon"] },
-        { gap: 0.18, list: ["reed", "thief", "reed", "goat", "reed"] },
-        { gap: 0.3, list: ["wagon", "knight", "brute", "wagon", "knight"] }
+        { gap: 0.18, list: ["crow", "shield", "thief", "reed"] },
+        { gap: 0.36, list: ["banner", "reed"] },
+        { gap: 0.18, list: ["reed", "crow", "shield", "horn"] },
+        { gap: 0.38, list: ["drummer", "brute"] },
+        { gap: 0.18, list: ["thief", "crow", "goat", "reed"] },
+        { gap: 0.34, list: ["banner", "wagon"] },
+        { gap: 0.18, list: ["crow", "thief", "shield", "horn", "reed"] },
+        { gap: 0.3, list: ["drummer", "banner", "brute", "wagon", "knight"] }
       ] },
     { name: "Heat Gate", berries: 1, tip: "Heat on the gate road.",
       waves: [
@@ -1150,14 +1155,14 @@
       ] },
     { name: "Gold Banner", berries: 1, tip: "Gold banners on the road.",
       waves: [
-        { gap: 0.18, list: ["reed", "goat", "thief", "reed"] },
-        { gap: 0.34, list: ["knight", "reed", "goat"] },
-        { gap: 0.16, list: ["reed", "thief", "goat", "reed"] },
-        { gap: 0.34, list: ["wagon", "knight"] },
-        { gap: 0.16, list: ["thief", "reed", "goat", "reed"] },
-        { gap: 0.32, list: ["knight", "wagon", "reed"] },
-        { gap: 0.16, list: ["reed", "thief", "reed", "goat"] },
-        { gap: 0.3, list: ["wagon", "knight", "brute", "knight"] }
+        { gap: 0.18, list: ["crow", "shield", "thief", "reed"] },
+        { gap: 0.34, list: ["banner", "reed", "horn"] },
+        { gap: 0.16, list: ["reed", "crow", "shield", "reed"] },
+        { gap: 0.34, list: ["drummer", "banner"] },
+        { gap: 0.16, list: ["thief", "crow", "goat", "horn"] },
+        { gap: 0.32, list: ["banner", "wagon", "reed"] },
+        { gap: 0.16, list: ["crow", "thief", "shield", "goat"] },
+        { gap: 0.3, list: ["drummer", "banner", "brute", "knight"] }
       ] },
     { name: "Knife Tide", berries: 1, tip: "A tide of knives.",
       waves: [
@@ -1172,13 +1177,13 @@
       ] },
     { name: "Horn Pack", berries: 1, tip: "Horns pack the bend.",
       waves: [
-        { gap: 0.18, list: ["goat", "reed", "thief", "reed"] },
-        { gap: 0.18, list: ["reed", "goat", "bandit", "reed"] },
-        { gap: 0.34, list: ["knight", "goat", "reed"] },
-        { gap: 0.18, list: ["reed", "thief", "goat", "reed"] },
-        { gap: 0.32, list: ["wagon", "reed", "goat"] },
-        { gap: 0.18, list: ["goat", "reed", "thief", "reed"] },
-        { gap: 0.3, list: ["knight", "wagon", "brute"] }
+        { gap: 0.18, list: ["horn", "reed", "thief", "crow"] },
+        { gap: 0.18, list: ["reed", "horn", "bandit", "reed"] },
+        { gap: 0.34, list: ["banner", "horn", "reed"] },
+        { gap: 0.18, list: ["reed", "thief", "horn", "shield"] },
+        { gap: 0.32, list: ["drummer", "reed", "horn"] },
+        { gap: 0.18, list: ["horn", "crow", "thief", "reed"] },
+        { gap: 0.3, list: ["banner", "wagon", "horn"] }
       ] },
     { name: "Dust Road", berries: 1, tip: "Dust on the crown road.",
       waves: [
@@ -1193,14 +1198,14 @@
       ] },
     { name: "Shield Storm", berries: 1, tip: "Shields storm the lane.",
       waves: [
-        { gap: 0.18, list: ["goat", "reed", "goat", "thief"] },
-        { gap: 0.18, list: ["goat", "bandit", "reed", "goat"] },
-        { gap: 0.34, list: ["knight", "goat", "reed"] },
-        { gap: 0.18, list: ["goat", "thief", "goat", "reed"] },
-        { gap: 0.32, list: ["wagon", "goat", "thief"] },
-        { gap: 0.18, list: ["reed", "goat", "reed", "goat"] },
-        { gap: 0.3, list: ["knight", "wagon", "goat"] },
-        { gap: 0.18, list: ["goat", "reed", "thief", "goat"] }
+        { gap: 0.18, list: ["shield", "reed", "goat", "thief"] },
+        { gap: 0.18, list: ["shield", "horn", "reed", "goat"] },
+        { gap: 0.34, list: ["banner", "shield", "reed"] },
+        { gap: 0.18, list: ["shield", "thief", "goat", "crow"] },
+        { gap: 0.32, list: ["drummer", "shield", "thief"] },
+        { gap: 0.18, list: ["reed", "shield", "crow", "goat"] },
+        { gap: 0.3, list: ["banner", "wagon", "shield"] },
+        { gap: 0.18, list: ["shield", "reed", "thief", "horn"] }
       ] },
     { name: "Knight Tide", berries: 1, tip: "Knights in a tide.",
       waves: [
@@ -1270,14 +1275,14 @@
       ] },
     { name: "Gate Storm", berries: 1, tip: "Storm on the gate.",
       waves: [
-        { gap: 0.16, list: ["reed", "goat", "thief", "reed"] },
-        { gap: 0.18, list: ["reed", "bandit", "reed", "goat"] },
-        { gap: 0.3, list: ["knight", "reed", "thief"] },
-        { gap: 0.16, list: ["reed", "goat", "reed", "thief"] },
-        { gap: 0.3, list: ["wagon", "reed", "goat"] },
-        { gap: 0.16, list: ["thief", "reed", "goat", "reed"] },
-        { gap: 0.28, list: ["knight", "wagon", "reed"] },
-        { gap: 0.16, list: ["reed", "thief", "goat", "reed"] }
+        { gap: 0.16, list: ["crow", "shield", "thief", "reed"] },
+        { gap: 0.18, list: ["reed", "horn", "crow", "goat"] },
+        { gap: 0.3, list: ["banner", "reed", "thief"] },
+        { gap: 0.16, list: ["crow", "shield", "reed", "thief"] },
+        { gap: 0.3, list: ["drummer", "reed", "horn"] },
+        { gap: 0.16, list: ["thief", "crow", "shield", "reed"] },
+        { gap: 0.28, list: ["banner", "wagon", "crow"] },
+        { gap: 0.16, list: ["reed", "thief", "horn", "shield"] }
       ] },
     { name: "Picnic Siege", berries: 1, tip: "Picnic turns siege.",
       waves: [
@@ -1421,18 +1426,46 @@
       ] },
     { name: "Summer Stays", berries: 1, tip: "Last stand. Summer stays.",
       waves: [
-        { gap: 0.14, list: ["reed", "goat", "thief", "reed"] },
-        { gap: 0.28, list: ["knight", "reed", "goat"] },
-        { gap: 0.14, list: ["reed", "thief", "goat", "reed"] },
-        { gap: 0.3, list: ["wagon", "brute"] },
-        { gap: 0.14, list: ["thief", "reed", "goat", "reed"] },
-        { gap: 0.26, list: ["knight", "wagon"] },
-        { gap: 0.14, list: ["reed", "thief", "reed", "goat", "reed"] },
-        { gap: 0.24, list: ["wagon", "knight", "brute"] },
-        { gap: 0.14, list: ["reed", "goat", "thief", "reed", "goat"] },
-        { gap: 0.22, list: ["wagon", "knight", "brute", "wagon", "knight"] }
+        { gap: 0.14, list: ["crow", "shield", "thief", "reed"] },
+        { gap: 0.28, list: ["banner", "horn", "goat"] },
+        { gap: 0.14, list: ["crow", "thief", "shield", "reed"] },
+        { gap: 0.3, list: ["drummer", "brute"] },
+        { gap: 0.14, list: ["thief", "crow", "horn", "reed"] },
+        { gap: 0.26, list: ["banner", "wagon"] },
+        { gap: 0.14, list: ["crow", "thief", "shield", "goat", "reed"] },
+        { gap: 0.24, list: ["drummer", "banner", "brute"] },
+        { gap: 0.14, list: ["crow", "shield", "thief", "horn", "goat"] },
+        { gap: 0.22, list: ["wagon", "banner", "drummer", "wagon", "knight"] }
       ] }
   ];
+  function lateSwap(kind, li, n) {
+    if (li < 49) return kind;
+    var dense = li >= 69;
+    var mid = li >= 59;
+    var slot = n % 10;
+    if (kind === "reed") {
+      if (dense && slot < 3) return "crow";
+      if (mid && slot < 2) return "crow";
+      if (slot === 0) return "crow";
+    }
+    if (kind === "thief") {
+      if (dense && slot < 3) return "crow";
+      if (slot === 1) return "crow";
+    }
+    if (kind === "bandit") {
+      if (slot < (dense ? 5 : (mid ? 4 : 3))) return "horn";
+    }
+    if (kind === "goat") {
+      if (slot < (dense ? 5 : (mid ? 3 : 2))) return "shield";
+    }
+    if (kind === "knight") {
+      if (slot < (dense ? 4 : (mid ? 2 : 1))) return "banner";
+    }
+    if (kind === "wagon" || kind === "brute") {
+      if (li >= 54 && slot < (dense ? 3 : (mid ? 2 : 1))) return "drummer";
+    }
+    return kind;
+  }
   (function swarmify() {
     LEVELS.forEach(function (L, li) {
       L.waves.forEach(function (w, wi) {
@@ -1442,8 +1475,9 @@
           var k = w.list[j];
           if (k === "rat" || k === "reed") fodder.push(k);
           if (li >= 10 && k === "thief") fodder.push("thief");
+          if (li >= 49 && k === "crow") fodder.push("crow");
         }
-        if (!fodder.length) fodder = li < 10 ? ["rat"] : ["reed"];
+        if (!fodder.length) fodder = li < 10 ? ["rat"] : (li < 49 ? ["reed"] : ["reed", "crow"]);
         var target;
         if (li === 0 && wi === 0) target = 8;
         else if (li < 3) target = 10 + li;
@@ -1469,8 +1503,9 @@
           out.push(fodder[j % fodder.length]);
           j++;
         }
+        for (j = 0; j < out.length; j++) out[j] = lateSwap(out[j], li, j + wi * 3);
         w.list = out;
-        var boss = w.list.indexOf("wagon") >= 0 || w.list.indexOf("knight") >= 0 || w.list.indexOf("brute") >= 0;
+        var boss = w.list.indexOf("wagon") >= 0 || w.list.indexOf("knight") >= 0 || w.list.indexOf("brute") >= 0 || w.list.indexOf("drummer") >= 0 || w.list.indexOf("banner") >= 0;
         var base = li < 3 ? 0.30 : (li < 5 ? 0.26 : (li < 7 ? 0.20 : (li < 10 ? 0.16 : (li < 15 ? 0.16 : (li < 20 ? 0.14 : (li < 25 ? 0.13 : (li < 32 ? 0.12 : (li < 40 ? 0.11 : (li < 47 ? 0.11 : (li < 55 ? 0.10 : (li < 62 ? 0.10 : (li < 70 ? 0.09 : (li < 77 ? 0.09 : (li < 85 ? 0.08 : (li < 92 ? 0.08 : 0.07)))))))))))))));
         w.gap = boss ? Math.max(0.28, Math.min(0.42, w.gap)) : base;
       });
@@ -1515,6 +1550,7 @@
   var W = 360, H = 520, sc = 1;
   var shake = 0, tGame = 0;
   var scenery = [];
+  var sceneryBand = -1;
   var actx = null;
   var pendingCameo = false;
   var tut = { on: false, step: 0 };
@@ -1617,7 +1653,7 @@
     "Horn bend. Ballistae ready.",
     "Crown dust. Keep scooping.",
     "Goat wall. Flank the shields.",
-    "Knight line. Sidestep the charge.",
+    "Knight line. Banner knights mix in.",
     "Siege road. Wagons plus flies.",
     "Banner heat. Royal Guard if you can.",
     "Summer pack. The lane never empties.",
@@ -1642,7 +1678,7 @@
     "Picnic crush. Towers chew.",
     "Reed press. Pierce the pack.",
     "Tin heat. Rear shots on goats.",
-    "Gold banner. Watch the reel.",
+    "Gold banner. New foes on the dusk hill.",
     "Knife tide. Don’t freeze.",
     "Horn pack. Ballistae ready.",
     "Dust road. Keep scooping.",
@@ -1653,7 +1689,7 @@
     "Summer charge. The lane never empties.",
     "False heat. One crown. Bring summer.",
     "Keep march. Hold the gate.",
-    "Gate storm. Ride and upgrade.",
+    "Gate storm. Storm light. T3 the pads.",
     "Picnic siege. Towers chew.",
     "Reed crown. Pierce the pack.",
     "Tin march. Rear shots on goats.",
@@ -1776,6 +1812,9 @@
         brute: "assets/sprites/brute.png", thief: "assets/sprites/thief.png",
         goat: "assets/sprites/goat.png", knight: "assets/sprites/knight.png",
         reed: "assets/sprites/reed.png", wagon: "assets/sprites/wagon.png",
+        shield: "assets/sprites/shield.png", horn: "assets/sprites/horn.png",
+        drummer: "assets/sprites/drummer.png", crow: "assets/sprites/crow.png",
+        banner: "assets/sprites/banner.png",
         city: "assets/sprites/city.png", buddy: "assets/sprites/buddy.png",
         berry: "assets/sprites/berry.png"
       };
@@ -1792,7 +1831,7 @@
         }
         next();
       }
-      loadImg("assets/splash.jpg?v=21b").then(function (im) {
+      loadImg("assets/splash.jpg?v=22").then(function (im) {
         IM.splash = im;
         loadRest();
       }).catch(loadRest);
@@ -2047,7 +2086,119 @@
       b.x = W * b.nx; b.y = H * b.ny;
     });
     seedScenery();
+    applyLandCss();
     clampKing();
+  }
+  function landBand() {
+    if (level < 20) return 0;
+    if (level < 40) return 1;
+    if (level < 60) return 2;
+    if (level < 80) return 3;
+    return 4;
+  }
+  function landTheme() {
+    var packs = [
+      {
+        id: "meadow",
+        sky0: "#6EB4DC", sky1: "#87C6E8", sky2: "#C5DDF0", haze: "#E8C878",
+        grassDeep: "#4E7C28", grassMid: "#6B9E3A", grassLite: "#8FBC4A",
+        hillLine: "#3E6A22", hillFill: "#5A8C2E",
+        sun: "#F5C400", sunGlow: "rgba(245,196,0,0.38)", sunHalo: "rgba(245,196,0,0.18)",
+        cloud: "rgba(255,252,245,0.92)", cloudShade: "rgba(232,214,168,0.28)",
+        pathDark: "#3A2410", pathMid: "#5C3A1A", pathDirt: "#8B5A2B",
+        pathLite: "#C4A574", pathHi: "#D8C08A",
+        hillStroke: "#2F5518", hillStroke2: "#4E7C28",
+        tuftA: "#4E7C28", tuftB: "#5E8C32",
+        clump: ["#5E8C32", "#8FBC4A", "#4E7C28"],
+        flower: ["#F5C400", "#E85D4C", "#F4E6C3", "#d46aa0"],
+        rock: "#7A7668", rockHi: "#A8A494", moss: "#5E8C32",
+        vig0: "rgba(245,196,0,0.05)", vig1: "rgba(26,40,16,0.28)",
+        grassTuft: ["#6B9E3A", "#5E8C32"],
+        sunOn: 1, storm: 0
+      },
+      {
+        id: "river",
+        sky0: "#4A98B8", sky1: "#6BAFC4", sky2: "#B5D4CE", haze: "#9EC4B0",
+        grassDeep: "#2F6A48", grassMid: "#4A8A62", grassLite: "#6AAA78",
+        hillLine: "#2A5840", hillFill: "#3E7A58",
+        sun: "#F0D878", sunGlow: "rgba(180,220,210,0.35)", sunHalo: "rgba(140,200,190,0.18)",
+        cloud: "rgba(230,245,242,0.9)", cloudShade: "rgba(140,180,176,0.28)",
+        pathDark: "#2A3A28", pathMid: "#3E4A32", pathDirt: "#5C6A48",
+        pathLite: "#8A9870", pathHi: "#A8B888",
+        hillStroke: "#245038", hillStroke2: "#3A6E50",
+        tuftA: "#3A6E50", tuftB: "#5A9A70",
+        clump: ["#3A7A58", "#6AAA78", "#2F6A48"],
+        flower: ["#E8F0C8", "#7EC8B0", "#F4E6C3", "#6B9E3A"],
+        rock: "#6A7A70", rockHi: "#A0B0A8", moss: "#4A8A62",
+        vig0: "rgba(80,160,150,0.08)", vig1: "rgba(16,40,36,0.32)",
+        grassTuft: ["#4A8A62", "#3A6E50"],
+        sunOn: 1, storm: 0
+      },
+      {
+        id: "fair",
+        sky0: "#7AB8E0", sky1: "#9AD0EE", sky2: "#F0E0C0", haze: "#F5C400",
+        grassDeep: "#5A8C28", grassMid: "#7AB03A", grassLite: "#A4CC58",
+        hillLine: "#4A7A20", hillFill: "#6A9C30",
+        sun: "#FFE16A", sunGlow: "rgba(255,210,40,0.42)", sunHalo: "rgba(255,196,0,0.22)",
+        cloud: "rgba(255,250,240,0.95)", cloudShade: "rgba(232,180,80,0.22)",
+        pathDark: "#4A3010", pathMid: "#6A4420", pathDirt: "#A07038",
+        pathLite: "#D4B070", pathHi: "#E8D090",
+        hillStroke: "#3A6418", hillStroke2: "#5A8C28",
+        tuftA: "#5A8C28", tuftB: "#8FBC4A",
+        clump: ["#7AB03A", "#A4CC58", "#5A8C28"],
+        flower: ["#C62828", "#F5C400", "#F4E6C3", "#4AA0D8"],
+        rock: "#8A7A58", rockHi: "#C4B490", moss: "#7AB03A",
+        vig0: "rgba(245,196,0,0.10)", vig1: "rgba(80,40,10,0.22)",
+        grassTuft: ["#7AB03A", "#8FBC4A"],
+        sunOn: 1, storm: 0
+      },
+      {
+        id: "dusk",
+        sky0: "#E8A050", sky1: "#F0B868", sky2: "#E8C878", haze: "#C47830",
+        grassDeep: "#6A6A28", grassMid: "#8A8A38", grassLite: "#B8A848",
+        hillLine: "#5A4A18", hillFill: "#7A6A28",
+        sun: "#F0A020", sunGlow: "rgba(240,120,20,0.40)", sunHalo: "rgba(240,80,20,0.18)",
+        cloud: "rgba(255,220,180,0.72)", cloudShade: "rgba(180,90,40,0.25)",
+        pathDark: "#3A2810", pathMid: "#5C3A18", pathDirt: "#8A6030",
+        pathLite: "#C4A060", pathHi: "#D8B870",
+        hillStroke: "#4A3810", hillStroke2: "#6A5A20",
+        tuftA: "#8A7A30", tuftB: "#B8A040",
+        clump: ["#8A8A38", "#B8A848", "#6A6A28"],
+        flower: ["#C62828", "#F5C400", "#E8A050", "#A05020"],
+        rock: "#8A7050", rockHi: "#C4A878", moss: "#8A8A38",
+        vig0: "rgba(240,120,20,0.10)", vig1: "rgba(40,20,8,0.36)",
+        grassTuft: ["#8A8A38", "#B8A040"],
+        sunOn: 1, storm: 0
+      },
+      {
+        id: "siege",
+        sky0: "#3A5070", sky1: "#4A6280", sky2: "#6A7A88", haze: "#8A9AA8",
+        grassDeep: "#3A4A28", grassMid: "#4E5C32", grassLite: "#6A7040",
+        hillLine: "#2A3220", hillFill: "#3A4830",
+        sun: "#D8D0B0", sunGlow: "rgba(180,200,220,0.22)", sunHalo: "rgba(120,140,170,0.18)",
+        cloud: "rgba(160,170,180,0.82)", cloudShade: "rgba(40,50,70,0.35)",
+        pathDark: "#2A2218", pathMid: "#3E3428", pathDirt: "#5A4A38",
+        pathLite: "#8A7860", pathHi: "#A09078",
+        hillStroke: "#1A2010", hillStroke2: "#3A4A28",
+        tuftA: "#4E5C32", tuftB: "#3A4A28",
+        clump: ["#4E5C32", "#6A7040", "#3A4A28"],
+        flower: ["#C62828", "#6A6A70", "#8A7860", "#4A6280"],
+        rock: "#5A5850", rockHi: "#8A8880", moss: "#4E5C32",
+        vig0: "rgba(40,50,80,0.10)", vig1: "rgba(8,10,18,0.42)",
+        grassTuft: ["#4E5C32", "#3A4A28"],
+        sunOn: 0, storm: 1
+      }
+    ];
+    return packs[landBand()];
+  }
+  function applyLandCss() {
+    var th = landTheme();
+    try {
+      document.documentElement.style.setProperty("--sky", th.sky1);
+      var meta = document.querySelector("meta[name=\"theme-color\"]");
+      if (meta) meta.setAttribute("content", th.sky1);
+      if (app) app.style.background = th.sky1;
+    } catch (e) {}
   }
   function distToPath(x, y) {
     var best = 1e9;
@@ -2086,28 +2237,85 @@
     bober.y = Math.max(48, Math.min(H - 22, bober.y));
   }
   function seedScenery() {
-    if (scenery.length) return;
-    var s = 12345;
+    var band = landBand();
+    if (scenery.length && sceneryBand === band) return;
+    sceneryBand = band;
+    scenery = [];
+    var th = landTheme();
+    var s = 12345 + band * 97;
     function rnd() { s = (s * 1664525 + 1013904223) >>> 0; return (s & 0xffff) / 65536; }
-    var i, pal = ["#F5C400", "#E85D4C", "#F4E6C3", "#d46aa0"];
-    for (i = 0; i < 48; i++) {
+    var i, pal = th.flower;
+    for (i = 0; i < 42; i++) {
       scenery.push({
         k: "clump", nx: 0.14 + rnd() * 0.72, ny: 0.18 + rnd() * 0.68,
         rx: 8 + rnd() * 18, ry: 5 + rnd() * 10,
-        c: rnd() > 0.5 ? "#5E8C32" : (rnd() > 0.4 ? "#8FBC4A" : "#4E7C28")
+        c: th.clump[i % th.clump.length]
       });
     }
-    for (i = 0; i < 24; i++) {
+    var flowerN = band === 0 ? 24 : (band === 2 ? 18 : (band === 1 ? 10 : 6));
+    for (i = 0; i < flowerN; i++) {
       scenery.push({
         k: "flower", nx: 0.16 + rnd() * 0.68, ny: 0.20 + rnd() * 0.64,
-        c: pal[i % 4], r: 2.0 + rnd() * 2.0
+        c: pal[i % pal.length], r: 2.0 + rnd() * 2.0
       });
     }
-    for (i = 0; i < 9; i++) {
+    var rockN = band >= 3 ? 14 : 9;
+    for (i = 0; i < rockN; i++) {
       scenery.push({
         k: "rock", nx: 0.18 + rnd() * 0.64, ny: 0.24 + rnd() * 0.56,
         rx: 6 + rnd() * 9, ry: 3.5 + rnd() * 4
       });
+    }
+    if (band === 1) {
+      for (i = 0; i < 16; i++) {
+        scenery.push({
+          k: "reed", nx: 0.12 + rnd() * 0.76, ny: 0.22 + rnd() * 0.62,
+          h: 10 + rnd() * 16, lean: (rnd() - 0.5) * 0.4
+        });
+      }
+      for (i = 0; i < 8; i++) {
+        scenery.push({
+          k: "water", nx: 0.16 + rnd() * 0.68, ny: 0.28 + rnd() * 0.52,
+          rx: 10 + rnd() * 14, ry: 4 + rnd() * 5
+        });
+      }
+    }
+    if (band === 2 || band === 3) {
+      var bn = band === 2 ? 10 : 6;
+      for (i = 0; i < bn; i++) {
+        scenery.push({
+          k: "flag", nx: 0.14 + rnd() * 0.72, ny: 0.22 + rnd() * 0.58,
+          h: 18 + rnd() * 14, col: i % 2 ? "#C62828" : "#F5C400"
+        });
+      }
+    }
+    if (band === 2) {
+      for (i = 0; i < 6; i++) {
+        scenery.push({
+          k: "blanket", nx: 0.16 + rnd() * 0.68, ny: 0.26 + rnd() * 0.52,
+          rx: 12 + rnd() * 10, ry: 7 + rnd() * 5, rot: rnd() * 0.8 - 0.4
+        });
+      }
+    }
+    if (band === 4) {
+      for (i = 0; i < 10; i++) {
+        scenery.push({
+          k: "scar", nx: 0.16 + rnd() * 0.68, ny: 0.26 + rnd() * 0.54,
+          rx: 10 + rnd() * 16, ry: 4 + rnd() * 6, rot: rnd() * 1.2 - 0.6
+        });
+      }
+      for (i = 0; i < 7; i++) {
+        scenery.push({
+          k: "broke", nx: 0.14 + rnd() * 0.72, ny: 0.22 + rnd() * 0.58,
+          h: 12 + rnd() * 12, lean: 0.4 + rnd() * 0.8
+        });
+      }
+      for (i = 0; i < 6; i++) {
+        scenery.push({
+          k: "smoke", nx: 0.18 + rnd() * 0.64, ny: 0.20 + rnd() * 0.5,
+          r: 8 + rnd() * 10
+        });
+      }
     }
   }
 
@@ -2320,6 +2528,21 @@
       if (kind === "goat") hp += 2;
       if (kind === "brute") hp += 6;
     }
+    if (kind === "shield" || kind === "horn" || kind === "drummer" || kind === "crow" || kind === "banner") {
+      var steps = 0;
+      if (lv >= 47) steps++;
+      if (lv >= 55) steps++;
+      if (lv >= 62) steps++;
+      if (lv >= 70) steps++;
+      if (lv >= 77) steps++;
+      if (lv >= 85) steps++;
+      if (lv >= 92) steps++;
+      if (kind === "shield") hp += 3 * steps;
+      if (kind === "horn") hp += 2 * steps;
+      if (kind === "drummer") hp += 5 * steps;
+      if (kind === "crow") hp += 1 * steps;
+      if (kind === "banner") hp += 5 * steps;
+    }
     return hp;
   }
   function spawn(kind) {
@@ -2467,7 +2690,7 @@
     return Math.abs(dlt) < 1.05;
   }
   function applyHit(e, dmg, sx, sy, from) {
-    if (e.kind === "goat" && from !== "king" && goatFront(e, sx, sy)) dmg = Math.max(1, Math.floor(dmg * 0.4));
+    if ((e.kind === "goat" || e.kind === "shield") && from !== "king" && goatFront(e, sx, sy)) dmg = Math.max(1, Math.floor(dmg * 0.4));
     if (dmg < 1) dmg = 1;
     e.hp -= dmg;
     e.hit = 0.12;
@@ -2541,7 +2764,12 @@
     return false;
   }
   function knightThink(e, dt) {
-    if (e.kind !== "knight") return false;
+    var isHorn = e.kind === "horn";
+    var isBanner = e.kind === "banner";
+    if (e.kind !== "knight" && !isHorn && !isBanner) return false;
+    var reach = isHorn ? 96 * sc : (isBanner ? 110 * sc : 128 * sc);
+    var dash = isHorn ? 250 * sc : (isBanner ? 170 * sc : 210 * sc);
+    var rest = isHorn ? 1.8 : (isBanner ? 2.8 : 2.4);
     if (e.chargeCd > 0 && !e.charging) e.chargeCd -= dt;
     if (e.teleOn && !e.charging) {
       e.tele -= dt;
@@ -2553,11 +2781,11 @@
     }
     if (e.charging && e.chargeT) {
       var dx = e.chargeT.x - e.x, dy = e.chargeT.y - e.y, L = Math.hypot(dx, dy);
-      var step = 210 * sc * dt;
+      var step = dash * dt;
       if (L > 0.6) e.facing = turnToward(e.facing || 0, Math.atan2(dy, dx), 14 * dt);
       if (L <= step + 4) {
         e.charging = false;
-        e.chargeCd = 2.4;
+        e.chargeCd = rest;
         e.d = nearestPathDist(e.x, e.y);
       } else {
         e.x += dx / L * step;
@@ -2565,11 +2793,11 @@
       }
       return true;
     }
-    if (e.chargeCd <= 0 && Math.hypot(e.x - bober.x, e.y - bober.y) < 128 * sc) {
+    if (e.chargeCd <= 0 && Math.hypot(e.x - bober.x, e.y - bober.y) < reach) {
       e.teleOn = true;
-      e.tele = 0.4;
+      e.tele = isHorn ? 0.28 : 0.4;
       e.chargeT = { x: bober.x, y: bober.y };
-      beep(160, 0.1, "triangle", 0.05);
+      beep(isHorn ? 220 : 160, 0.1, "triangle", 0.05);
       return true;
     }
     return false;
@@ -2587,7 +2815,18 @@
         }
         continue;
       }
-      e.d += e.spd * dt;
+      var spdMul = 1;
+      if (e.kind !== "drummer") {
+        var di, dr;
+        for (di = 0; di < enemies.length; di++) {
+          dr = enemies[di];
+          if (dr.kind === "drummer" && dr.hp > 0 && Math.hypot(dr.x - e.x, dr.y - e.y) < 72 * sc) {
+            spdMul = 1.14;
+            break;
+          }
+        }
+      }
+      e.d += e.spd * spdMul * dt;
       if (e.d >= plen - 4) {
         if (e.kind === "brute") {
           e.d = plen - 4;
@@ -2604,6 +2843,14 @@
       var nxt = posOnPath(e.d + 12);
       var vx = nxt.x - pos.x, vy = nxt.y - pos.y;
       e.x = pos.x; e.y = pos.y;
+      if (e.kind === "crow") {
+        var along = posOnPath(Math.max(0, e.d - 8));
+        var ahead = posOnPath(e.d + 8);
+        var pang = Math.atan2(ahead.y - along.y, ahead.x - along.x) + Math.PI / 2;
+        var weave = Math.sin(tGame * 7 + e.d * 0.04) * 10 * sc;
+        e.x = pos.x + Math.cos(pang) * weave;
+        e.y = pos.y + Math.sin(pang) * weave;
+      }
       if (Math.hypot(vx, vy) > 0.35) {
         e.facing = turnToward(e.facing || 0, Math.atan2(vy, vx), 9 * dt);
       }
@@ -2999,53 +3246,68 @@
     return true;
   }
 
-  function drawCloud(cx, cy, s) {
-    ctx.fillStyle = "rgba(255,252,245,0.92)";
+  function drawCloud(cx, cy, s, th) {
+    th = th || landTheme();
+    ctx.fillStyle = th.cloud;
     ctx.beginPath();
     ctx.ellipse(cx, cy, 28 * s, 11 * s, -0.12, 0, Math.PI * 2);
     ctx.ellipse(cx + 18 * s, cy - 4 * s, 16 * s, 9 * s, 0.2, 0, Math.PI * 2);
     ctx.ellipse(cx - 16 * s, cy - 3 * s, 14 * s, 8 * s, -0.15, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = "rgba(232, 214, 168, 0.28)";
+    ctx.fillStyle = th.cloudShade;
     ctx.beginPath();
     ctx.ellipse(cx + 4 * s, cy + 4 * s, 22 * s, 6 * s, 0.05, 0, Math.PI * 2);
     ctx.fill();
   }
   function drawMeadow() {
+    var th = landTheme();
     var g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, "#6EB4DC");
-    g.addColorStop(0.18, "#87C6E8");
-    g.addColorStop(0.25, "#C5DDF0");
-    g.addColorStop(0.255, "#E8C878");
-    g.addColorStop(0.27, "#4E7C28");
-    g.addColorStop(0.55, "#6B9E3A");
-    g.addColorStop(1, "#3A641C");
+    g.addColorStop(0, th.sky0);
+    g.addColorStop(0.18, th.sky1);
+    g.addColorStop(0.25, th.sky2);
+    g.addColorStop(0.255, th.haze);
+    g.addColorStop(0.27, th.grassDeep);
+    g.addColorStop(0.55, th.grassMid);
+    g.addColorStop(1, th.grassDeep);
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
     var sx = W * 0.82, sy = H * 0.10;
-    ctx.fillStyle = "rgba(245,196,0,0.18)";
-    ctx.beginPath(); ctx.arc(sx, sy, 52 * sc, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "rgba(245,196,0,0.38)";
-    ctx.beginPath(); ctx.arc(sx, sy, 34 * sc, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#F5C400";
-    ctx.beginPath(); ctx.arc(sx, sy, 18 * sc, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#F8E28A";
-    ctx.beginPath(); ctx.arc(sx - 4 * sc, sy - 4 * sc, 7 * sc, 0, Math.PI * 2); ctx.fill();
-    drawCloud(W * 0.18, H * 0.08, sc);
-    drawCloud(W * 0.38, H * 0.06, sc * 0.72);
-    drawCloud(W * 0.58, H * 0.09, sc * 0.55);
+    if (th.sunOn) {
+      ctx.fillStyle = th.sunHalo;
+      ctx.beginPath(); ctx.arc(sx, sy, 52 * sc, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = th.sunGlow;
+      ctx.beginPath(); ctx.arc(sx, sy, 34 * sc, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = th.sun;
+      ctx.beginPath(); ctx.arc(sx, sy, 18 * sc, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#F8E28A";
+      ctx.beginPath(); ctx.arc(sx - 4 * sc, sy - 4 * sc, 7 * sc, 0, Math.PI * 2); ctx.fill();
+    } else {
+      ctx.fillStyle = th.sunHalo;
+      ctx.beginPath(); ctx.arc(sx, sy, 46 * sc, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = th.sunGlow;
+      ctx.beginPath(); ctx.arc(sx, sy, 28 * sc, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = th.sun;
+      ctx.beginPath(); ctx.arc(sx, sy, 14 * sc, 0, Math.PI * 2); ctx.fill();
+    }
+    drawCloud(W * 0.18, H * 0.08, sc, th);
+    drawCloud(W * 0.38, H * 0.06, sc * 0.72, th);
+    drawCloud(W * 0.58, H * 0.09, sc * 0.55, th);
+    if (th.storm) {
+      drawCloud(W * 0.72, H * 0.07, sc * 0.9, th);
+      drawCloud(W * 0.28, H * 0.11, sc * 0.6, th);
+    }
     var ox = W * 0.5, oy = H * 0.54, rx = W * 0.48, ry = H * 0.46;
-    ctx.fillStyle = "#3E6A22";
+    ctx.fillStyle = th.hillLine;
     ctx.beginPath(); ctx.ellipse(ox, oy + 4 * sc, rx, ry, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#5A8C2E";
+    ctx.fillStyle = th.hillFill;
     ctx.beginPath(); ctx.ellipse(ox, oy, rx, ry, 0, 0, Math.PI * 2); ctx.fill();
     var grass = ctx.createRadialGradient(ox - rx * 0.15, oy - ry * 0.2, 8, ox, oy, rx);
-    grass.addColorStop(0, "#8FBC4A");
-    grass.addColorStop(0.45, "#6B9E3A");
-    grass.addColorStop(1, "#4E7C28");
+    grass.addColorStop(0, th.grassLite);
+    grass.addColorStop(0.45, th.grassMid);
+    grass.addColorStop(1, th.grassDeep);
     ctx.fillStyle = grass;
     ctx.beginPath(); ctx.ellipse(ox, oy - 4 * sc, rx * 0.94, ry * 0.90, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "rgba(232, 200, 96, 0.10)";
+    ctx.fillStyle = th.vig0;
     ctx.beginPath(); ctx.ellipse(ox - rx * 0.18, oy - ry * 0.22, rx * 0.55, ry * 0.4, -0.3, 0, Math.PI * 2); ctx.fill();
     ctx.save();
     ctx.beginPath();
@@ -3077,60 +3339,148 @@
         ctx.arc(fx, fy - fr, fr * 0.7, 0, Math.PI * 2);
         ctx.arc(fx, fy + fr, fr * 0.7, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = "#F5C400";
+        ctx.fillStyle = th.sun;
         ctx.beginPath(); ctx.arc(fx, fy, fr * 0.55, 0, Math.PI * 2); ctx.fill();
       } else if (d.k === "rock") {
-        ctx.fillStyle = "#7A7668";
+        ctx.fillStyle = th.rock;
         ctx.beginPath();
         ctx.ellipse(d.nx * W, d.ny * H, d.rx * sc, d.ry * sc, -0.2, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = "#A8A494";
+        ctx.fillStyle = th.rockHi;
         ctx.beginPath();
         ctx.ellipse(d.nx * W - d.rx * 0.2 * sc, d.ny * H - d.ry * 0.25 * sc, d.rx * 0.4 * sc, d.ry * 0.35 * sc, -0.2, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = "#5E8C32";
+        ctx.fillStyle = th.moss;
         ctx.beginPath();
         ctx.ellipse(d.nx * W + d.rx * 0.25 * sc, d.ny * H + d.ry * 0.15 * sc, d.rx * 0.28 * sc, d.ry * 0.18 * sc, 0.3, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (d.k === "reed") {
+        var rx0 = d.nx * W, ry0 = d.ny * H;
+        ctx.strokeStyle = th.tuftB;
+        ctx.lineWidth = 2.4 * sc;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(rx0, ry0);
+        ctx.quadraticCurveTo(rx0 + d.lean * 8 * sc, ry0 - d.h * 0.5 * sc, rx0 + d.lean * 14 * sc, ry0 - d.h * sc);
+        ctx.stroke();
+        ctx.fillStyle = th.flower[1];
+        ctx.beginPath();
+        ctx.ellipse(rx0 + d.lean * 14 * sc, ry0 - d.h * sc, 3.2 * sc, 2 * sc, d.lean, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (d.k === "water") {
+        ctx.fillStyle = "rgba(90,180,190,0.35)";
+        ctx.beginPath();
+        ctx.ellipse(d.nx * W, d.ny * H, d.rx * sc, d.ry * sc, 0.15, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "rgba(220,250,255,0.28)";
+        ctx.beginPath();
+        ctx.ellipse(d.nx * W - d.rx * 0.2 * sc, d.ny * H - d.ry * 0.2 * sc, d.rx * 0.4 * sc, d.ry * 0.3 * sc, 0.15, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (d.k === "flag") {
+        var px = d.nx * W, py = d.ny * H;
+        ctx.strokeStyle = "#5C3A1A";
+        ctx.lineWidth = 3 * sc;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(px, py - d.h * sc);
+        ctx.stroke();
+        ctx.fillStyle = d.col;
+        ctx.beginPath();
+        ctx.moveTo(px, py - d.h * sc);
+        ctx.lineTo(px + 14 * sc, py - d.h * sc + 5 * sc);
+        ctx.lineTo(px, py - d.h * sc + 10 * sc);
+        ctx.closePath();
+        ctx.fill();
+      } else if (d.k === "blanket") {
+        ctx.save();
+        ctx.translate(d.nx * W, d.ny * H);
+        ctx.rotate(d.rot);
+        ctx.fillStyle = "#C62828";
+        ctx.fillRect(-d.rx * sc, -d.ry * sc, d.rx * 2 * sc, d.ry * 2 * sc);
+        ctx.fillStyle = "#F4E6C3";
+        var bx, by;
+        for (bx = -d.rx + 3; bx < d.rx; bx += 6) {
+          for (by = -d.ry + 3; by < d.ry; by += 6) {
+            if (((bx + by) / 6 | 0) % 2) ctx.fillRect(bx * sc, by * sc, 3 * sc, 3 * sc);
+          }
+        }
+        ctx.restore();
+      } else if (d.k === "scar") {
+        ctx.fillStyle = "rgba(42,34,24,0.55)";
+        ctx.beginPath();
+        ctx.ellipse(d.nx * W, d.ny * H, d.rx * sc, d.ry * sc, d.rot, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "rgba(90,74,56,0.4)";
+        ctx.beginPath();
+        ctx.ellipse(d.nx * W, d.ny * H, d.rx * 0.55 * sc, d.ry * 0.4 * sc, d.rot, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (d.k === "broke") {
+        var bx2 = d.nx * W, by2 = d.ny * H;
+        ctx.strokeStyle = "#5C3A1A";
+        ctx.lineWidth = 3 * sc;
+        ctx.beginPath();
+        ctx.moveTo(bx2, by2);
+        ctx.lineTo(bx2 + Math.cos(d.lean) * d.h * sc, by2 - Math.sin(d.lean) * d.h * sc);
+        ctx.stroke();
+        ctx.fillStyle = "#C62828";
+        ctx.globalAlpha = 0.55;
+        ctx.beginPath();
+        ctx.moveTo(bx2 + Math.cos(d.lean) * d.h * sc, by2 - Math.sin(d.lean) * d.h * sc);
+        ctx.lineTo(bx2 + Math.cos(d.lean) * (d.h - 6) * sc + 8 * sc, by2 - Math.sin(d.lean) * (d.h - 6) * sc);
+        ctx.lineTo(bx2 + Math.cos(d.lean) * (d.h - 10) * sc, by2 - Math.sin(d.lean) * (d.h - 10) * sc);
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      } else if (d.k === "smoke") {
+        ctx.fillStyle = "rgba(70,78,88,0.28)";
+        ctx.beginPath();
+        ctx.ellipse(d.nx * W, d.ny * H, d.r * sc, d.r * 0.6 * sc, -0.2, 0, Math.PI * 2);
+        ctx.ellipse(d.nx * W + 6 * sc, d.ny * H - 8 * sc, d.r * 0.7 * sc, d.r * 0.45 * sc, 0.3, 0, Math.PI * 2);
         ctx.fill();
       }
     }
     drawPathRibbon();
     ctx.restore();
-    ctx.strokeStyle = "#2F5518";
+    ctx.strokeStyle = th.hillStroke;
     ctx.lineWidth = 7 * sc;
     ctx.beginPath();
     ctx.ellipse(ox, oy, rx, ry, 0, 0, Math.PI * 2);
     ctx.stroke();
-    ctx.strokeStyle = "#4E7C28";
+    ctx.strokeStyle = th.hillStroke2;
     ctx.lineWidth = 3 * sc;
     ctx.stroke();
-    ctx.fillStyle = "#4E7C28";
+    ctx.fillStyle = th.tuftA;
     for (i = 0; i < 14; i++) {
       var a = (i / 14) * Math.PI * 2 + 0.18;
       var hx = ox + Math.cos(a) * rx * 0.98, hy = oy + Math.sin(a) * ry * 0.98;
       if (Math.abs(hx - W * 0.5) < 36 * sc && hy < H * 0.28) continue;
       if (Math.abs(hx - crown.x) < 56 * sc && hy > H * 0.70) continue;
       if (Math.hypot(hx - city.x, hy - city.y) < 70 * sc) continue;
-      ctx.fillStyle = i % 2 ? "#4E7C28" : "#5E8C32";
+      ctx.fillStyle = i % 2 ? th.tuftA : th.tuftB;
       ctx.beginPath();
       ctx.ellipse(hx, hy, 16 * sc, 9 * sc, a, 0, Math.PI * 2);
       ctx.fill();
     }
     var vg = ctx.createRadialGradient(ox, oy, H * 0.16, ox, oy, H * 0.74);
-    vg.addColorStop(0, "rgba(245,196,0,0.05)");
+    vg.addColorStop(0, th.vig0);
     vg.addColorStop(0.55, "rgba(26,40,16,0)");
-    vg.addColorStop(1, "rgba(26,40,16,0.28)");
+    vg.addColorStop(1, th.vig1);
     ctx.fillStyle = vg;
     ctx.fillRect(0, 0, W, H);
+    if (th.storm) {
+      ctx.fillStyle = "rgba(20,28,40,0.12)";
+      ctx.fillRect(0, 0, W, H);
+    }
   }
   function drawPathRibbon() {
     var w = ribbonW();
+    var th = landTheme();
     ctx.save();
-    strokeLane(w + 12 * sc, "#3A2410");
-    strokeLane(w + 7 * sc, "#5C3A1A");
-    strokeLane(w + 3 * sc, "#8B5A2B");
-    strokeLane(w, "#C4A574");
-    strokeLane(Math.max(8, w * 0.62), "#D8C08A");
+    strokeLane(w + 12 * sc, th.pathDark);
+    strokeLane(w + 7 * sc, th.pathMid);
+    strokeLane(w + 3 * sc, th.pathDirt);
+    strokeLane(w, th.pathLite);
+    strokeLane(Math.max(8, w * 0.62), th.pathHi);
     strokeLane(Math.max(3, w * 0.22), "rgba(92,58,26,0.38)");
     var plen = pathLen(), d, seed = 7;
     function rnd() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return (seed % 1000) / 1000; }
@@ -3141,7 +3491,7 @@
       var ang = Math.atan2(b.y - a.y, b.x - a.x);
       var side = rnd() > 0.5 ? 1 : -1;
       var off = (w * 0.42 + rnd() * 5 * sc) * side;
-      ctx.fillStyle = rnd() > 0.45 ? "#6B9E3A" : "#5E8C32";
+      ctx.fillStyle = rnd() > 0.45 ? th.grassTuft[0] : th.grassTuft[1];
       ctx.save();
       ctx.translate(p.x + Math.cos(ang + Math.PI / 2) * off, p.y + Math.sin(ang + Math.PI / 2) * off);
       ctx.rotate(ang + side * 0.4);
@@ -3177,11 +3527,11 @@
       var last = path[path.length - 1];
       var prev = path[path.length - 2];
       var gang = Math.atan2(last.y - prev.y, last.x - prev.x);
-      ctx.fillStyle = "#C4A574";
+      ctx.fillStyle = th.pathLite;
       ctx.beginPath();
       ctx.ellipse(last.x + Math.cos(gang) * 8 * sc, last.y + Math.sin(gang) * 6 * sc, 22 * sc, 12 * sc, gang, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = "#D8C08A";
+      ctx.fillStyle = th.pathHi;
       ctx.beginPath();
       ctx.ellipse(last.x + Math.cos(gang) * 4 * sc, last.y + Math.sin(gang) * 3 * sc, 12 * sc, 7 * sc, gang, 0, Math.PI * 2);
       ctx.fill();
@@ -3302,7 +3652,9 @@
   function mobSize(kind) {
     var t = {
       rat: [40, 30], reed: [58, 26], thief: [46, 42], bandit: [48, 46],
-      goat: [56, 48], knight: [50, 54], brute: [66, 60], wagon: [72, 44]
+      goat: [56, 48], knight: [50, 54], brute: [66, 60], wagon: [72, 44],
+      shield: [50, 36], horn: [50, 48], drummer: [62, 58], crow: [52, 40],
+      banner: [54, 62]
     }[kind] || [46, 40];
     return { w: t[0] * sc, h: t[1] * sc };
   }
@@ -3354,6 +3706,37 @@
       ctx.fillStyle = "#1A2810";
       ctx.beginPath(); ctx.arc(-w * 0.2, -h * 0.12, 6 * sc, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.arc(w * 0.22, -h * 0.12, 6 * sc, 0, Math.PI * 2); ctx.fill();
+    } else if (kind === "shield") {
+      ctx.fillStyle = "#8B5A2B";
+      ctx.beginPath(); ctx.ellipse(w * 0.08, -h * 0.38, w * 0.28, h * 0.32, 0.15, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#C4A574";
+      ctx.beginPath(); ctx.ellipse(-w * 0.22, -h * 0.4, w * 0.28, h * 0.34, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#C62828";
+      ctx.beginPath(); ctx.ellipse(-w * 0.22, -h * 0.4, w * 0.1, h * 0.12, 0, 0, Math.PI * 2); ctx.fill();
+    } else if (kind === "horn") {
+      ctx.fillStyle = "#6a6a70";
+      ctx.beginPath(); ctx.ellipse(0, -h * 0.4, w * 0.3, h * 0.36, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#C9A227";
+      ctx.beginPath(); ctx.ellipse(w * 0.32, -h * 0.48, w * 0.22, h * 0.12, 0.3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    } else if (kind === "drummer") {
+      ctx.fillStyle = "#F4E6C3";
+      ctx.beginPath(); ctx.ellipse(0, -h * 0.4, w * 0.34, h * 0.38, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#8B5A2B";
+      ctx.beginPath(); ctx.ellipse(w * 0.08, -h * 0.28, w * 0.28, h * 0.22, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#C62828";
+      ctx.fillRect(-w * 0.12, -h * 0.58, w * 0.24, 6 * sc);
+    } else if (kind === "crow") {
+      ctx.fillStyle = "#2A2A30";
+      ctx.beginPath(); ctx.ellipse(0, -h * 0.42, w * 0.34, h * 0.28, 0.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#E8A020";
+      ctx.beginPath(); ctx.moveTo(w * 0.28, -h * 0.48); ctx.lineTo(w * 0.48, -h * 0.42); ctx.lineTo(w * 0.28, -h * 0.36); ctx.closePath(); ctx.fill();
+    } else if (kind === "banner") {
+      ctx.fillStyle = "#E8DCC0";
+      ctx.beginPath(); ctx.ellipse(0, -h * 0.4, w * 0.26, h * 0.38, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = "#5C3A1A"; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(w * 0.1, -h * 0.15); ctx.lineTo(w * 0.18, -h * 0.92); ctx.stroke();
+      ctx.fillStyle = "#C62828";
+      ctx.beginPath(); ctx.moveTo(w * 0.18, -h * 0.92); ctx.lineTo(w * 0.46, -h * 0.78); ctx.lineTo(w * 0.18, -h * 0.64); ctx.closePath(); ctx.fill();
     } else {
       ctx.fillStyle = "#8B5A2B";
       ctx.beginPath(); ctx.ellipse(0, -h * 0.35, w * 0.3, h * 0.35, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
@@ -3376,11 +3759,35 @@
     }
     ctx.save();
     if (e.hit > 0) ctx.filter = "brightness(1.25)";
-    var stride = Math.sin(tGame * 9 + e.d * 0.05);
-    var bob = stride * 0.55;
+    var stride, bob, tilt;
+    if (e.kind === "shield") {
+      stride = Math.sin(tGame * 6 + e.d * 0.04);
+      bob = stride * 0.35;
+      tilt = stride * 0.08;
+    } else if (e.kind === "horn") {
+      stride = Math.sin(tGame * 12 + e.d * 0.07);
+      bob = Math.abs(stride) * 0.7;
+      tilt = -0.12 + stride * 0.05;
+    } else if (e.kind === "drummer") {
+      stride = Math.sin(tGame * 5 + e.d * 0.03);
+      bob = Math.abs(stride) * 1.4;
+      tilt = stride * 0.03;
+    } else if (e.kind === "crow") {
+      stride = Math.sin(tGame * 14 + e.d * 0.08);
+      bob = Math.abs(stride) * 2.2;
+      tilt = stride * 0.12;
+    } else if (e.kind === "banner") {
+      stride = Math.sin(tGame * 7 + e.d * 0.04);
+      bob = stride * 0.5;
+      tilt = stride * 0.06;
+    } else {
+      stride = Math.sin(tGame * 9 + e.d * 0.05);
+      bob = stride * 0.55;
+      tilt = stride * 0.04;
+    }
     var flip = Math.cos(e.facing || 0) < 0;
     ctx.translate(e.x, e.y + bob);
-    ctx.rotate(stride * 0.04);
+    ctx.rotate(tilt);
     ctx.scale(flip ? -1 : 1, 1);
     var im = IM[e.kind];
     if (im) ctx.drawImage(im, -w / 2, -h, w, h);

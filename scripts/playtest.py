@@ -18,8 +18,13 @@ MOBS = {
     "knight": {"hp": 16, "spd": 50},
     "reed": {"hp": 1, "spd": 94},
     "wagon": {"hp": 20, "spd": 36},
+    "shield": {"hp": 10, "spd": 38},
+    "horn": {"hp": 8, "spd": 64},
+    "drummer": {"hp": 18, "spd": 30},
+    "crow": {"hp": 3, "spd": 108},
+    "banner": {"hp": 22, "spd": 44},
 }
-BOW = {"dmg": [1, 2, 3], "rate": [0.32, 0.28, 0.22], "range": [136, 148, 162], "pierce": [0, 1, 2]}
+BOW = {"dmg": [1, 2, 3], "rate": [0.32, 0.30, 0.22], "range": [136, 140, 156], "pierce": [0, 0, 2]}
 PAD_T = [0.80, 0.76, 0.56, 0.70]
 PATH = 820.0
 
@@ -47,9 +52,9 @@ def swarmify(levels: list[tuple[str, list[tuple[float, list[str]]]]]) -> list:
     for li, (name, waves) in enumerate(levels):
         nw = []
         for wi, (gap, kinds) in enumerate(waves):
-            fodder = [k for k in kinds if k in ("rat", "reed") or (li >= 10 and k == "thief")]
+            fodder = [k for k in kinds if k in ("rat", "reed") or (li >= 10 and k == "thief") or (li >= 49 and k == "crow")]
             if not fodder:
-                fodder = ["rat"] if li < 10 else ["reed"]
+                fodder = ["rat"] if li < 10 else (["reed"] if li < 49 else ["reed", "crow"])
             if li == 0 and wi == 0:
                 target = 8
             elif li < 3:
@@ -91,7 +96,8 @@ def swarmify(levels: list[tuple[str, list[tuple[float, list[str]]]]]) -> list:
             while len(lst) < target:
                 lst.append(fodder[j % len(fodder)])
                 j += 1
-            boss = any(k in lst for k in ("wagon", "knight", "brute"))
+            lst = [late_swap(k, li, n + wi * 3) for n, k in enumerate(lst)]
+            boss = any(k in lst for k in ("wagon", "knight", "brute", "drummer", "banner"))
             base = (
                 0.30 if li < 3 else
                 (0.26 if li < 5 else
@@ -110,6 +116,39 @@ def swarmify(levels: list[tuple[str, list[tuple[float, list[str]]]]]) -> list:
             nw.append((g, lst))
         packed.append((name, nw))
     return packed
+
+
+def late_swap(kind: str, li: int, n: int) -> str:
+    if li < 49:
+        return kind
+    dense = li >= 69
+    mid = li >= 59
+    slot = n % 10
+    if kind == "reed":
+        if dense and slot < 3:
+            return "crow"
+        if mid and slot < 2:
+            return "crow"
+        if slot == 0:
+            return "crow"
+    if kind == "thief":
+        if dense and slot < 3:
+            return "crow"
+        if slot == 1:
+            return "crow"
+    if kind == "bandit":
+        if slot < (5 if dense else (4 if mid else 3)):
+            return "horn"
+    if kind == "goat":
+        if slot < (5 if dense else (3 if mid else 2)):
+            return "shield"
+    if kind == "knight":
+        if slot < (4 if dense else (2 if mid else 1)):
+            return "banner"
+    if kind in ("wagon", "brute"):
+        if li >= 54 and slot < (3 if dense else (2 if mid else 1)):
+            return "drummer"
+    return kind
 
 
 def live_n(li: int) -> int:
@@ -311,6 +350,32 @@ def mob_hp(kind: str, li: int) -> int:
             hp += 2
         if kind == "brute":
             hp += 6
+    if kind in ("shield", "horn", "drummer", "crow", "banner"):
+        steps = 0
+        if li >= 47:
+            steps += 1
+        if li >= 55:
+            steps += 1
+        if li >= 62:
+            steps += 1
+        if li >= 70:
+            steps += 1
+        if li >= 77:
+            steps += 1
+        if li >= 85:
+            steps += 1
+        if li >= 92:
+            steps += 1
+        if kind == "shield":
+            hp += 3 * steps
+        if kind == "horn":
+            hp += 2 * steps
+        if kind == "drummer":
+            hp += 5 * steps
+        if kind == "crow":
+            hp += 1 * steps
+        if kind == "banner":
+            hp += 5 * steps
     return hp
 
 
@@ -423,6 +488,20 @@ def main() -> None:
     must("spd: 80" in HTML, "thieves slowed")
     must("level >= 5) liveN = 3" in HTML, "L6 third pad")
     must("bober.cd = royal ? 0.48 : 0.62" in HTML, "king still slow")
+    must("function landTheme" in HTML and "function landBand" in HTML, "landscape bands")
+    must("function lateSwap" in HTML, "late foe mix")
+    must("rate: [0.32, 0.30, 0.22]" in HTML, "tower rate nerf")
+    must("range: [136, 140, 156]" in HTML, "tower range nerf")
+    must("pierce: [0, 0, 2]" in HTML, "T2 pierce gone")
+    must("shield:" in HTML and "horn:" in HTML and "drummer:" in HTML, "new late MOBS")
+    must("crow:" in HTML and "banner:" in HTML, "crow thief and banner knight")
+    must((ROOT / "assets/sprites/shield.png").is_file(), "shield.png")
+    must((ROOT / "assets/sprites/horn.png").is_file(), "horn.png")
+    must((ROOT / "assets/sprites/drummer.png").is_file(), "drummer.png")
+    must((ROOT / "assets/sprites/crow.png").is_file(), "crow.png")
+    must((ROOT / "assets/sprites/banner.png").is_file(), "banner.png")
+    must("id: \"dusk\"" in HTML and "id: \"siege\"" in HTML, "dusk and siege palettes")
+    must("id: \"river\"" in HTML and "id: \"fair\"" in HTML, "river and fair palettes")
     must("function mobHp" in HTML, "scaled mob HP")
     must("target = 26 + li" in HTML, "mid-act denser swarm")
     must("li < 7 ? 0.20" in HTML, "L8 gap tighten")
@@ -456,6 +535,12 @@ def main() -> None:
         if li >= 7:
             t1 = simulate(waves, [0] * n, li)
             must(t1 >= hearts, "L%s T1-only still too easy: leaks %s" % (li + 1, t1))
+        if li >= 49:
+            mixed = [k for _g, lst in waves for k in lst]
+            must(any(k in mixed for k in ("shield", "horn", "crow", "drummer", "banner")), "L%s missing late foes" % (li + 1))
+        if li >= 69:
+            t2 = simulate(waves, [1] * n, li)
+            must(t2 >= hearts, "L%s T2-only still too easy: leaks %s" % (li + 1, t2))
         if li == 24:
             must(leaks <= 1, "L25 too leaky: %s" % leaks)
             must(any("brute" in lst or "wagon" in lst for _g, lst in waves), "L25 siege")
@@ -464,21 +549,23 @@ def main() -> None:
             must(any("brute" in lst or "wagon" in lst for _g, lst in waves), "L40 siege")
         if li == 54:
             must(leaks <= 1, "L55 too leaky: %s" % leaks)
-            must(any("brute" in lst or "wagon" in lst for _g, lst in waves), "L55 siege")
+            must(any("brute" in lst or "wagon" in lst or "drummer" in lst for _g, lst in waves), "L55 siege")
         if li == 69:
             must(leaks <= 1, "L70 too leaky: %s" % leaks)
-            must(any("brute" in lst or "wagon" in lst for _g, lst in waves), "L70 siege")
+            must(any("brute" in lst or "wagon" in lst or "drummer" in lst for _g, lst in waves), "L70 siege")
         if li == 74:
-            must(any("knight" in lst or "wagon" in lst for _g, lst in waves), "L75 siege")
+            must(any("knight" in lst or "wagon" in lst or "banner" in lst for _g, lst in waves), "L75 siege")
         if li == 84:
             must(leaks <= 1, "L85 too leaky: %s" % leaks)
-            must(any("brute" in lst or "wagon" in lst for _g, lst in waves), "L85 siege")
+            must(any("brute" in lst or "wagon" in lst or "drummer" in lst for _g, lst in waves), "L85 siege")
         if li == 89:
-            must(any("knight" in lst or "wagon" in lst for _g, lst in waves), "L90 siege")
+            must(any("knight" in lst or "wagon" in lst or "banner" in lst for _g, lst in waves), "L90 siege")
         if li == 99:
             must(leaks <= 1, "L100 finale too leaky: %s" % leaks)
-            must(any("brute" in lst or "wagon" in lst for _g, lst in waves), "L100 siege")
+            must(any("brute" in lst or "wagon" in lst or "drummer" in lst for _g, lst in waves), "L100 siege")
             must(len(waves) >= 8, "L100 enough waves")
+            must(any("crow" in lst for _g, lst in waves), "L100 crow thief")
+            must(any("banner" in lst for _g, lst in waves), "L100 banner knight")
     print("playtest ok")
 
 

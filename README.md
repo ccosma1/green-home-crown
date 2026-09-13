@@ -22,7 +22,7 @@ Run `START.bat` or open `index.html`.
 6. **Royal Guard** once per level: all *placed* towers T3, and either ≥2 towers **or** the only live pad is already T3.
 7. After the last wave, **scoop** leftover coins. **Next** flies remaining gold to the King, then the clear.
 
-L1 start wood is **50** (one Crossbow). Kills drop **1–12** coins; income tapers after 280 dropped so the bank does not explode. Wood is for **place/upgrade crossbows only**. Mid/late waves need Heavy Crossbow / Ballista — T1-only will leak.
+L1 start wood is **50** (one Crossbow). Kills drop **1–12** coins; income tapers after 280 dropped so the bank does not explode. Wood is for **place/upgrade crossbows only**. Mid/late waves need Heavy Crossbow / Ballista — T1-only will leak. L70–100 wants **T3, all four pads, Royal Guard**, and riding/scooping. Parked T1–T2 is not enough.
 
 ### Pads live
 
@@ -41,12 +41,26 @@ Ghost pads say **Opens later**.
 | Tier | Name | Cost | Feel |
 |---|---|---|---|
 | T1 | Crossbow | 50 | Main clear |
-| T2 | Heavy Crossbow | 90 | Stronger |
-| T3 | Royal Ballista | 160 | Pierce; Royal Guard when all live maxed |
+| T2 | Heavy Crossbow | 90 | Harder hit, no pierce |
+| T3 | Royal Ballista | 160 | Pierce; need this late. Royal Guard when all live maxed |
 
-### Enemies (L1–10)
+### Enemies
 
 Field Rat, Picnic Bandit, Meadow Brute, Barrel Thief, Shield Goat, Fair Knight, Reed Runner, Siege Wagon.
+
+Late (from ~L50, denser L70–100): **Shield Rat**, **Horn Bandit**, **Siege Drummer**, **Crow Thief**, **Banner Knight**.
+
+### Landscapes
+
+The hill changes by band so L76 is not L10 with extra rats.
+
+| Levels | Look |
+|---|---|
+| 1–20 | Meadow / picnic |
+| 21–40 | River / reed bank |
+| 41–60 | Fair / banner field |
+| 61–80 | Dry hill / gold dusk |
+| 81–100 | Capital siege / storm light |
 
 First L5 clear plays the chapter film. Splash **Watch story** replays it.
 
