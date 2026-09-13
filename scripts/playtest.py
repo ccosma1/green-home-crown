@@ -176,6 +176,11 @@ def ranks_for(li: int, n: int) -> list[int]:
 
 def mob_hp(kind: str, li: int) -> int:
     hp = MOBS[kind]["hp"]
+    if li >= 2:
+        if kind == "bandit":
+            hp += 1
+        if kind == "thief":
+            hp += 1
     if li >= 7:
         if kind == "rat":
             hp += 1
@@ -498,7 +503,12 @@ def main() -> None:
     must("name: \"Slay\"" in HTML and "name: \"Carry\"" in HTML, "feast chapters")
     must("Feast chapter" in HTML, "reel chapter label")
     must("Cake and a crown" in HTML and "banner sniffer" in HTML, "rare fight banners")
-    must("Gate’s still soft" in HTML and "Last cold smile" in HTML, "act story tips")
+    must("Gate's still soft" in HTML and "Last cold smile" in HTML, "act story tips")
+    must("That's the job" in HTML and "There's a banner out there" in HTML, "ascii apostrophes")
+    must("Speed 1x / 2x sits next to Sound" in HTML, "speed discover tip")
+    must("speedTip" in HTML, "speed tip persist")
+    must("10 + 37 * sc" in HTML, "turret-safe pad margin")
+    must("W < 420" in HTML, "phone pad cluster")
     must('id: "D"' not in HTML, "spawn pad gone")
     must("bober.cd = royal ? 0.32 : 0.42" in HTML, "king faster but not machine-gun")
     must("fireShot(fx, fy, t, royal ? 3 : 2" in HTML, "king shot dmg")
@@ -587,7 +597,80 @@ def main() -> None:
             must(len(waves) >= 8, "L100 enough waves")
             must(any("crow" in lst for _g, lst in waves), "L100 crow thief")
             must(any("banner" in lst for _g, lst in waves), "L100 banner knight")
+    check_phone_pads()
     print("playtest ok")
+
+
+def _cr(p0, p1, p2, p3, t):
+    t2 = t * t
+    t3 = t2 * t
+    return 0.5 * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (-p0 + 3 * p1 - 3 * p2 + p3) * t3)
+
+
+def check_phone_pads() -> None:
+    """390px-wide canvas: 4 live pads + T3 sprite stay on-screen."""
+    W, H = 390.0, 420.0
+    sc = H / 520.0
+    wps = [
+        (0.50, 0.05), (0.84, 0.18), (0.72, 0.34), (0.18, 0.46),
+        (0.28, 0.62), (0.72, 0.74), (0.66, 0.84), (0.70, 0.905),
+    ]
+    ext = [wps[0]] + wps + [wps[-1]]
+    path = []
+    for i in range(1, len(ext) - 2):
+        for s in range(12):
+            t = s / 12.0
+            path.append((
+                _cr(ext[i - 1][0], ext[i][0], ext[i + 1][0], ext[i + 2][0], t) * W,
+                _cr(ext[i - 1][1], ext[i][1], ext[i + 1][1], ext[i + 2][1], t) * H,
+            ))
+    path.append((wps[-1][0] * W, wps[-1][1] * H))
+    seglen = []
+    acc = [0.0]
+    for i in range(len(path) - 1):
+        d = ((path[i + 1][0] - path[i][0]) ** 2 + (path[i + 1][1] - path[i][1]) ** 2) ** 0.5
+        seglen.append(d)
+        acc.append(acc[-1] + d)
+    plen = acc[-1]
+
+    def pos_on(d: float):
+        left = d
+        for i, seg in enumerate(seglen):
+            if left <= seg:
+                t = left / seg if seg else 0.0
+                x = path[i][0] + (path[i + 1][0] - path[i][0]) * t
+                y = path[i][1] + (path[i + 1][1] - path[i][1]) * t
+                return x, y
+            left -= seg
+        return path[-1]
+
+    mx = 10 + 37 * sc
+    top = max(52, 12 + 60 * sc)
+    bot = 16 + 16 * sc
+    half = 37 * sc * 0.86
+    tall = 60 * sc * 0.86
+    ts = [0.80, 0.76, 0.62, 0.70]
+    mag = max(26, 32 * sc)
+    pads = []
+    for t in ts:
+        p = pos_on(plen * t)
+        a = pos_on(max(0, plen * t - 14))
+        b = pos_on(min(plen, plen * t + 14))
+        ang = __import__("math").atan2(b[1] - a[1], b[0] - a[0]) + 3.1415926535 / 2
+        cands = [
+            (p[0] + __import__("math").cos(ang) * mag, p[1] + __import__("math").sin(ang) * mag),
+            (p[0] - __import__("math").cos(ang) * mag, p[1] - __import__("math").sin(ang) * mag),
+        ]
+        pos = min(cands, key=lambda q: abs(q[0] - W * 0.5))
+        x = min(W - mx, max(mx, pos[0]))
+        y = min(H - bot, max(top, pos[1]))
+        pads.append((x, y))
+    for i, (x, y) in enumerate(pads):
+        must(x - half >= 1, "phone pad %s turret left clip x=%.1f" % (i, x - half))
+        must(x + half <= W - 1, "phone pad %s turret right clip x=%.1f" % (i, x + half))
+        must(y - tall >= 1, "phone pad %s turret top clip y=%.1f" % (i, y - tall))
+        must(y + 16 * sc <= H - 1, "phone pad %s turret bot clip" % i)
+    print("phone pads ok", ["%.0f,%.0f" % p for p in pads])
 
 
 if __name__ == "__main__":
