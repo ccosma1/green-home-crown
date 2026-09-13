@@ -4,7 +4,7 @@ Fan game by a holder. Not affiliated with any token, studio, or official Bober p
 
 **Play online:** https://ccosma1.github.io/green-home-crown/
 
-You ARE the summer king. Move. Strike. Crossbows hold the **capital**. The lane comes in packed. Scoop coins. Tap Next when you’re ready.
+You ARE the summer king. **100 days. One crown.** Feast, fight usurpers, keep the crown until the land calls it his. Crossbows hold the **capital**. The lane comes in packed. Scoop coins. Tap Next when you’re ready.
 
 No install. No wallet. No login. No gacha. No PvP.
 
@@ -22,7 +22,7 @@ Run `START.bat` or open `index.html`.
 6. **Royal Guard** once per level: all *placed* towers T3, and either ≥2 towers **or** the only live pad is already T3.
 7. After the last wave, **scoop** leftover coins. **Next** flies remaining gold to the King, then the clear.
 
-L1 start wood is **50** (one Crossbow). Kills drop **1–12** coins; income tapers after 280 dropped so the bank does not explode. Wood is for **place/upgrade crossbows only**. Mid/late waves need Heavy Crossbow / Ballista — T1-only will leak. L70–100 wants **T3, all four pads, Royal Guard**, and riding/scooping. Parked T1–T2 is not enough.
+L1 start wood is **50** (one Crossbow). Kills drop **1–12** coins; income tapers after 280 dropped so the bank does not explode. Wood is for **place/upgrade crossbows only**. Mid/late waves need Heavy Crossbow / Ballista — T1-only will leak. L70–100 wants **T3, all live pads, Royal Guard**, and riding/scooping. Parked T1–T2 is not enough.
 
 ### Pads live
 
@@ -30,11 +30,25 @@ L1 start wood is **50** (one Crossbow). Kills drop **1–12** coins; income tape
 |---|---|---|
 | L1–3 | 1 | Crown approach |
 | L4–6 | 2 | Crown / final bend |
-| L7–15 | 3 | Approach + one mid-bend |
-| L16–100 | 4 | Approach + mid + extra final bend |
-| Far / spawn | locked | “Opens later.” |
+| L7–15 | 3 | Approach + mid-bend |
+| L16–100 | 4 | Crown cluster, all on-canvas |
 
-Ghost pads say **Opens later**.
+Spawn-mouth pad is gone. Remaining pads clamp on-screen (phone).
+
+### Acts
+
+| Levels | Act |
+|---|---|
+| 1–20 | Green Gate · Dawn Muster |
+| 21–40 | Feast Draws Flies |
+| 41–60 | False Crowns |
+| 61–75 | Usurper Banner |
+| 76–80 | Storm Court |
+| 81–90 | Crown Trial · Crown Siege |
+| 91–99 | Crown Trial · Approach |
+| 100 | Crown Trial · Assemble |
+
+Victory reels are feast chapters: **Slay → Carry → Feast → Claim**, then Storm Court, Crown Siege, Assemble.
 
 ### Crossbow tiers
 

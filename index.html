@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#87C6E8" />
   <meta name="description" content="Green Home Crown — fan game by a holder. Summer stays. Hold the town." />
   <title>Green Home Crown · Summer stays</title>
-  <!-- ghc-22 -->
+  <!-- ghc-23 -->
   <link rel="icon" href="assets/icons/green-home-crown.ico" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
@@ -229,6 +229,20 @@
     .lvl.locked .num { color: var(--cream); }
     .end-stars { margin: 0 0 10px; font-size: 28px; letter-spacing: 0.16em; color: var(--gold); text-shadow: 0 2px 0 #1A2810; }
     .end-msg { margin: 0 0 14px; font-size: 15px; font-weight: 800; color: var(--cream); text-shadow: 0 2px 6px #000; }
+    .acts {
+      margin: 0 0 10px; max-width: 22em; font-size: 11px; font-weight: 800;
+      color: var(--gold); text-shadow: 0 1px 6px #000; line-height: 1.35;
+    }
+    .act-head {
+      grid-column: 1 / -1; text-align: left; font-size: 11px; font-weight: 800;
+      color: var(--gold); padding: 7px 4px 2px; letter-spacing: 0.02em;
+    }
+    .goals {
+      width: 100%; max-width: 22em; text-align: left; margin: 0 0 10px;
+      font-size: 12px; font-weight: 800; color: var(--cream); text-shadow: 0 1px 6px #000;
+    }
+    .goals .g { margin: 3px 0; }
+    .goals .g.on { color: var(--gold); }
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       25% { transform: translateX(-3px); }
@@ -272,11 +286,12 @@
     <div id="also">More games · <a href="https://ccosma1.github.io/green-home-games/">Green Home Games</a></div>
 
     <div id="splash" class="overlay">
-      <img class="hero" src="assets/splash.jpg?v=21b" alt="" />
+      <img class="hero" src="assets/splash.jpg?v=23" alt="" />
       <h1>GREEN HOME CROWN</h1>
-      <p class="tag">Summer stays.</p>
+      <p class="tag">100 days. One crown.</p>
+      <p class="how">You ride as summer king — feast, fight usurpers, keep the crown until the land calls it his.</p>
+      <p class="acts">Green Gate · Feast Draws Flies · False Crowns · Storm Court · Crown Trial</p>
       <p class="tag">Fan game by a holder.</p>
-      <p class="how">Move the King. Hold the Crown. Don’t freeze.</p>
       <p id="boot-load"></p>
       <button class="play" id="btn-face" type="button" onclick="if(window.ghcFace)window.ghcFace();">FACE THE SUMMER</button>
       <button class="play ghost" id="btn-more" type="button">More games · Green Home Games</button>
@@ -285,10 +300,11 @@
 
     <div id="levels" class="overlay hidden">
       <img class="hero" src="assets/splash.jpg" alt="" />
-      <h2>Summer Dawn</h2>
-      <p class="tag">Act I–X · L1–100</p>
-      <p class="how">Move the King. Crossbows by the Crown.</p>
+      <h2 id="map-act">Green Gate</h2>
+      <p class="tag" id="map-span">Dawn Muster · L1–20</p>
+      <p class="how">100 days. Feast, fight, keep the crown.</p>
       <div id="level-grid"></div>
+      <div id="map-goals" class="goals"></div>
       <button class="play ghost" id="btn-back" type="button">Back</button>
       <button class="play ghost" id="btn-history" type="button">History</button>
       <button class="wipe-link" id="btn-reset" type="button">Reset</button>
@@ -337,7 +353,8 @@
 
     <div id="history" class="overlay hidden">
       <h2>Victory</h2>
-      <p class="how">Every fifteen levels. Summer stays.</p>
+      <p class="how">Feast chapters every fifteen. Slay · Carry · Feast · Claim.</p>
+      <div id="story-goals" class="goals"></div>
       <div id="history-list"></div>
       <button class="play ghost" id="btn-history-back" type="button">Back</button>
     </div>
@@ -1562,47 +1579,48 @@
   var skipEl = document.getElementById("btn-skip");
   var kingFlash = 0, kingCele = 0;
   var REELS = [
-    { id: "r15", lvl: 15, name: "Dawn Ride", frames: [
-      { src: "assets/film/reels/r15-1.jpg", cap: "The path." },
-      { src: "assets/film/reels/r15-2.jpg", cap: "The strike." },
-      { src: "assets/film/reels/r15-3.jpg", cap: "The gate." }
+    { id: "r15", lvl: 15, name: "Slay", chapter: "Slay", frames: [
+      { src: "assets/film/reels/r15-1.jpg", cap: "Slay the guests." },
+      { src: "assets/film/reels/r15-2.jpg", cap: "The path holds." },
+      { src: "assets/film/reels/r15-3.jpg", cap: "Dawn at the gate." }
     ] },
-    { id: "r30", lvl: 30, name: "Feast Held", frames: [
-      { src: "assets/film/reels/r30-1.jpg", cap: "The reeds." },
-      { src: "assets/film/reels/r30-2.jpg", cap: "The wagon." },
-      { src: "assets/film/reels/r30-3.jpg", cap: "The feast." }
+    { id: "r30", lvl: 30, name: "Carry", chapter: "Carry", frames: [
+      { src: "assets/film/reels/r30-1.jpg", cap: "Carry the feast." },
+      { src: "assets/film/reels/r30-2.jpg", cap: "Reeds and wagons." },
+      { src: "assets/film/reels/r30-3.jpg", cap: "Home still gold." }
     ] },
-    { id: "r45", lvl: 45, name: "False Crowns", frames: [
-      { src: "assets/film/reels/r45-1.jpg", cap: "Tin crowns." },
-      { src: "assets/film/reels/r45-2.jpg", cap: "Ballistae." },
-      { src: "assets/film/reels/r45-3.jpg", cap: "The sun." }
+    { id: "r45", lvl: 45, name: "Feast", chapter: "Feast", frames: [
+      { src: "assets/film/reels/r45-1.jpg", cap: "Feast of false crowns." },
+      { src: "assets/film/reels/r45-2.jpg", cap: "Tin on the lawn." },
+      { src: "assets/film/reels/r45-3.jpg", cap: "The sun is ours." }
     ] },
-    { id: "r60", lvl: 60, name: "Long Summer", frames: [
-      { src: "assets/film/reels/r60-1.jpg", cap: "The goats." },
-      { src: "assets/film/reels/r60-2.jpg", cap: "The sun." },
-      { src: "assets/film/reels/r60-3.jpg", cap: "Gold home." }
+    { id: "r60", lvl: 60, name: "Claim", chapter: "Claim", frames: [
+      { src: "assets/film/reels/r60-1.jpg", cap: "Claim the long summer." },
+      { src: "assets/film/reels/r60-2.jpg", cap: "Gold home." },
+      { src: "assets/film/reels/r60-3.jpg", cap: "The land starts to say it." }
     ] },
-    { id: "r75", lvl: 75, name: "Banner War", frames: [
-      { src: "assets/film/reels/r75-1.jpg", cap: "Banners." },
-      { src: "assets/film/reels/r75-2.jpg", cap: "The pack." },
-      { src: "assets/film/reels/r75-3.jpg", cap: "The wall." }
+    { id: "r75", lvl: 75, name: "Storm Court", chapter: "Storm Court", frames: [
+      { src: "assets/film/reels/r75-1.jpg", cap: "Banners in the dust." },
+      { src: "assets/film/reels/r75-2.jpg", cap: "The feast hears the siege." },
+      { src: "assets/film/reels/r75-3.jpg", cap: "Storm Court wants the hill." }
     ] },
-    { id: "r90", lvl: 90, name: "Summer Claim", frames: [
-      { src: "assets/film/reels/r90-1.jpg", cap: "The swarm." },
-      { src: "assets/film/reels/r90-2.jpg", cap: "The sun." },
-      { src: "assets/film/reels/r90-3.jpg", cap: "The town." }
+    { id: "r90", lvl: 90, name: "Crown Siege", chapter: "Crown Siege", frames: [
+      { src: "assets/film/reels/r90-1.jpg", cap: "The swarm at the wall." },
+      { src: "assets/film/reels/r90-2.jpg", cap: "Almost his." },
+      { src: "assets/film/reels/r90-3.jpg", cap: "Family waits the gate." }
     ] },
-    { id: "r100", lvl: 100, name: "Assemble", frames: [
-      { src: "assets/film/reels/r100-1.jpg", cap: "Chapters." },
-      { src: "assets/film/reels/r100-2.jpg", cap: "The line." },
-      { src: "assets/film/reels/r100-3.jpg", cap: "The charge." },
-      { src: "assets/film/reels/r100-4.jpg", cap: "Summer stays." }
+    { id: "r100", lvl: 100, name: "Assemble", chapter: "Assemble", frames: [
+      { src: "assets/film/reels/r100-1.jpg", cap: "The line holds." },
+      { src: "assets/film/reels/r100-2.jpg", cap: "Family at the gate." },
+      { src: "assets/film/reels/r100-3.jpg", cap: "The land calls it his." },
+      { src: "assets/film/reels/r100-4.jpg", cap: "Summer stays. Assemble." }
     ] }
   ];
   var filmI = 0, filmT = 0, filmFrom = "splash";
   var filmReel = null;
   var histFrom = "levels";
   var tipT = 0;
+  var fightLine = "";
   var TIPS = [
     "Drag the king. Plant a crossbow. Hold the capital.",
     "Ride the lane. Scoop the gold wood coins.",
@@ -1831,7 +1849,7 @@
         }
         next();
       }
-      loadImg("assets/splash.jpg?v=22").then(function (im) {
+      loadImg("assets/splash.jpg?v=23").then(function (im) {
         IM.splash = im;
         loadRest();
       }).catch(loadRest);
@@ -1886,6 +1904,34 @@
     void woodEl.offsetWidth;
     woodEl.classList.add("flash");
   }
+  function storyAct(lv) {
+    if (lv == null) lv = level;
+    var n = lv + 1;
+    if (n <= 20) return { id: "dawn", short: "Green Gate", name: "Green Gate · Dawn Muster", from: 1, to: 20, story: "Gate’s still soft. Ride it anyway." };
+    if (n <= 40) return { id: "feast", short: "Feast Draws Flies", name: "Feast Draws Flies", from: 21, to: 40, story: "Count the knives at the picnic." };
+    if (n <= 60) return { id: "false", short: "False Crowns", name: "False Crowns", from: 41, to: 60, story: "Tin crowns. Not ours." };
+    if (n <= 75) return { id: "usurp", short: "Usurper Banner", name: "Usurper Banner", from: 61, to: 75, story: "There’s a banner out there." };
+    if (n <= 80) return { id: "storm", short: "Storm Court", name: "Storm Court", from: 76, to: 80, story: "There’s a banner out there." };
+    if (n <= 90) return { id: "siege", short: "Crown Siege", name: "Crown Trial · Crown Siege", from: 81, to: 90, story: "Last cold smile. Hold it." };
+    if (n <= 99) return { id: "approach", short: "Approach", name: "Crown Trial · Approach", from: 91, to: 99, story: "Last cold smile. Hold it." };
+    return { id: "assemble", short: "Assemble", name: "Crown Trial · Assemble", from: 100, to: 100, story: "The land calls it his." };
+  }
+  function rareFightLine() {
+    if (waveI === 0) return "";
+    var key = (level * 3 + waveI) % 11;
+    if (key !== 0 && key !== 7) return "";
+    var bag = {
+      dawn: "Cake and a crown. That’s the job.",
+      feast: "The feast can hear this one.",
+      false: "Tin crowns in the grass.",
+      usurp: "A banner sniffer on the wind.",
+      storm: "Storm Court wants this hill.",
+      siege: "The siege hears the feast.",
+      approach: "One more cold smile.",
+      assemble: "The land is listening."
+    };
+    return bag[storyAct().id] || "";
+  }
   function crownMax() {
     return level >= 2 ? 3 : 4;
   }
@@ -1930,13 +1976,16 @@
       setBanner("All ballistae ready — armies fire harder.");
       setHint("Armies fire harder");
     } else if (phase === "build") {
-      setBanner(waveI === 0 ? (L.tip || "Build · then START WAVE") : "Build · then NEXT WAVE");
+      var actB = storyAct();
+      if (waveI === 0) setBanner(actB.name + " · " + (L.tip || "Hold the crown"));
+      else setBanner(actB.short + " · NEXT WAVE");
       setHint("Tap a pad to place / upgrade");
     } else if (phase === "clear") {
       setBanner("Clear.");
       setHint("");
     } else {
-      setBanner("Wave " + (waveI + 1) + " / " + n + " · Hold the Crown");
+      if (fightLine) setBanner(fightLine);
+      else setBanner(storyAct().short + " · Wave " + (waveI + 1) + " / " + n);
       setHint(level >= 2 ? "Place during the wave" : "Move the King");
     }
     if (phase === "scoop") {
@@ -2048,29 +2097,32 @@
       bober.facing = 0;
     }
     var plen = pathLen();
-    var mag = Math.max(44, 52 * sc);
+    var mag = Math.max(40, 46 * sc);
     var specs = [
       { id: "A", t: 0.80, side: 1 },
       { id: "B", t: 0.76, side: -1 },
       { id: "C", t: 0.56, side: 1 },
-      { id: "E", t: 0.70, side: -1 },
-      { id: "D", t: 0.20, side: -1 }
+      { id: "E", t: 0.70, side: -1 }
     ];
     var liveN = 1;
     if (level >= 2) liveN = 2;
     if (level >= 5) liveN = 3;
     if (level >= 14) liveN = 4;
-    var defs = specs.map(function (s, i) {
-      var pos = sideOfPath(plen * s.t, mag * s.side);
-      pos = pushOffLane(pos, 42, Math.min(80, BOW.range[0] * sc - 12));
+    var defs = specs.slice(0, liveN).map(function (s) {
+      var posIn = sideOfPath(plen * s.t, mag * s.side);
+      var posOut = sideOfPath(plen * s.t, mag * -s.side);
+      var pos = Math.abs(posIn.x - W * 0.5) <= Math.abs(posOut.x - W * 0.5) ? posIn : posOut;
+      pos = pushOffLane(pos, 40, Math.min(72, BOW.range[0] * sc - 16));
+      pos = clampPadPos(pos);
       var cd = Math.hypot(pos.x - city.x, pos.y - city.y);
       if (cd < 88 * sc && cd > 1) {
         pos.x = city.x + (pos.x - city.x) / cd * 88 * sc;
         pos.y = city.y + (pos.y - city.y) / cd * 88 * sc;
+        pos = clampPadPos(pos);
       }
-      var locked = i >= liveN || s.id === "D";
-      return { id: s.id, slot: "build", x: pos.x, y: pos.y, locked: locked };
+      return { id: s.id, slot: "build", x: pos.x, y: pos.y, locked: false };
     });
+    separatePads(defs);
     var old = pads.slice();
     pads = defs.map(blankPad);
     old.forEach(function (o) {
@@ -2088,6 +2140,35 @@
     seedScenery();
     applyLandCss();
     clampKing();
+  }
+  function clampPadPos(pos) {
+    var mx = 40 * sc;
+    var top = 56 * sc;
+    var bot = 24 * sc;
+    pos.x = Math.max(mx, Math.min(W - mx, pos.x));
+    pos.y = Math.max(top, Math.min(H - bot, pos.y));
+    return pos;
+  }
+  function separatePads(defs) {
+    var minD = 64 * sc, guard, i, j, dx, dy, L, push;
+    for (guard = 0; guard < 14; guard++) {
+      for (i = 0; i < defs.length; i++) {
+        for (j = i + 1; j < defs.length; j++) {
+          dx = defs[j].x - defs[i].x;
+          dy = defs[j].y - defs[i].y;
+          L = Math.hypot(dx, dy);
+          if (L < minD && L > 0.2) {
+            push = (minD - L) / 2;
+            defs[i].x -= dx / L * push;
+            defs[i].y -= dy / L * push;
+            defs[j].x += dx / L * push;
+            defs[j].y += dy / L * push;
+            clampPadPos(defs[i]);
+            clampPadPos(defs[j]);
+          }
+        }
+      }
+    }
   }
   function landBand() {
     if (level < 20) return 0;
@@ -2346,6 +2427,7 @@
     enemies = []; shots = []; fx = []; pulses = [];
     royal = false; royalTold = false;
     kingFlash = 0; kingCele = 0;
+    fightLine = "";
     layout();
     bober.x = W * 0.30;
     bober.y = H * 0.76;
@@ -2564,13 +2646,14 @@
     spawnI = 0; spawnT = 0.15;
     selected = null;
     if (tutActive() && tut.step === 2) tut.step = 3;
+    fightLine = rareFightLine();
     if (waveI === 0) showBuddyTip();
     renderHud();
     beep(330, 0.1, "square", 0.05);
   }
   function showBuddyTip() {
     var el = document.getElementById("elon-tip");
-    var line = TIPS[level % TIPS.length];
+    var line = storyAct().story || TIPS[level % TIPS.length];
     document.getElementById("elon-line").textContent = line;
     el.classList.remove("hidden");
     tipT = 3.4;
@@ -3074,7 +3157,7 @@
     var last = LEVELS.length - 1;
     var starStr = "★★★".slice(0, stars) + "☆☆☆".slice(0, 3 - stars);
     document.getElementById("win-stars").textContent = starStr;
-    document.getElementById("win-msg").textContent = level === last ? "Summer stays. The crown holds." : (level === 0 ? "L1 held." : (LEVELS[level].name + " holds."));
+    document.getElementById("win-msg").textContent = level === last ? "Summer stays. The land calls it his." : (level === 0 ? "L1 held." : (LEVELS[level].name + " holds."));
     document.getElementById("btn-next").textContent = level < last ? "Next" : "Map";
     var rid = reelIdForClear(level);
     if (rid) {
@@ -4021,6 +4104,8 @@
     img.onerror = function () { nextFilmFrame(); };
     img.src = f.src;
     document.getElementById("film-cap").textContent = f.cap || "";
+    var tiny = document.getElementById("film-tiny");
+    if (tiny) tiny.textContent = filmReel && filmReel.chapter ? ("Feast chapter · " + filmReel.chapter) : "fan game by a holder";
     document.getElementById("film-n").textContent = (filmI + 1) + " / " + frames.length;
   }
   function nextFilmFrame() {
@@ -4057,8 +4142,19 @@
     else if (filmFrom === "history") openHistory();
     else show("splash");
   }
+  function fillGoals(el) {
+    if (!el) return;
+    var storm = (save.unlocked | 0) > 80 || (save.stars && (save.stars[79] | 0) > 0);
+    var assembled = !!(save.reels && save.reels.r100) || (save.stars && (save.stars[99] | 0) > 0);
+    var feast = !!(save.reels && save.reels.r45);
+    el.innerHTML =
+      "<div class=\"g" + (feast ? " on" : "") + "\">" + (feast ? "☑" : "☐") + " False Crowns feast</div>" +
+      "<div class=\"g" + (storm ? " on" : "") + "\">" + (storm ? "☑" : "☐") + " Hold through Storm Court</div>" +
+      "<div class=\"g" + (assembled ? " on" : "") + "\">" + (assembled ? "☑" : "☐") + " Crown Assembled</div>";
+  }
   function openHistory(from) {
     if (from) histFrom = from;
+    fillGoals(document.getElementById("story-goals"));
     var list = document.getElementById("history-list");
     list.innerHTML = "";
     REELS.forEach(function (r) {
@@ -4080,9 +4176,24 @@
 
   function openMap() {
     coins = [];
+    var act = storyAct(Math.max(0, (save.unlocked | 0) - 1));
+    var title = document.getElementById("map-act");
+    var span = document.getElementById("map-span");
+    if (title) title.textContent = act.short;
+    if (span) span.textContent = act.name + " · L" + act.from + "–" + act.to;
+    fillGoals(document.getElementById("map-goals"));
     var grid = document.getElementById("level-grid");
     grid.innerHTML = "";
+    var lastAct = "";
     LEVELS.forEach(function (L, i) {
+      var a = storyAct(i);
+      if (a.short !== lastAct) {
+        lastAct = a.short;
+        var h = document.createElement("div");
+        h.className = "act-head";
+        h.textContent = a.short + " · L" + a.from + "–" + a.to;
+        grid.appendChild(h);
+      }
       var b = document.createElement("button");
       b.className = "lvl" + (i >= save.unlocked ? " locked" : "");
       b.type = "button";

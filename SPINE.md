@@ -4,18 +4,16 @@ You ARE the summer king. Crossbows sit on the crown line. Upgrades feed HIS powe
 
 | Act | Levels | Title | Status |
 |---|---|---|---|
-| I | 1–5 | Summer Dawn | Playable. 1–2 crown pads. |
-| II | 6–10 | Feast Draws Flies | Playable. 2–3 pads. Thief, Goat, Fair Knight. |
-| III | 11–15 | False Crowns / River Feast | Playable. Reed Runner, Siege Wagon. |
-| IV | 16–20 | Usurper Banner | Playable. Crown Road → Summer Claim. |
-| V | 21–25 | Crown Trial | Playable. Summer Crown. |
-| VI | 26–40 | Long Summer | Playable. Gate Dust → Capital Stand. |
-| VII | 41–55 | Keep Road | Playable. Dust Gate → Keep Stand. |
-| VIII | 56–70 | Keep Road II | Playable. Sun Gate → Keep Road. |
-| IX | 71–85 | Gold Banner | Playable. Heat Gate → Keep March. L75 reel. |
-| X | 86–100 | Summer Stays | Playable. Gate Storm → Summer Stays. L90 reel. L100 assemble finale. |
+| I | 1–20 | Green Gate · Dawn Muster | Playable. 1–3 crown pads, all on-canvas. |
+| II | 21–40 | Feast Draws Flies | Playable. River band. Count the knives. |
+| III | 41–60 | False Crowns | Playable. Fair / banner field. Tin crowns. |
+| IV | 61–75 | Usurper Banner | Playable. Gold dusk. Banner out there. |
+| V | 76–80 | Storm Court | Playable. L75 reel. |
+| VI | 81–90 | Crown Trial · Crown Siege | Playable. Storm light. L90 reel. |
+| VII | 91–99 | Crown Trial · Approach | Playable. Last cold smile. |
+| VIII | 100 | Crown Trial · Assemble | Playable. L100 assemble finale. |
 
-True end is **L100 Summer Stays**. Victory reels at L15 / 30 / 45 / 60 / 75 / 90. Assemble finale on L100 clear.
+True end is **L100 Assemble**. Victory reels (feast chapters) at L15 Slay / 30 Carry / 45 Feast / 60 Claim / 75 Storm Court / 90 Crown Siege. Assemble finale on L100 clear. Spawn-mouth pad removed so phone turrets stay on-canvas. Max 4 live pads near the crown.
 
 ## Implemented enemies (L1–20)
 
